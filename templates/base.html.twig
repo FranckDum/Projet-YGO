@@ -40,10 +40,10 @@
                             <a class="nav-link" href="{{path('cartes_all')}}">Carte à l'unité</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{path('app_user_index')}}">BDD User</a>
+                            <a class="nav-link" href="{{path('app_register')}}">Inscription</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{path('app_user_new')}}">Inscription</a>
+                            <a class="nav-link" href="{{path('app_login')}}">Connexion</a>
                         </li>
                     </ul>
                 </div>
@@ -52,7 +52,7 @@
 
         {# Zone de contenu principal utilisant le système de grille Bootstrap #}
         <main class="col-md-10 mx-auto p-2">
-            Titre de la page
+            {# Titre de la page #}
             <h1 class="text-center text-secondary fst-italic my-2">{% block h1 %}{% endblock %}</h1>
 
             {# Placeholder pour le contenu principal de la page #}
