@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des produits{% endblock %}
+
+{% block body %}
+    <h1>Gestion des produits</h1>
+
+    <table class="table text-center table-hover mt-4">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Activation</th>
+                <th>Stock</th>
+                <th>Prix</th>
+                <th>Nom_produit</th>
+                {# <th>Ygo_id</th> #}
+                <th>Fiche</th>
+                <th>Modifier</th>
+                <th>Supprimer</th>
+                {# <th>actions</th> #}
+            </tr>
+        </thead>
+        <tbody>
+        {% for t_produit in t_produits %}
+            <tr>
+                <td>{{ t_produit.id }}</td>
+                <td>{{ t_produit.activation ? 'Yes' : 'No' }}</td>
+                <td>{{ t_produit.stock }}</td>
+                <td>{{ t_produit.prix }}</td>
+                <td>{{ t_produit.nomProduit }}</td>
+                {# <td>{{ t_produit.ygoId }}</td> #}
+                <td>
+                    <a class="btn btn-primary" href="{{ path('app_t_produits_show', {'id': t_produit.id}) }}">Fiche</a>
+                </td>
+                <td>
+                    <a class="btn btn-success" href="{{ path('app_t_produits_edit', {'id': t_produit.id}) }}">Modif</a>
+                </td>
+                <td>
+                    <a class="btn btn-danger" href="{{ path('app_t_produits_delete', {'id': t_produit.id}) }}">Suppr</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">Aucun résultat</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_t_produits_new') }}">Ajouter produit</a>
+{% endblock %}
