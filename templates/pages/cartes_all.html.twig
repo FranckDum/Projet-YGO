@@ -4,7 +4,7 @@
 
 {% block body %}
 
-{% for t_produit in t_produits %}
+{% for t_produit in api_data %}
 
         {% if t_produit.activation %}
 {{dump(t_produit)}}
@@ -17,6 +17,19 @@
 
             {% endif %}
 
+{# <div class="postTextContainer">
+    <div class="postTitle">title</div>
+    <div class="postDate">date</div>
+    <div class="postAuthor">author</div>
+</div>
+{% for row in api_data %}
+    <div class="postTextContainer">
+        <div class="postTitle">{{ row.title }}</div>
+        <div class="postDate">{{ row.date }}</div>
+        <div class="postAuthor">{{ row.author }}</div>
+    </div> #}
+
+{% endfor %}
 
 {% endfor %}
 
