@@ -85,10 +85,7 @@ class PagesController extends AbstractController
 //         $data = json_decode($json_data, true);
 // dump($data);
 
-    foreach ($tProduit as &$t_produit) {
-        $response = $client->request('GET', 'https://db.ygoprodeck.com/api/v7/cardinfo.php?id=' . $t_produit['ygo_id']);
-        $t_produit['apiData'] = $response->toArray();
-    }
+$api_data = json_decode(file_get_contents('https://db.ygoprodeck.com/api/v7/cardinfo.php'), true);
 
         return $this->render('pages/cartes_all.html.twig',[
             't_produits' => $tProduitsRepository->findAll(),
