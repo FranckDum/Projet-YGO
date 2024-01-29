@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Fiche produit{% endblock %}
+
+{% block h1 %}{{ t_produit.nomProduit }}{% endblock %}
+
+{% block body %}
+
+    <a class="btn btn-dark" href="{{ path('app_t_produits_index') }}">Retour</a>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ t_produit.id }}</td>
+            </tr>
+            <tr>
+                <th>Activation</th>
+                <td>{{ t_produit.activation ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Stock</th>
+                <td>{{ t_produit.stock }}</td>
+            </tr>
+            <tr>
+                <th>Prix</th>
+                <td>{{ t_produit.prix }}</td>
+            </tr>
+            <tr>
+                <th>Nom_produit</th>
+                <td>{{ t_produit.nomProduit }}</td>
+            </tr>
+            {# <tr>
+                <th>Ygo_id</th>
+                <td>{{ t_produit.ygoId }}</td>
+            </tr> #}
+        </tbody>
+    </table>
+
+    <a class="btn btn-success m-2 w-100" href="{{ path('app_t_produits_edit', {'id': t_produit.id}) }}">Modifier</a>
+
+    {{ include('t_produits/_delete_form.html.twig') }}
+{% endblock %}
