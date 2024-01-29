@@ -92,6 +92,11 @@ class TProduits
 
     // Méthodes similaires pour chaque propriété...
 
+    public function getYgoId(): ?int
+    {
+        return $this->ygo_id;
+    }
+
     public function setYgoId(int $ygo_id): static
     {
         $this->ygo_id = $ygo_id;

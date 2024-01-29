@@ -24,16 +24,16 @@
             </tr>
             <tr>
                 <th>Prix</th>
-                <td>{{ t_produit.prix }}</td>
+                <td>{{ t_produit.prix|number_format(2) }}</td>
             </tr>
             <tr>
                 <th>Nom_produit</th>
                 <td>{{ t_produit.nomProduit }}</td>
             </tr>
-            {# <tr>
+            <tr>
                 <th>Ygo_id</th>
                 <td>{{ t_produit.ygoId }}</td>
-            </tr> #}
+            </tr>
         </tbody>
     </table>
 
