@@ -4,7 +4,20 @@
 
 {% block body %}
 
+{% for t_produit in t_produits %}
+
+        {% if t_produit.activation %}
+{{dump(t_produit)}}
+        <tr>
+            
+            <td> {% block h2 %}{{ t_produit.nomProduit }}{% endblock %} </td>
+            <td> {{ t_produit.stock }} </td>
+            <td> {{ t_produit.prix|number_format(2) }} </td>
+        </tr>
+
+            {% endif %}
 
 
+{% endfor %}
 
 {% endblock %}
