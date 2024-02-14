@@ -19,12 +19,21 @@
     <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
     <label for="inputPassword">Mot de passe</label>
     <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-
+    <div class="row">
+        <div class="col-md-6">
+            <label>
+            <input type="checkbox" name="_remember_me" checked>
+            Se souvenir de moi
+            </label>
+        </div>
+        <div class="col-md-6"></div>
+            <a href="{{path('app_forgot_password_request')}}">Mot de passe oublié ?</a>
+        </div>
     <input type="hidden" name="_csrf_token"
             value="{{ csrf_token('authenticate') }}"
     >
 
-    <button class="btn btn-lg btn-primary" type="submit">
+    <button class="btn btn-lg btn-primary mt-3" type="submit">
         Connexion
     </button>
 </form>

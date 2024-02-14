@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\TProduits;
 use App\Repository\TProduitsRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PagesController extends AbstractController
 {
@@ -30,14 +32,14 @@ class PagesController extends AbstractController
 
     #[Route('pages/all', name:'cartes_all')]
     // Annotation définissant la route pour la page affichant toutes les cartes
-    public function cartes(EntityManagerInterface $em, TProduitsRepository $tProduitsRepository, HttpClientInterface $client): Response
+    public function cartes(EntityManagerInterface $em, TProduitsRepository $tProduitsRepository, HttpClientInterface $client, PaginatorInterface $paginator, Request $request): Response
     {
         $tProduit = new TProduits();
 
-        // set_time_limit(0);
-        // ini_set('memory_limit', '512M');
+        set_time_limit(0);
+        ini_set('memory_limit', '512M');
 
-        // $api_url = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
+        // $api_url = "https://db.ygoprodeck.com/api/v7/cardinfo.php?language=fr";
         // URL de l'API pour récupérer les données sur les cartes
 
         // Récupérer les données JSON de l'API
@@ -62,7 +64,7 @@ class PagesController extends AbstractController
         //         $image_url = $card['card_images'][0]['image_url_cropped'];
         //         // URL de l'image de la carte (image_cropped)
 
-        //         $prix = $card['card_prices'][0]['cardmarket_price'] * 0.93;
+        //         $prix = $card['card_prices'][0]['cardmarket_price'] // * 0.93;
         //         // Prix de la carte récupéré à partir des données de prix de l'API, prix converti en euros.
 
         //         $produit = new TProduits();
@@ -70,8 +72,8 @@ class PagesController extends AbstractController
 
         //         $produit->setNomProduit($nom);
         //         $produit->setPrix($prix);
-        //         $produit->setStock(0);
-        //         $produit->setActivation(0);
+        //         $produit->setStock(100);
+        //         $produit->setActivation(1);
         //         $produit->setYgoId($ygoId);
 
         //         $em->persist($produit);
@@ -79,17 +81,37 @@ class PagesController extends AbstractController
         //         // Persiste et flush les changements dans la base de données
         //     }
         // }
-        // Dans votre contrôleur PHP
-// $api_url = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
-//         $json_data = file_get_contents($api_url);
-//         $data = json_decode($json_data, true);
-// dump($data);
 
-$api_data = json_decode(file_get_contents('https://db.ygoprodeck.com/api/v7/cardinfo.php'), true);
+                // // Effectuer la requête pour récupérer les produits activés
+                // $produitsActifs = $tProduitsRepository->createQueryBuilder('p')
+                // ->where('p.activation = :activation')
+                // ->setParameter('activation', 'yes')
+                // ->getQuery()
+                // ->getResult();
 
+        $responseApi = $client->request("GET", "https://db.ygoprodeck.com/api/v7/cardinfo.php?language=fr");
+
+        $responseApiArray = $responseApi->toArray();
+
+        $data = $responseApiArray['data'];
+
+        // $produits = $paginator->paginate(
+        //     $data, /* query NOT result */
+        //     $request->query->getInt('page', 1), /*page number*/
+        //     20 /*limit per page*/
+        // );
+
+        // dd($produits);
+
+        // dd($data);
+
+
+ // Renvoyer le template Twig avec les données de la carte
         return $this->render('pages/cartes_all.html.twig',[
             't_produits' => $tProduitsRepository->findAll(),
             't_produit' => $tProduit,
+            // 'produitsActifs' => $produitsActifs,
+            'produits' => $data
         ]);
     //     // Rend la page HTML affichant toutes les cartes
 
