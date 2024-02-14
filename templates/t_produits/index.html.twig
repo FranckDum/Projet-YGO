@@ -17,6 +17,7 @@
                 <th>Nom_produit</th>
                 <th>Ygo_id</th>
                 <th>Fiche</th>
+                <th>Ajouter</th>
                 <th>Modifier</th>
                 <th>Supprimer</th>
                 {# <th>actions</th> #}
@@ -28,11 +29,14 @@
                 <td>{{ t_produit.id }}</td>
                 <td>{{ t_produit.activation ? 'Yes' : 'No' }}</td>
                 <td>{{ t_produit.stock }}</td>
-                <td>{{ t_produit.prix|number_format(2) }}</td>
+                <td>{{ t_produit.prix|number_format(2) }} €</td>
                 <td>{{ t_produit.nomProduit }}</td>
                 <td>{{ t_produit.ygoId }}</td>
                 <td>
-                    <a class="btn btn-primary" href="{{ path('app_t_produits_show', {'id': t_produit.id}) }}">Fiche</a>
+                    <a class="btn btn-secondary" href="{{ path('app_t_produits_show', {'id': t_produit.id}) }}">Fiche</a>
+                </td>
+                <td>
+                    <a class="btn btn-primary" href="{{ path('app_t_produits_new', {'id': t_produit.id}) }}">Ajout</a>
                 </td>
                 <td>
                     <a class="btn btn-success" href="{{ path('app_t_produits_edit', {'id': t_produit.id}) }}">Modif</a>

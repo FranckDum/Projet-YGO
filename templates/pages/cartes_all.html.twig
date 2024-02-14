@@ -2,21 +2,88 @@
 
 {% block h1 %}Carte à l'unité{% endblock %}
 
+{% block jQuery %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $(document).ready( function () {
+        $('#myTable').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+            },
+        });
+    } );
+</script>
+{% endblock %}
+
+{% block dataTables %}
+    <link href="https://cdn.datatables.net/v/bs5/dt-1.13.10/datatables.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.10/datatables.min.js"></script>
+{% endblock %}
+
+
 {% block body %}
+    <section class= "container">
+        
+            {# <div class= "table-responsive">
+                <table id="myTable" class="table table-strip table-hover table-bordered text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nom</th>
+                            <th>Description</th>
+                            <th>Stock</th>
+                            <th>Prix</th>
 
-{% for t_produit in api_data %}
+                        </tr>
+                    </thead>
+                #}
+        <div class="row d-flex justify-content-center">
 
-        {% if t_produit.activation %}
-{{dump(t_produit)}}
-        <tr>
-            
-            <td> {% block h2 %}{{ t_produit.nomProduit }}{% endblock %} </td>
-            <td> {{ t_produit.stock }} </td>
-            <td> {{ t_produit.prix|number_format(2) }} </td>
-        </tr>
+                    {% for t_produit in t_produits %}
+                    
+                        {% if t_produit.activation %}
 
-            {% endif %}
+                            {% for carte in produits %}
 
+                                {% if carte.id == t_produit.ygoId %}
+
+                                <div class="col-md-6 col-lg-4 d-flex flex-column align-items-center border border-black">
+
+                                    
+                                        
+                                        <p class="text-center"> {% block h2 %}{{ t_produit.nomProduit }}{% endblock %} </p>
+
+                                        <div class="accordion" id="accordionDesc_{{t_produit.ygoId}}">
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{t_produit.ygoId}}" aria-expanded="true" aria-controls="collapse_{{t_produit.ygoId}}">
+                                                        Description :
+                                                    </button>
+                                                </h2>
+                                                <div id="collapse_{{t_produit.ygoId}}" class="accordion-collapse collapse" data-bs-parent="#accordionDesc_{{t_produit.ygoId}}">
+                                                    <div class="accordion-body">
+                                                        {{ carte.desc }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <p> {{ t_produit.stock }} </p>
+                                        <p> {{ t_produit.prix|number_format(2) }} € </p>
+                                    
+
+                                </div>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        {% endif %}
+
+                {% endfor %}
+            </div>
+        </div>
+    </section>
 {# <div class="postTextContainer">
     <div class="postTitle">title</div>
     <div class="postDate">date</div>
@@ -28,9 +95,4 @@
         <div class="postDate">{{ row.date }}</div>
         <div class="postAuthor">{{ row.author }}</div>
     </div> #}
-
-{% endfor %}
-
-{% endfor %}
-
 {% endblock %}

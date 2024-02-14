@@ -6,3 +6,21 @@
 .logo {
     width: 300px;
 }
+
+.navbar-toggler{
+    background-color: aliceblue;
+}
+
+.current-page {
+    color: red;
+    text-decoration: none;
+}
+
+@font-face {
+    font-family: "YGO";
+    src:url("/fonts/squealer_embossed.ttf") format("truetype");
+}
+
+h1{
+    font-family: 'YGO', sans-serif;
+}
