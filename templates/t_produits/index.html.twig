@@ -4,10 +4,52 @@
 
 {% block h1 %}Gestion des produits{% endblock %}
 
+{% block jQuery %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $(document).ready( function () {
+        $('#myTable').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json',
+            },
+        });
+    });
+    
+</script>
+{% endblock %}
+
+{% block dataTables %}
+    <link href="https://cdn.datatables.net/v/bs5/dt-1.13.10/datatables.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.10/datatables.min.js"></script>
+{% endblock %}
+
+{% block customScripts %}
+<script>
+        function toggleActivation(productId) {
+            $.ajax({
+                url: '{{ path('toggle_activation') }}',
+                method: 'POST',
+                data: {
+                    productId: productId
+                },
+                success: function(response) {
+                    // Gérer la réponse si nécessaire
+                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    // Gérer l'erreur si nécessaire
+                    console.error(error);
+                }
+            });
+        };
+</script>
+{% endblock %}
+
+
 {% block body %}
     
 
-    <table class="table text-center table-hover mt-4">
+    <table id="myTable" class="table text-center table-hover mt-4">
         <thead>
             <tr>
                 <th>Id</th>
@@ -27,7 +69,12 @@
         {% for t_produit in t_produits %}
             <tr>
                 <td>{{ t_produit.id }}</td>
-                <td>{{ t_produit.activation ? 'Yes' : 'No' }}</td>
+                {# <td>{{ t_produit.activation ? 'Yes' : 'No' }}</td> #}
+                <td>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="activationSwitch{{ t_produit.id }}" {% if t_produit.activation %} checked {% endif %} onchange="toggleActivation({{ t_produit.id }})">
+                    </div>
+                </td>
                 <td>{{ t_produit.stock }}</td>
                 <td>{{ t_produit.prix|number_format(2) }} €</td>
                 <td>{{ t_produit.nomProduit }}</td>
@@ -54,4 +101,8 @@
     </table>
 
     <a href="{{ path('app_t_produits_new') }}">Ajouter produit</a>
+
+
+
+
 {% endblock %}

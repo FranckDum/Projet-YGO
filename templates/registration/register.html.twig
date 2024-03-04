@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Inscription{% endblock %}
 
 {% block body %}
-    <h1>Inscription</h1>
+    {% block h1 %}INSCRIPTION{% endblock %}
 
     {{ form_errors(registrationForm) }}
 

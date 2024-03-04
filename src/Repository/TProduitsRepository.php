@@ -21,6 +21,18 @@ class TProduitsRepository extends ServiceEntityRepository
         parent::__construct($registry, TProduits::class);
     }
 
+    public function findSimilaires(string $partieNomProduit, int $produitActuelId): array
+{
+    return $this->createQueryBuilder('p')
+        ->andWhere('p.nom_produit LIKE :partieNomProduit')
+        ->andWhere('p.id != :produitActuelId')
+        ->setParameter('partieNomProduit', '%'.$partieNomProduit.'%')
+        ->setParameter('produitActuelId', $produitActuelId)
+        ->setMaxResults(6) // Récupérer jusqu'à 6 produits similaires
+        ->getQuery()
+        ->getResult();
+}
+
 //    /**
 //     * @return TProduits[] Returns an array of TProduits objects
 //     */

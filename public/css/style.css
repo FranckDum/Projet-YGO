@@ -23,4 +23,45 @@
 
 h1{
     font-family: 'YGO', sans-serif;
+    /* color : #827731;  jaune plus foncé */
+    /* color: #ebe964; jaune un peu clair */
+    /* color: #2c2611;  jaune très très foncé */
+    /* color: #2c2611; */
+    color: #827831; /*   */
+    
 }
+
+.h2Produit{
+    color: #d4be18;
+}
+
+a{
+    text-decoration: none;
+    color: #d4be18;
+}
+
+/* .carte {
+    transition: transform 1s, box-shadow 1s;
+}
+
+.carte:hover {
+    transform: translateZ(20px);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+} */
+
+
+.carte {
+    transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s, transform 0.3s;
+}
+
+.carte:hover {
+    transform: translateZ(20px) scale(1.05);
+    box-shadow: 0 0 20px rgb(0, 0, 0);
+    opacity: 1;
+}
+
+/* .carte:not(:hover) {
+    opacity: 0.8;
+} */
+
+

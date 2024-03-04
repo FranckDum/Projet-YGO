@@ -6,10 +6,11 @@ use App\Entity\TProduits;
 use App\Form\TProduitsType;
 use App\Repository\TProduitsRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/admin/t/produits')]
 class TProduitsController extends AbstractController
@@ -78,5 +79,30 @@ class TProduitsController extends AbstractController
 
         return $this->redirectToRoute('app_t_produits_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+    #[Route('/toggle-activation', name: 'toggle_activation', methods: ['POST'])]
+    public function toggleActivation($id, Request $request, EntityManagerInterface $em, TProduitsRepository $tProduitsRepository): JsonResponse
+    {
+        $productId = $em->getRepository(TProduits::class)->find($id);;
+
+        // Récupérer le produit depuis le repository
+        $product = $tProduitsRepository->find($productId);
+
+        // Vérifier si le produit existe
+        if (!$product) {
+            return new JsonResponse(['success' => false, 'message' => 'Produit non trouvé.'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        // Inverser l'état d'activation
+        $product->setActivation(!$product->isActivation());
+
+        // Enregistrer les modifications dans la base de données
+        $em->flush();
+
+        // Répondre avec succès
+        return new JsonResponse(['success' => true, 'message' => 'État d\'activation mis à jour avec succès.']);
+    }
+
 
 }
