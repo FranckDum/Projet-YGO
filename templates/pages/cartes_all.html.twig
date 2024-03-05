@@ -27,13 +27,9 @@
 
         <div class="row d-flex justify-content-center">
 
-            {% for t_produit in t_produits %}
-                    
-                {% if t_produit.activation %}
+            {% for t_produit in produitsActifs %}
 
                     {% for carte in produits %}
-
-                        {% if carte.id == t_produit.ygoId %}
 
                             <div class="col-md-6 col-lg-3 d-flex flex-column align-items-center border border-3 border-opacity-50 border-black mx-3 my-3 rounded bg-secondary carte">
 
@@ -63,11 +59,7 @@
                                 </div>
                             </div>
 
-                        {% endif %}
-
                     {% endfor %}
-
-                {% endif %}
 
             {% endfor %}
         </div>

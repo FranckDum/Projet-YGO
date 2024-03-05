@@ -82,27 +82,27 @@ class TProduitsController extends AbstractController
 
 
     #[Route('/toggle-activation', name: 'toggle_activation', methods: ['POST'])]
-    public function toggleActivation($id, Request $request, EntityManagerInterface $em, TProduitsRepository $tProduitsRepository): JsonResponse
+    public function toggleActivation(Request $request, EntityManagerInterface $em, TProduitsRepository $tProduitsRepository): JsonResponse
     {
-        $productId = $em->getRepository(TProduits::class)->find($id);;
-
+        // Récupérer l'ID du produit à partir des données de la requête
+        $productId = $request->request->get('productId');
+    
         // Récupérer le produit depuis le repository
         $product = $tProduitsRepository->find($productId);
-
+    
         // Vérifier si le produit existe
         if (!$product) {
             return new JsonResponse(['success' => false, 'message' => 'Produit non trouvé.'], JsonResponse::HTTP_NOT_FOUND);
         }
-
+    
         // Inverser l'état d'activation
         $product->setActivation(!$product->isActivation());
-
+    
         // Enregistrer les modifications dans la base de données
         $em->flush();
-
+    
         // Répondre avec succès
         return new JsonResponse(['success' => true, 'message' => 'État d\'activation mis à jour avec succès.']);
     }
-
 
 }

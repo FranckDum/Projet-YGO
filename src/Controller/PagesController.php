@@ -82,14 +82,20 @@ class PagesController extends AbstractController
         //     }
         // }
 
-                // // Effectuer la requête pour récupérer les produits activés
-                // $produitsActifs = $tProduitsRepository->createQueryBuilder('p')
-                // ->where('p.activation = :activation')
-                // ->setParameter('activation', 'yes')
-                // ->getQuery()
-                // ->getResult();
+                // Effectuer la requête pour récupérer les produits activés
+                $produitsActifs = $tProduitsRepository->createQueryBuilder('p')
+                ->where('p.activation = :activation')
+                ->setParameter('activation', true)
+                ->getQuery()
+                ->getResult();
 
-        $responseApi = $client->request("GET", "https://db.ygoprodeck.com/api/v7/cardinfo.php?language=fr");
+                $ygo_ids_arr= array_map(function ($produit) {
+                    return $produit->getYgoId();
+                }, $produitsActifs);
+
+                $ygo_ids_for_API = implode(',', $ygo_ids_arr );
+
+        $responseApi = $client->request("GET", "https://db.ygoprodeck.com/api/v7/cardinfo.php?language=fr&id=".$ygo_ids_for_API);
 
         $responseApiArray = $responseApi->toArray();
 
@@ -108,15 +114,17 @@ class PagesController extends AbstractController
 
  // Renvoyer le template Twig avec les données de la carte
         return $this->render('pages/cartes_all.html.twig',[
-            't_produits' => $tProduitsRepository->findAll(),
+            // 't_produits' => $tProduitsRepository->findAll(),
             // 'produit' => $produit,
-            't_produit' => $tProduit,
-            // 'produitsActifs' => $produitsActifs,
+            // 't_produit' => $tProduit,
+            'produitsActifs' => $produitsActifs,
             'produits' => $data
         ]);
     //     // Rend la page HTML affichant toutes les cartes
 
     }
+
+    
 
     #[Route("pages/detail/{id}", name : "detailProduit")]
     public function detailProduit(int $id,  EntityManagerInterface $em, HttpClientInterface $client): Response
