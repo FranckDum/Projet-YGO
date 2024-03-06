@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil{% endblock %}
+
+{% block h1 %}Mon Profil{% endblock %}
+
+{% block body %}
+<div class="container">
+<div class="d-flex justify-content-center">Nom : <strong>{{app.user.nom}}</strong> </div> 
+<div class="d-flex justify-content-center mt-3">Prénom : <strong>{{app.user.prenom}}</strong></div>
+<div class="d-flex justify-content-center mt-3">Email : <strong>{{app.user.email}}</strong></div>
+<div class="d-flex justify-content-center mt-3">Adresse : <strong>{{app.user.adresse}}</strong></div>
+<div class="d-flex justify-content-center mt-3">Ville : <strong>{{app.user.ville}}</strong></div>
+<div class="d-flex justify-content-center mt-3">Code Postal : <strong>{{app.user.codePostal}}</strong></div>
+<div class="d-flex justify-content-center mt-3">Téléphone : <strong>{{app.user.tel}}</strong></div>
+<div ><a class="d-flex justify-content-center ms-auto me-auto mt-3 btn btn-success col-3" href="#">Modifier mon Profil</a></div>
+<div ><a class="d-flex justify-content-center ms-auto me-auto mt-3 btn btn-danger col-3" href="#">Supprimer mon Profil</a></div>
+</div>
+{% endblock %}

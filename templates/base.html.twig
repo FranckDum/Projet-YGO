@@ -14,7 +14,7 @@
 
         {% block jQuery %}{% endblock %}
         {% block dataTables %}{% endblock %}
-        
+        {% block customScripts %}{% endblock %}
 
         {# Liens vers un fichier CSS personnalisé #}
         <link rel="stylesheet" href="{{ asset('css/style.css')}}">
@@ -65,22 +65,39 @@
                         {% if app.user %}
                             {% if is_granted('ROLE_ADMIN') %}
                                 <li class="nav-item">
-                                    <a class="nav-link " href="{{path('app_t_produits_index')}}">Gestion des produits</a>
+                                    <a class="nav-link " href="{{path('app_admin')}}">Back Office</a>
                                 </li>
                             {% endif %}
                         {% endif %}
                     </ul>
-                    <ul class="navbar-nav ms-auto">
-                        <form class="d-flex form-inline my-2 my-lg-0">
-                            <input class="form-control me-2" type="search" placeholder="Recherche" aria-label="Search">
+                    <ul class="navbar-nav ms-auto me-5">
+                        <form action="{{ path('app_search') }}" id="searchthis" method="get" class="d-flex form-inline my-2 my-lg-0">
+                            <input id="search" name="q" class="form-control me-2" type="text" placeholder="Recherche" aria-label="Search">
                             {# <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Recherche</button> #}
                         </form>
                         {% if app.user %}
-                            <div class="ms-auto">
+                            <div class="dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{app.user.prenom}}
+                            </a>
+
+                            <ul  class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="{{path('app_profil')}}">Mon Profil</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{path('app_logout')}}">Déconnexion</a>
+                                </li>
+                            </ul>
+                        </div>
+                            {# <div class="ms-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link " href="{{path('app_profil')}}">Mon Profil</a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link " href="{{path('app_logout')}}">Déconnexion</a>
                                 </li>
-                            </div>
+                            </div> #}
                         {% else %}
                             <li class="nav-item ">
                                 <a class="nav-link " href="{{path('app_register')}}">Inscription</a>
@@ -100,10 +117,11 @@
         <main class="col-md-10 mx-auto p-2">
             {# Titre de la page #}
             {# <h1 class="text-center text-secondary fst-italic my-2">{% block h1 %}{% endblock %}</h1> #}
-            <h1 class="text-center text-dark font-face">{% block h1 %}{% endblock %}</h1>
+            <h1 class="text-center font-face">{% block h1 %}{% endblock %}</h1>
 
             {# Placeholder pour le contenu principal de la page #}
             {% block body %}{% endblock %}
+
         </main>
 
         {# Fichiers JavaScript Bootstrap pour les composants interactifs #}
