@@ -34,7 +34,7 @@ class PagesController extends AbstractController
     // Annotation définissant la route pour la page affichant toutes les cartes
     public function cartes(EntityManagerInterface $em, TProduitsRepository $tProduitsRepository, HttpClientInterface $client, PaginatorInterface $paginator, Request $request): Response
     {
-        $tProduit = new TProduits();
+        // $tProduit = new TProduits();
 
         set_time_limit(0);
         ini_set('memory_limit', '512M');
@@ -95,9 +95,17 @@ class PagesController extends AbstractController
 
                 $ygo_ids_for_API = implode(',', $ygo_ids_arr );
 
-        $responseApi = $client->request("GET", "https://db.ygoprodeck.com/api/v7/cardinfo.php?language=fr&id=".$ygo_ids_for_API);
+                $limit = $request->query->get("limit", 18); // Nombre de produits par page
+                $offset = $request->query->get("offset", 0);
+                
+
+                $totalProducts = count($produitsActifs);
+                $totalPages = ceil($totalProducts / $limit);
+
+        $responseApi = $client->request("GET", "https://db.ygoprodeck.com/api/v7/cardinfo.php?language=fr&id=".$ygo_ids_for_API."&num=".$limit."&offset=".$offset);
 
         $responseApiArray = $responseApi->toArray();
+        $meta = $responseApiArray['meta']; // Dans cette variable sera stocké toutes les infos pour ma pagination.
 
         $data = $responseApiArray['data'];
 
@@ -110,15 +118,31 @@ class PagesController extends AbstractController
         // dd($produits);
 
         // dd($data);
-
+        $productsWithCards = [];
+        foreach($produitsActifs as $actif){
+            foreach($data as $card){
+                if($actif->getYgoId() == $card["id"]){
+                    $productsWithCards[] = [
+                        "product" => $actif,
+                        "card" => $card
+                    ];
+                    break;
+                }
+            }
+        }
 
  // Renvoyer le template Twig avec les données de la carte
         return $this->render('pages/cartes_all.html.twig',[
             // 't_produits' => $tProduitsRepository->findAll(),
             // 'produit' => $produit,
             // 't_produit' => $tProduit,
-            'produitsActifs' => $produitsActifs,
-            'produits' => $data
+            'productsWithCard' => $productsWithCards,
+            'meta' => [
+                'total_pages' => $totalPages,
+            ]
+            // 'meta' => $meta,
+            // 'produitsActifs' => $produitsActifs,
+            // 'produits' => $data
         ]);
     //     // Rend la page HTML affichant toutes les cartes
 
@@ -131,7 +155,7 @@ class PagesController extends AbstractController
     {
         // Récupérer le produit spécifique en fonction de son ID
         $produit = $em->getRepository(TProduits::class)->find($id);
-        $partieNomProduit = substr($produit->getNomProduit(), 0, 6); // Prend les 7 premiers caractères du nom
+        $partieNomProduit = substr($produit->getNomProduit(), 0, 6); // Prend les 6 premiers caractères du nom
         $produitsSimilaires = $em->getRepository(TProduits::class)->findSimilaires($partieNomProduit, $id);
 
     

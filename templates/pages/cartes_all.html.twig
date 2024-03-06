@@ -27,9 +27,9 @@
 
         <div class="row d-flex justify-content-center">
 
-            {% for t_produit in produitsActifs %}
-
-                    {% for carte in produits %}
+            {% for card in productsWithCard %}
+                {% set t_produit = card.product %}
+                {% set carte = card.card %}
 
                             <div class="col-md-6 col-lg-3 d-flex flex-column align-items-center border border-3 border-opacity-50 border-black mx-3 my-3 rounded bg-secondary carte">
 
@@ -59,10 +59,35 @@
                                 </div>
                             </div>
 
-                    {% endfor %}
-
             {% endfor %}
         </div>
+
+        {# <nav>
+            <ul class="pagination">
+                {% for i in 1..meta.total_pages %}
+                    <li class="page-item"><a class="page-link" href="?offset={{i*18}}">{{i}}</a></li>
+                    <li class="page-item"><a class="page-link" href="{{ path('cartes_all', {'offset': (i-1)*18, 'limit': 18}) }}">{{i}}</a></li> 
+                {% endfor %}
+            </ul>
+        </nav> #}
+
+<nav>
+    <ul class="pagination">
+        {% for i in 1..meta.total_pages %}
+            {% set offset = (i - 1) * 18 %}
+            {% if offset == app.request.query.get('offset', '0')|default(0) %}
+                <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="?offset={{ offset }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</nav>
+
+
+
+
+
 
     </section>
 
