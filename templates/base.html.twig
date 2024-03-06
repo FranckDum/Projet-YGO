@@ -1,138 +1,96 @@
-{# Déclare le type de document et commence le document HTML #}
+{# Déclaration du type de document et début du document HTML #}
 <!DOCTYPE html>
 <html lang="fr">
 
-    <head>
-        {# Définit l'encodage des caractères et fournit le titre du document HTML #}
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}Duel-Destiny-Shop!{% endblock %}</title>
+<head>
+    {# Balise head contenant les métadonnées et les liens vers les feuilles de style #}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Duel-Destiny-Shop!{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('css/style.css')}}">
+    {# Placeholder pour les feuilles de style supplémentaires pouvant être incluses dans des modèles étendus #}
+    {% block stylesheets %}{% endblock %}
+</head>
 
-        {# Liens vers le fichier CSS Bootstrap hébergé sur un CDN (Content Delivery Network) #}
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<body>
 
-
-        {% block jQuery %}{% endblock %}
-        {% block dataTables %}{% endblock %}
-        {% block customScripts %}{% endblock %}
-
-        {# Liens vers un fichier CSS personnalisé #}
-        <link rel="stylesheet" href="{{ asset('css/style.css')}}">
-
-        {# Placeholder pour des feuilles de style supplémentaires pouvant être incluses dans des modèles étendus #}
-        {% block stylesheets %}{% endblock %}
-        
-    </head>
-
-    <body>
-
-        {# Barre de navigation utilisant Bootstrap #}
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid bg-secondary">
-                <a class="navbar-brand" href="{{path('accueil')}}">
-                <img class="logo" src="{{asset('images/Logomini.png')}}" alt="Logo du site"></a>
-
-                {# Bouton de bascule de navigation Bootstrap pour les écrans plus petits #}
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                {# Liens de navigation #}
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{path('accueil')}}">Accueil</a>
-                        </li>
-                    
-                        <div class="dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Produits
-                            </a>
-
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item" href="{{path('cartes_all')}}">Carte à l'Unité</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Display</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Deck de Structure</a>
-                                </li>
-                            </ul>
-                        </div>
-                        
-                        {% if app.user %}
-                            {% if is_granted('ROLE_ADMIN') %}
-                                <li class="nav-item">
-                                    <a class="nav-link " href="{{path('app_admin')}}">Back Office</a>
-                                </li>
-                            {% endif %}
+    {# Barre de navigation Bootstrap #}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid bg-secondary">
+            <a class="navbar-brand" href="{{path('accueil')}}">
+                <img class="logo" src="{{asset('images/Logomini.png')}}" alt="Logo du site">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    {# Liens de navigation #}
+                    <li class="nav-item {% if app.request.attributes.get('_route') == 'accueil' %}active{% endif %}">
+                        <a class="nav-link" href="{{path('accueil')}}">Accueil</a>
+                    </li>
+                    <li class="nav-item dropdown {% if app.request.attributes.get('_route') in ['cartes_all', 'display', 'deck_structure'] %}active{% endif %}">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Produits
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{path('cartes_all')}}">Carte à l'Unité</a></li>
+                            <li><a class="dropdown-item" href="#">Display</a></li>
+                            <li><a class="dropdown-item" href="#">Deck de Structure</a></li>
+                        </ul>
+                    </li>
+                    {# Back office pour les administrateurs #}
+                    {% if app.user %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <li class="nav-item {% if app.request.attributes.get('_route') == 'app_admin' %}active{% endif %}">
+                                <a class="nav-link" href="{{path('app_admin')}}">Back Office</a>
+                            </li>
                         {% endif %}
-                    </ul>
-                    <ul class="navbar-nav ms-auto me-5">
-                        <form action="{{ path('app_search') }}" id="searchthis" method="get" class="d-flex form-inline my-2 my-lg-0">
-                            <input id="search" name="q" class="form-control me-2" type="text" placeholder="Recherche" aria-label="Search">
-                            {# <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Recherche</button> #}
-                        </form>
-                        {% if app.user %}
-                            <div class="dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav ms-auto me-5">
+                    {# Formulaire de recherche #}
+                    <form action="{{ path('app_search') }}" id="searchthis" method="get" class="d-flex form-inline my-2 my-lg-0">
+                        <input id="search" name="q" class="form-control me-2" type="text" placeholder="Recherche" aria-label="Search">
+                    </form>
+                    {# Menu utilisateur ou liens de connexion #}
+                    {% if app.user %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 {{app.user.prenom}}
                             </a>
-
-                            <ul  class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item" href="{{path('app_profil')}}">Mon Profil</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{path('app_logout')}}">Déconnexion</a>
-                                </li>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{path('app_profil')}}">Mon Profil</a></li>
+                                <li><a class="dropdown-item" href="{{path('app_logout')}}">Déconnexion</a></li>
                             </ul>
-                        </div>
-                            {# <div class="ms-auto">
-                                <li class="nav-item">
-                                    <a class="nav-link " href="{{path('app_profil')}}">Mon Profil</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link " href="{{path('app_logout')}}">Déconnexion</a>
-                                </li>
-                            </div> #}
-                        {% else %}
-                            <li class="nav-item ">
-                                <a class="nav-link " href="{{path('app_register')}}">Inscription</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{path('app_login')}}">Connexion</a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </div>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{path('app_register')}}">Inscription</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{path('app_login')}}">Connexion</a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
+        </div>
+    </nav>
 
-        </nav>
+    {# Zone de contenu principal #}
+    <main class="col-md-10 mx-auto p-2">
+        <h1 class="text-center font-face">{% block h1 %}{% endblock %}</h1>
+        {# Placeholder pour le contenu principal de la page #}
+        {% block body %}{% endblock %}
+    </main>
 
+    {# Fichiers JavaScript Bootstrap pour les composants interactifs #}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    {# Fichier JavaScript personnalisé #}
+    <script src="{{ asset('js/script.js')}}"></script>
+    {# Placeholder pour des scripts JavaScript supplémentaires pouvant être inclus dans des modèles étendus #}
+    {% block javascripts %}{% endblock %}
+</body>
 
-        {# Zone de contenu principal utilisant le système de grille Bootstrap #}
-        <main class="col-md-10 mx-auto p-2">
-            {# Titre de la page #}
-            {# <h1 class="text-center text-secondary fst-italic my-2">{% block h1 %}{% endblock %}</h1> #}
-            <h1 class="text-center font-face">{% block h1 %}{% endblock %}</h1>
-
-            {# Placeholder pour le contenu principal de la page #}
-            {% block body %}{% endblock %}
-
-        </main>
-
-        {# Fichiers JavaScript Bootstrap pour les composants interactifs #}
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-        
-
-        {# Fichier JavaScript personnalisé #}
-        <script src="{{ asset('js/script.js')}}"></script>
-
-        {# Placeholder pour des scripts JavaScript supplémentaires pouvant être inclus dans des modèles étendus #}
-        {% block javascripts %}{% endblock %}    
-
-    </body>
 </html>

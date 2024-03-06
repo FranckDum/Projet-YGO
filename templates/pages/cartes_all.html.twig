@@ -62,32 +62,50 @@
             {% endfor %}
         </div>
 
-        {# <nav>
-            <ul class="pagination">
-                {% for i in 1..meta.total_pages %}
-                    <li class="page-item"><a class="page-link" href="?offset={{i*18}}">{{i}}</a></li>
-                    <li class="page-item"><a class="page-link" href="{{ path('cartes_all', {'offset': (i-1)*18, 'limit': 18}) }}">{{i}}</a></li> 
+        <nav aria-label="Page navigation example"> <!-- Début de la barre de pagination -->
+            <ul class="pagination justify-content-center"> <!-- Liste des éléments de pagination, centrée -->
+                <!-- Bouton "Première page" -->
+                <li class="page-item {% if app.request.query.get('offset', '0')|default(0) == 0 %}disabled{% endif %}"> <!-- Item de pagination pour la première page, désactivé si déjà sur la première page -->
+                    <a class="page-link" href="?offset=0" aria-label="First"> <!-- Lien vers la première page -->
+                        <span aria-hidden="true">&lt;&lt;</span> <!-- flèche double vers la gauche -->
+                    </a>
+                </li>
+
+                <!-- Bouton "Précédent" -->
+                <li class="page-item {% if app.request.query.get('offset', '0')|default(0) == 0 %}disabled{% endif %}"> <!-- Item de pagination pour la page précédente, désactivé si déjà sur la première page -->
+                    <a class="page-link" href="?offset={{ max(0, (app.request.query.get('offset', '0')|default(0)) - 18) }}" aria-label="Previous"> <!-- Lien vers la page précédente -->
+                        <span aria-hidden="true">&laquo;</span> <!-- flèche simple vers la gauche -->
+                    </a>
+                </li>
+
+                <!-- Affichage des pages -->
+                {% set currentPage = (app.request.query.get('offset', '0')|default(0)) // 18 + 1 %} <!-- Calcul de la page actuelle -->
+                {% set startPage = max(1, currentPage - 3) %} <!-- Détermination de la première page à afficher -->
+                {% set endPage = min(meta.total_pages, startPage + 5) %} <!-- Détermination de la dernière page à afficher -->
+                {% for i in startPage..endPage %} <!-- Boucle pour afficher les pages -->
+                    {% set offset = (i - 1) * 18 %}
+                    {% if offset == app.request.query.get('offset', '0')|default(0) %}
+                        <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li> <!-- Page actuelle, affichée comme active -->
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?offset={{ offset }}">{{ i }}</a></li> <!-- Autres pages -->
+                    {% endif %}
                 {% endfor %}
+
+                <!-- Bouton "Suivant" -->
+                <li class="page-item {% if app.request.query.get('offset', '0')|default(0) == ((meta.total_pages - 1) * 18) %}disabled{% endif %}"> <!-- Item de pagination pour la page suivante, désactivé si déjà sur la dernière page -->
+                    <a class="page-link" href="?offset={{ min((meta.total_pages - 1) * 18, (app.request.query.get('offset', '0')|default(0)) + 18) }}" aria-label="Next"> <!-- Lien vers la page suivante -->
+                        <span aria-hidden="true">&raquo;</span> <!-- flèche simple vers la droite -->
+                    </a>
+                </li>
+
+                <!-- Bouton "Dernière page" -->
+                <li class="page-item {% if app.request.query.get('offset', '0')|default(0) == ((meta.total_pages - 1) * 18) %}disabled{% endif %}"> <!-- Item de pagination pour la dernière page, désactivé si déjà sur la dernière page -->
+                    <a class="page-link" href="?offset={{ (meta.total_pages - 1) * 18 }}" aria-label="Last"> <!-- Lien vers la dernière page -->
+                        <span aria-hidden="true">&gt;&gt;</span> <!-- flèche double vers la droite -->
+                    </a>
+                </li>
             </ul>
-        </nav> #}
-
-<nav>
-    <ul class="pagination">
-        {% for i in 1..meta.total_pages %}
-            {% set offset = (i - 1) * 18 %}
-            {% if offset == app.request.query.get('offset', '0')|default(0) %}
-                <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
-            {% else %}
-                <li class="page-item"><a class="page-link" href="?offset={{ offset }}">{{ i }}</a></li>
-            {% endif %}
-        {% endfor %}
-    </ul>
-</nav>
-
-
-
-
-
+        </nav>
 
     </section>
 

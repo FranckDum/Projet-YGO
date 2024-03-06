@@ -4,7 +4,7 @@
 
 {% block h1 %}Gestion des produits{% endblock %}
 
-{% block jQuery %}
+{# {% block jQuery %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     $(document).ready( function () {
@@ -16,7 +16,7 @@
     });
     
 </script>
-{% endblock %}
+{% endblock %} #}
 
 {% block dataTables %}
     <link href="https://cdn.datatables.net/v/bs5/dt-1.13.10/datatables.min.css" rel="stylesheet">
@@ -69,9 +69,14 @@
                 <td>{{ t_produit.id }}</td>
                 {# <td>{{ t_produit.activation ? 'Yes' : 'No' }}</td> #}
                 <td>
-                    <div class="form-check form-switch">
+                    <form action="{{path('toggle_activation', {'id': t_produit.id})}}" method="POST">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="activationSwitch{{ t_produit.id }}" {{ t_produit.activation ? 'checked' : '' }} onclick="return confirm('Confirmer?')" onchange="this.form.submit()">
+                        </div>
+                    </form>
+                    {# <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="activationSwitch{{ t_produit.id }}" {% if t_produit.activation %} checked {% endif %} onchange="toggleActivation({{ t_produit.id }})">
-                    </div>
+                    </div> #}
                 </td>
                 <td>{{ t_produit.stock }}</td>
                 <td>{{ t_produit.prix|number_format(2) }} €</td>
@@ -99,6 +104,11 @@
     </table>
 
     <a href="{{ path('app_t_produits_new') }}">Ajouter produit</a>
+
+    {# display navigation #}
+    <div class="my-3 d-flex justify-content-end align-items-center">
+        {{ knp_pagination_render(t_produits) }}
+    </div>
 
 
 

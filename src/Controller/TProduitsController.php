@@ -6,6 +6,7 @@ use App\Entity\TProduits;
 use App\Form\TProduitsType;
 use App\Repository\TProduitsRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,10 +17,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class TProduitsController extends AbstractController
 {
     #[Route('/', name: 'app_t_produits_index', methods: ['GET'])]
-    public function index(TProduitsRepository $tProduitsRepository): Response
+    public function index(
+        TProduitsRepository $tProduitsRepository, 
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response
     {
+        $data = $tProduitsRepository->findAll();
+
+        $tProduits = $paginator->paginate(
+            $data, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+        
         return $this->render('t_produits/index.html.twig', [
-            't_produits' => $tProduitsRepository->findAll(),
+            't_produits' => $tProduits,
         ]);
     }
 
@@ -81,28 +94,50 @@ class TProduitsController extends AbstractController
     }
 
 
-    #[Route('/toggle-activation', name: 'toggle_activation', methods: ['POST'])]
-    public function toggleActivation(Request $request, EntityManagerInterface $em, TProduitsRepository $tProduitsRepository): JsonResponse
+    // #[Route('/toggle-activation', name: 'toggle_activation', methods: ['POST'])]
+    // public function toggleActivation(Request $request, EntityManagerInterface $em, TProduitsRepository $tProduitsRepository): JsonResponse
+    // {
+    //     // Récupérer l'ID du produit à partir des données de la requête
+    //     $productId = $request->request->get('productId');
+    
+    //     // Récupérer le produit depuis le repository
+    //     $product = $tProduitsRepository->find($productId);
+    
+    //     // Vérifier si le produit existe
+    //     if (!$product) {
+    //         return new JsonResponse(['success' => false, 'message' => 'Produit non trouvé.'], JsonResponse::HTTP_NOT_FOUND);
+    //     }
+    
+    //     // Inverser l'état d'activation
+    //     $product->setActivation(!$product->isActivation());
+    
+    //     // Enregistrer les modifications dans la base de données
+    //     $em->flush();
+    
+    //     // Répondre avec succès
+    //     return new JsonResponse(['success' => true, 'message' => 'État d\'activation mis à jour avec succès.']);
+    // }
+
+
+    #[Route('/toggle-activation/{id<\d+>}', name: 'toggle_activation', methods: ['POST'])]
+    public function toggleActivation(TProduits $product, EntityManagerInterface $entityManager) : Response
     {
-        // Récupérer l'ID du produit à partir des données de la requête
-        $productId = $request->request->get('productId');
-    
-        // Récupérer le produit depuis le repository
-        $product = $tProduitsRepository->find($productId);
-    
-        // Vérifier si le produit existe
-        if (!$product) {
-            return new JsonResponse(['success' => false, 'message' => 'Produit non trouvé.'], JsonResponse::HTTP_NOT_FOUND);
+
+        if ($product->isActivation() === false) 
+        {
+            $product->setActivation(true);
         }
-    
-        // Inverser l'état d'activation
-        $product->setActivation(!$product->isActivation());
-    
-        // Enregistrer les modifications dans la base de données
-        $em->flush();
-    
-        // Répondre avec succès
-        return new JsonResponse(['success' => true, 'message' => 'État d\'activation mis à jour avec succès.']);
+        else 
+        {
+            $product->setActivation(false);
+        }
+
+        $entityManager->persist($product);
+        $entityManager->flush();
+
+        return $this->redirectToRoute("app_t_produits_index");
+
     }
+
 
 }
