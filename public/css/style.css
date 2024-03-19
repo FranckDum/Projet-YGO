@@ -79,8 +79,21 @@ a{
 
 /* Ajoutez cette règle CSS dans votre fichier style.css */
 .navbar-nav .nav-item.active .nav-link {
-    color: red;
+    color: #d4be18;;
+    transition: text-shadow 0.3s ease; /* Ajout d'une transition fluide */
 }
 
+.navbar-nav .nav-link {
+    transition: color 0.3s ease, text-shadow 0.3s ease; /* Ajout d'une transition fluide pour la couleur et l'ombre du texte */
+}
+
+.navbar-nav .nav-link:hover {
+    color: #d4be18; /* Changement de couleur du texte au survol */
+    text-shadow: 0 0 5px black; /* Ajout de l'ombre autour du texte */
+}
+
+/* .carousel {
+    height: 10vh !important;
+} */
 
 

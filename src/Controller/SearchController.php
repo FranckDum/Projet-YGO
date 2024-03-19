@@ -20,23 +20,52 @@ class SearchController extends AbstractController
 
         // Récupérer les produits correspondant à la requête
         $produits = $em->getRepository(TProduits::class)->createQueryBuilder('p')
-            ->where('LOWER(p.nom_produit) LIKE LOWER(:keyword)')
+            ->andWhere('LOWER(p.nom_produit) LIKE LOWER(:keyword)')
+            ->andWhere('p.activation = :activation')
             ->setParameter('keyword', '%'.$query.'%')
+            ->setParameter('activation', true)
             ->getQuery()
             ->getResult();
 
-            // Récupérer données de l'API
-            $responseApi = $client->request("GET", "https://db.ygoprodeck.com/api/v7/cardinfo.php?language=fr");
+        $ygo_ids_arr= array_map(function ($produit) {
+            return $produit->getYgoId();
+        }, $produits);
 
-            $responseApiArray = $responseApi->toArray();
-    
-            $data = $responseApiArray['data'];
+        $ygo_ids_for_API = implode(',', $ygo_ids_arr );
 
-        // Renvoyer la vue twig avec les produits trouvés
-        return $this->render('search/index.html.twig', [
+        $limit = $request->query->get("limit", 18); // Nombre de produits par page
+        $offset = $request->query->get("offset", 0);
+            
+        $totalProducts = count($produits); // Obtient le nombre de produits activés
+        $totalPages = ceil($totalProducts / $limit); // Arrondir à la page supérieur
+
+        $responseApi = $client->request("GET", "https://db.ygoprodeck.com/api/v7/cardinfo.php?language=fr&id=".$ygo_ids_for_API."&num=".$limit."&offset=".$offset);
+
+        $responseApiArray = $responseApi->toArray();
+        $meta = $responseApiArray['meta']; // Dans cette variable sera stocké toutes les infos pour ma pagination.
+
+        $data = $responseApiArray['data'];
+
+        $productsWithCards = [];
+        foreach($produits as $actif){
+            foreach($data as $card){
+                if($actif->getYgoId() == $card["id"]){
+                    $productsWithCards[] = [
+                        "product" => $actif,
+                        "card" => $card
+                    ];
+                    break;
+                }
+            }
+        }
+
+        //  Renvoyer le template Twig avec les données de la carte
+        return $this->render('search/index.html.twig',[
             'query' => $query,
-            'produits' => $produits,
-            'apiProduits' => $data
+            'productsWithCard' => $productsWithCards,
+            'meta' => [
+                'total_pages' => $totalPages,
+            ]
         ]);
     }
 }

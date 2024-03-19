@@ -39,16 +39,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_naissance = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $adresse = null;
 
-    #[ORM\Column(length: 14)]
+    #[ORM\Column(length: 14, nullable: true)]
     private ?string $tel = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $ville = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?float $code_postal = null;
 
     public function getId(): ?int
@@ -162,7 +162,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->adresse;
     }
 
-    public function setAdresse(string $adresse): static
+    public function setAdresse(?string $adresse): static
     {
         $this->adresse = $adresse;
 
@@ -174,7 +174,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->tel;
     }
 
-    public function setTel(string $tel): static
+    public function setTel(?string $tel): static
     {
         $this->tel = $tel;
 
@@ -186,7 +186,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->ville;
     }
 
-    public function setVille(string $ville): static
+    public function setVille(?string $ville): static
     {
         $this->ville = $ville;
 
@@ -198,7 +198,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->code_postal;
     }
 
-    public function setCodePostal(float $code_postal): static
+    public function setCodePostal(?float $code_postal): static
     {
         $this->code_postal = $code_postal;
 

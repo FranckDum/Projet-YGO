@@ -16,14 +16,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/admin/t/produits')]
 class TProduitsController extends AbstractController
 {
-    #[Route('/', name: 'app_t_produits_index', methods: ['GET'])]
+    #[Route('/', name: 'app_t_produits_index', methods: ['GET', 'POST'])]
     public function index(
         TProduitsRepository $tProduitsRepository, 
         PaginatorInterface $paginator,
         Request $request
     ): Response
     {
-        $data = $tProduitsRepository->findAll();
+        $search = $request->query->get('search');
+        $data = $tProduitsRepository->findFilter($search);
 
         $tProduits = $paginator->paginate(
             $data, /* query NOT result */
@@ -93,50 +94,25 @@ class TProduitsController extends AbstractController
         return $this->redirectToRoute('app_t_produits_index', [], Response::HTTP_SEE_OTHER);
     }
 
-
-    // #[Route('/toggle-activation', name: 'toggle_activation', methods: ['POST'])]
-    // public function toggleActivation(Request $request, EntityManagerInterface $em, TProduitsRepository $tProduitsRepository): JsonResponse
-    // {
-    //     // Récupérer l'ID du produit à partir des données de la requête
-    //     $productId = $request->request->get('productId');
-    
-    //     // Récupérer le produit depuis le repository
-    //     $product = $tProduitsRepository->find($productId);
-    
-    //     // Vérifier si le produit existe
-    //     if (!$product) {
-    //         return new JsonResponse(['success' => false, 'message' => 'Produit non trouvé.'], JsonResponse::HTTP_NOT_FOUND);
-    //     }
-    
-    //     // Inverser l'état d'activation
-    //     $product->setActivation(!$product->isActivation());
-    
-    //     // Enregistrer les modifications dans la base de données
-    //     $em->flush();
-    
-    //     // Répondre avec succès
-    //     return new JsonResponse(['success' => true, 'message' => 'État d\'activation mis à jour avec succès.']);
-    // }
-
-
     #[Route('/toggle-activation/{id<\d+>}', name: 'toggle_activation', methods: ['POST'])]
-    public function toggleActivation(TProduits $product, EntityManagerInterface $entityManager) : Response
+    public function toggleActivation(TProduits $product, EntityManagerInterface $entityManager, Request $request): Response
     {
-
-        if ($product->isActivation() === false) 
-        {
+        // Activer ou désactiver le produit
+        if ($product->isActivation() === false) {
             $product->setActivation(true);
-        }
-        else 
-        {
+        } else {
             $product->setActivation(false);
         }
 
+        // Enregistrer les modifications dans la base de données
         $entityManager->persist($product);
         $entityManager->flush();
 
-        return $this->redirectToRoute("app_t_produits_index");
+        // Récupérer le paramètre de recherche de la requête actuelle
+        $search = $request->query->get('search');
 
+        // Rediriger vers la route index en incluant uniquement le paramètre de recherche
+        return $this->redirectToRoute("app_t_produits_index", ['search' => $search]);
     }
 
 

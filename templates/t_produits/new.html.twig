@@ -3,9 +3,11 @@
 {% block title %}Nouveau produit{% endblock %}
 
 {% block body %}
+<main class="col-md-10 mx-auto p-2">
     <h1>Ajouter produit</h1>
 
     {{ include('t_produits/_form.html.twig') }}
 
     <a class="btn btn-secondary" href="{{ path('app_t_produits_index') }}">Retour</a>
+    </main>
 {% endblock %}

@@ -1,0 +1,62 @@
+    {# Barre de navigation Bootstrap #}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid bg-secondary">
+            <a class="navbar-brand" href="{{path('accueil')}}">
+                <img class="logo" src="{{asset('images/Logomini.png')}}" alt="Logo du site">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    {# Liens de navigation #}
+                    <li class="nav-item {% if app.request.attributes.get('_route') == 'accueil' %}active{% endif %}">
+                        <a class="nav-link" href="{{path('accueil')}}">Accueil</a>
+                    </li>
+                    <li class="nav-item dropdown {% if app.request.attributes.get('_route') in ['cartes_all', 'display', 'deck_structure'] %}active{% endif %}">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Produits
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{path('cartes_all')}}">Carte à l'Unité</a></li>
+                            <li><a class="dropdown-item" href="#">Display</a></li>
+                            <li><a class="dropdown-item" href="#">Deck de Structure</a></li>
+                        </ul>
+                    </li>
+                    {# Back office pour les administrateurs #}
+                    {% if app.user %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <li class="nav-item {% if app.request.attributes.get('_route') == 'app_admin' %}active{% endif %}">
+                                <a class="nav-link" href="{{path('app_admin')}}">Back Office</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav ms-auto me-5">
+                    {# Formulaire de recherche #}
+                    <form action="{{ path('app_search') }}" id="searchthis" method="get" class="d-flex form-inline my-2 my-lg-0">
+                        <input id="search" name="q" class="form-control me-2" type="text" placeholder="Recherche" aria-label="Search">
+                    </form>
+                    {# Menu utilisateur ou liens de connexion #}
+                    {% if app.user %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{app.user.prenom}}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{path('app_profil')}}">Mon Profil</a></li>
+                                <li><a class="dropdown-item" href="{{path('app_logout')}}">Déconnexion</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{path('app_register')}}">Inscription</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{path('app_login')}}">Connexion</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>

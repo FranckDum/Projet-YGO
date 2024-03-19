@@ -138,8 +138,9 @@ class PagesController extends AbstractController
     {
         // Récupérer le produit spécifique en fonction de son ID
         $produit = $em->getRepository(TProduits::class)->find($id);
-        $partieNomProduit = substr($produit->getNomProduit(), 0, 6); // Prend les 6 premiers caractères du nom
-        $produitsSimilaires = $em->getRepository(TProduits::class)->findSimilaires($partieNomProduit, $id);
+        $partieNomProduit = $produit->getNomProduit();
+        $idYgo = $produit->getYgoId();
+        $produitsSimilaires = $em->getRepository(TProduits::class)->findSimilaires($client, $partieNomProduit, $id, $idYgo);
 
 
         // Si le produit n'existe pas, renvoyer une erreur
