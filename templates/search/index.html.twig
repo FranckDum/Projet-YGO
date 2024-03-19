@@ -5,23 +5,14 @@
 {% block h1 %}Résultat(s) de la recherche pour "{{ query }}"{% endblock %}
 
 {% block body %}
-
+<main class="col-md-10 mx-auto p-2">
 <section class= "container">
-
     <div class="row d-flex justify-content-center">
-
-    {% if produits|length > 0 %}
-
-    {% for produit in produits %}
-
-        {% if produit.activation %}
-
-            {% for carte in apiProduits %}
-
-                {% if carte.id == produit.ygoId %}
-
+    {% if productsWithCard|length > 0 %}
+            {% for card in productsWithCard %}
+                {% set produit = card.product %}
+                {% set carte = card.card %}
                     <div class="col-md-6 col-lg-3 d-flex flex-column align-items-center border border-3 border-opacity-50 border-black mx-3 my-3 rounded bg-secondary carte">
-
                         <a class"a" href="{{ path('detailProduit', {'id': produit.id}) }}">
                         <h2 class="text-center"> {{ produit.nomProduit }} </h2>
                         </a>
@@ -47,21 +38,12 @@
                                 <div>{{ produit.prix|number_format(2) }} €</div>
                         </div>
                     </div>
-
-                {% endif %}
-
             {% endfor %}
-
-        {% endif %}
-
-    {% endfor %}
-
     {% else %}
     <p>Aucun produit trouvé.</p>
     {% endif %}
-
     </div>
-
+    {% include "_pagination_search.html.twig" %}
 </section>
-
+</main>
 {% endblock %}

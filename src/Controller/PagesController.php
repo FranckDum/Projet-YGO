@@ -99,8 +99,8 @@ class PagesController extends AbstractController
                 $offset = $request->query->get("offset", 0);
                 
 
-                $totalProducts = count($produitsActifs);
-                $totalPages = ceil($totalProducts / $limit);
+                $totalProducts = count($produitsActifs); // Obtient le nombre de produits activés
+                $totalPages = ceil($totalProducts / $limit); // Arrondir à la page supérieur
 
         $responseApi = $client->request("GET", "https://db.ygoprodeck.com/api/v7/cardinfo.php?language=fr&id=".$ygo_ids_for_API."&num=".$limit."&offset=".$offset);
 
@@ -109,15 +109,6 @@ class PagesController extends AbstractController
 
         $data = $responseApiArray['data'];
 
-        // $produits = $paginator->paginate(
-        //     $data, /* query NOT result */
-        //     $request->query->getInt('page', 1), /*page number*/
-        //     20 /*limit per page*/
-        // );
-
-        // dd($produits);
-
-        // dd($data);
         $productsWithCards = [];
         foreach($produitsActifs as $actif){
             foreach($data as $card){
@@ -131,37 +122,29 @@ class PagesController extends AbstractController
             }
         }
 
- // Renvoyer le template Twig avec les données de la carte
+//  Renvoyer le template Twig avec les données de la carte
         return $this->render('pages/cartes_all.html.twig',[
-            // 't_produits' => $tProduitsRepository->findAll(),
-            // 'produit' => $produit,
-            // 't_produit' => $tProduit,
             'productsWithCard' => $productsWithCards,
             'meta' => [
                 'total_pages' => $totalPages,
             ]
-            // 'meta' => $meta,
-            // 'produitsActifs' => $produitsActifs,
-            // 'produits' => $data
         ]);
-    //     // Rend la page HTML affichant toutes les cartes
+//  Rend la page HTML affichant toutes les cartes
 
     }
-
-    
 
     #[Route("pages/detail/{id}", name : "detailProduit")]
     public function detailProduit(int $id,  EntityManagerInterface $em, HttpClientInterface $client): Response
     {
         // Récupérer le produit spécifique en fonction de son ID
         $produit = $em->getRepository(TProduits::class)->find($id);
-        $partieNomProduit = substr($produit->getNomProduit(), 0, 6); // Prend les 6 premiers caractères du nom
-        $produitsSimilaires = $em->getRepository(TProduits::class)->findSimilaires($partieNomProduit, $id);
+        $partieNomProduit = $produit->getNomProduit();
+        $idYgo = $produit->getYgoId();
+        $produitsSimilaires = $em->getRepository(TProduits::class)->findSimilaires($client, $partieNomProduit, $id, $idYgo);
 
-    
+
         // Si le produit n'existe pas, renvoyer une erreur
         if (!$produit) {
-            // Message d'erreur
             return "Ce produit n'est plus disponible";
         }
     

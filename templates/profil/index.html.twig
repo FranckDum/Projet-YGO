@@ -5,15 +5,44 @@
 {% block h1 %}Mon Profil{% endblock %}
 
 {% block body %}
-<div class="container">
-<div class="d-flex justify-content-center">Nom : <strong>{{app.user.nom}}</strong> </div> 
-<div class="d-flex justify-content-center mt-3">Prénom : <strong>{{app.user.prenom}}</strong></div>
-<div class="d-flex justify-content-center mt-3">Email : <strong>{{app.user.email}}</strong></div>
-<div class="d-flex justify-content-center mt-3">Adresse : <strong>{{app.user.adresse}}</strong></div>
-<div class="d-flex justify-content-center mt-3">Ville : <strong>{{app.user.ville}}</strong></div>
-<div class="d-flex justify-content-center mt-3">Code Postal : <strong>{{app.user.codePostal}}</strong></div>
-<div class="d-flex justify-content-center mt-3">Téléphone : <strong>{{app.user.tel}}</strong></div>
-<div ><a class="d-flex justify-content-center ms-auto me-auto mt-3 btn btn-success col-3" href="#">Modifier mon Profil</a></div>
-<div ><a class="d-flex justify-content-center ms-auto me-auto mt-3 btn btn-danger col-3" href="#">Supprimer mon Profil</a></div>
+<main class="col-md-10 mx-auto p-2">
+<div class="container col-4">
+    <div class="row">
+        <div class="col-5">Nom :</div>
+        <div class="col-6"><strong>{{ app.user.nom }}</strong></div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-5">Prénom :</div>
+        <div class="col-6"><strong>{{ app.user.prenom }}</strong></div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-5">Email :</div>
+        <div class="col-6"><strong>{{ app.user.email }}</strong></div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-5">Adresse :</div>
+        <div class="col-6"><strong>{{ app.user.adresse }}</strong></div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-5">Ville :</div>
+        <div class="col-6"><strong>{{ app.user.ville }}</strong></div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-5">Code Postal :</div>
+        <div class="col-6"><strong>{{ app.user.codePostal }}</strong></div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-5">Téléphone :</div>
+        <div class="col-6"><strong>{{ app.user.tel }}</strong></div>
+    </div>
+    <div class="row mt-3">
+        <div >
+        <a class="d-flex justify-content-center ms-auto me-auto mt-3 btn btn-success" href="#">Modifier mon Profil</a>
+        </div>
+        <div >
+        <a class="d-flex justify-content-center ms-auto me-auto mt-3 btn btn-danger" href="#">Supprimer mon Profil</a>
+        </div>
+    </div>
 </div>
+</main>
 {% endblock %}

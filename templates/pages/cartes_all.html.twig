@@ -23,6 +23,8 @@
 
 {% block body %}
 
+<main class="col-md-10 mx-auto p-2">
+    <h1 class="text-center font-face">Carte à l'unité</h1>
     <section class= "container">
 
         <div class="row d-flex justify-content-center">
@@ -62,33 +64,8 @@
             {% endfor %}
         </div>
 
-        {# <nav>
-            <ul class="pagination">
-                {% for i in 1..meta.total_pages %}
-                    <li class="page-item"><a class="page-link" href="?offset={{i*18}}">{{i}}</a></li>
-                    <li class="page-item"><a class="page-link" href="{{ path('cartes_all', {'offset': (i-1)*18, 'limit': 18}) }}">{{i}}</a></li> 
-                {% endfor %}
-            </ul>
-        </nav> #}
-
-<nav>
-    <ul class="pagination">
-        {% for i in 1..meta.total_pages %}
-            {% set offset = (i - 1) * 18 %}
-            {% if offset == app.request.query.get('offset', '0')|default(0) %}
-                <li class="page-item active" aria-current="page"><span class="page-link">{{ i }}</span></li>
-            {% else %}
-                <li class="page-item"><a class="page-link" href="?offset={{ offset }}">{{ i }}</a></li>
-            {% endif %}
-        {% endfor %}
-    </ul>
-</nav>
-
-
-
-
-
+{% include "_pagination.html.twig" %}
 
     </section>
-
+</main>
 {% endblock %}
