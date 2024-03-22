@@ -2,9 +2,10 @@
 
 {% block title %}Inscription{% endblock %}
 
+{% block h1 %}INSCRIPTION{% endblock %}
+
 {% block body %}
-<main class="col-md-10 mx-auto p-2">
-    {% block h1 %}INSCRIPTION{% endblock %}
+<main class="col-md-6 mx-auto p-2">
 
     {{ form_errors(registrationForm) }}
 
@@ -15,9 +16,21 @@
         {{ form_row(registrationForm.prenom, {
             label: 'Prénom'
         }) }}
-        {{ form_row(registrationForm.date_naissance, {
+        {# {{ form_row(registrationForm.date_naissance, {
             label: 'Date de Naissance'
         }) }}
+        {{ form_row(registrationForm.adresse, {
+            label: 'Adresse'
+        }) }}
+        {{ form_row(registrationForm.ville, {
+            label: 'Ville'
+        }) }}
+            {{ form_row(registrationForm.code_postal, {
+            label: 'Code Postal'
+        }) }}
+        {{ form_row(registrationForm.tel, {
+            label: 'Téléphone'
+        }) }} #}
         {{ form_row(registrationForm.email, {
             label: 'Adresse Email'
         }) }}

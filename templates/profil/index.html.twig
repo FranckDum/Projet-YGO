@@ -6,7 +6,7 @@
 
 {% block body %}
 <main class="col-md-10 mx-auto p-2">
-<div class="container col-4">
+{# <div class="container col-4">
     <div class="row">
         <div class="col-5">Nom :</div>
         <div class="col-6"><strong>{{ app.user.nom }}</strong></div>
@@ -41,6 +41,33 @@
         </div>
         <div >
         <a class="d-flex justify-content-center ms-auto me-auto mt-3 btn btn-danger" href="#">Supprimer mon Profil</a>
+        </div>
+    </div>
+</div> #}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="card col-md-8 mx-auto">
+        <div class="card-body">
+            <p class="card-title"><strong>Nom</strong>: {{ app.user.nom }}</p>
+            <p class="card-title"><strong>Prénom</strong>: {{ app.user.prenom }}</p>
+            <p class="card-title"><strong>Email</strong>: {{ app.user.email }}</p>
+            <p class="card-title"><strong>Date de naissance</strong>: {{ app.user.dateNaissance|format_date() }}</p>
+            <p class="card-title"><strong>Adresse</strong>: {{ app.user.adresse }}</p>
+            <p class="card-title"><strong>Ville</strong>: {{ app.user.ville }}</p>
+            <p class="card-title"><strong>Code Postal</strong>: {{ app.user.codePostal }}</p>
+            <p class="card-title"><strong>Téléphone</strong>: {{ app.user.tel }}</p>
+            
+            <a href="{{path('app_profil_edit')}}" class="m-2 btn btn-secondary">Modifier votre profil</a>
+            <a href="{{path('app_profil_edit_password')}}" class="m-2 btn btn-dark">Modifier votre mot de passe</a>
+            {% if "ROLE_SUPER_ADMIN" not in app.user.roles %}
+                <form method="POST" action="{{path('app_profil_delete')}}">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="csrf_token" value="{{csrf_token('delete_profil')}}">
+                    <input onclick="return confirm('Confirmer la suppression de votre compte ?')" type="submit" class="m-2 btn btn-danger" value="Supprimer votre compte">
+                </form>
+            {% endif %}
+        </div>
         </div>
     </div>
 </div>

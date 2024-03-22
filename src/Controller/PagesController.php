@@ -14,16 +14,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PagesController extends AbstractController
 {
-    #[Route('/pages', name: 'app_pages')]
-    // Annotation définissant la route pour la page d'index
-    public function index(): Response
-    {
-        return $this->render('pages/index.html.twig', [
-            'controller_name' => 'PagesController',
-        ]);
-    }
 
-    #[Route('', name:'accueil')]
+    #[Route('/', name:'accueil')]
     // Annotation définissant la route pour la page d'accueil
     public function accueil(): Response
     {

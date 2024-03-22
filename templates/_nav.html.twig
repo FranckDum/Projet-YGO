@@ -1,6 +1,6 @@
     {# Barre de navigation Bootstrap #}
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid bg-secondary">
+    <nav class="navbar navbar-expand-lg bg-dark">
+        <div class="container-fluid">
             <a class="navbar-brand" href="{{path('accueil')}}">
                 <img class="logo" src="{{asset('images/Logomini.png')}}" alt="Logo du site">
             </a>
@@ -9,6 +9,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
+                    <form action="{{ path('app_search') }}" id="searchthis" method="get" class="d-flex form-inline my-2 my-lg-0 d-lg-none">
+                        <input id="search" name="q" class="form-control me-2" type="text" placeholder="Recherche" aria-label="Search">
+                    </form>
                     {# Liens de navigation #}
                     <li class="nav-item {% if app.request.attributes.get('_route') == 'accueil' %}active{% endif %}">
                         <a class="nav-link" href="{{path('accueil')}}">Accueil</a>
@@ -34,7 +37,7 @@
                 </ul>
                 <ul class="navbar-nav ms-auto me-5">
                     {# Formulaire de recherche #}
-                    <form action="{{ path('app_search') }}" id="searchthis" method="get" class="d-flex form-inline my-2 my-lg-0">
+                    <form action="{{ path('app_search') }}" id="searchthis" method="get" class="d-lg-flex form-inline my-2 my-lg-0 d-none">
                         <input id="search" name="q" class="form-control me-2" type="text" placeholder="Recherche" aria-label="Search">
                     </form>
                     {# Menu utilisateur ou liens de connexion #}

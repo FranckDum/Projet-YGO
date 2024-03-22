@@ -5,7 +5,9 @@
 {% block h1 %}Back Office{% endblock %}
 
 {% block body %}
-
-    <a class="btn btn-primary" href="{{ path("app_t_produits_index") }}">Gestion des produits</a>
-
+<main class="col-md-10 mx-auto p-2">
+    <div>
+        <a class="btn btn-primary col-3" href="{{ path("app_t_produits_index") }}">Gestion des produits</a>
+    </div>
+</main>
 {% endblock %}

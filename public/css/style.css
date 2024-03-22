@@ -3,8 +3,56 @@
     padding: 0;
 }
 
+/* Pour mettre en place le footer, il faut définir une hauteur de 100% pour le body */
+html, body {
+    height: 100%;
+}
+
+/* Ensuite, il faut utiliser les grid. On découpe la page en 3 zones : le header à auto, le body à une fraction et le footer à auto. Ainsi, la hauteur du header et du footer s'ajuste en fonction de la hauteur du body (qui dépend de son contenu. */
+body {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+.content {
+    /* Définir la taille et la position du contenu */
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* Arrière-plan blanc pour le contenu (c'est facultatif) */
+    background-color: white;
+    /* Permet au contenu d'être superposé à l'image de fond */
+    z-index: 1;
+}
+
+/* Pseudo-élément pour l'image de fond */
+body {
+    /* content: ""; */
+    /* Position absolue pour l'élément pseudo */
+    /* position: absolute; */
+    /* top: 0;
+    left: 0; */
+    width: 100%;
+    height: 100%; 
+    /* Image de fond avec une opacité de 0.7 */
+    background-image: url('/Images/background-image5.png');
+    background-size: cover;
+    background: rgba(255,255,255,0.6);
+    background-blend-mode: lighten;
+    /* background-size: 100% 100%; */
+    /* background-position: center; */
+    /* opacity: .5; */
+    /* Ajustez le positionnement de l'image */
+    /* background-position: center; */
+    /* Assurez-vous que l'image est derrière le contenu */
+    z-index: -1;
+    /* background-color: rgba(0, 0, 0, 0.2); */
+}
+
 .logo {
-    width: 300px;
+    width: 200px;
 }
 
 .navbar-toggler{
@@ -22,13 +70,18 @@
 }
 
 h1{
-    font-family: 'YGO', sans-serif;
+    /* font-family: 'YGO', sans-serif; */
     /* color : #827731;  jaune plus foncé */
     /* color: #ebe964; jaune un peu clair */
     /* color: #2c2611;  jaune très très foncé */
     /* color: #2c2611; */
-    color: #827831; /*   */
-    
+    /* color: #827831; */
+    /* color: #61dafbaa; */
+    font-family: 'YGO', sans-serif; /* Remplacez "MaPolice" par le nom de votre police */
+    -webkit-text-stroke: 0.5px #72a996; /* Contour noir de 2 pixels autour du texte */
+    color: #212529; /* Couleur du texte */
+    /* background-color: white;
+    width: 20%; */
 }
 
 .h2Produit{
@@ -84,6 +137,7 @@ a{
 }
 
 .navbar-nav .nav-link {
+    color: #61dafbaa;
     transition: color 0.3s ease, text-shadow 0.3s ease; /* Ajout d'une transition fluide pour la couleur et l'ombre du texte */
 }
 
@@ -93,7 +147,17 @@ a{
 }
 
 /* .carousel {
-    height: 10vh !important;
+    height: 10vh !important; 212529
 } */
+
+
+
+/* ------------------------------------------Laptop---------------------------------------------------- */
+@media screen and (min-width: 991px)
+{
+    .logo {
+        width: 300px;
+    }
+}
 
 
