@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -36,7 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50)]
     private ?string $prenom = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_naissance = null;
 
     #[ORM\Column(length: 100, nullable: true)]
@@ -51,6 +53,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?float $code_postal = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Commandes::class)]
+    private Collection $commandes;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ResetPasswordRequest::class, orphanRemoval: true)]
+    private Collection $passwordsReset;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $activation = null;
+
+
+    public function __construct()
+    {
+        $this->commandes = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,7 +78,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(?string $email): static
     {
         $this->email = $email;
 
@@ -90,7 +107,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): static
+    public function setRoles(?array $roles): static
     {
         $this->roles = $roles;
 
@@ -105,7 +122,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(?string $password): static
     {
         $this->password = $password;
 
@@ -126,7 +143,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->nom;
     }
 
-    public function setNom(string $nom): static
+    public function setNom(?string $nom): static
     {
         $this->nom = $nom;
 
@@ -138,7 +155,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->prenom;
     }
 
-    public function setPrenom(string $prenom): static
+    public function setPrenom(?string $prenom): static
     {
         $this->prenom = $prenom;
 
@@ -150,7 +167,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->date_naissance;
     }
 
-    public function setDateNaissance(\DateTimeInterface $date_naissance): static
+    public function setDateNaissance(?\DateTimeInterface $date_naissance): static
     {
         $this->date_naissance = $date_naissance;
 
@@ -201,6 +218,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCodePostal(?float $code_postal): static
     {
         $this->code_postal = $code_postal;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commandes>
+     */
+    public function getCommandes(): Collection
+    {
+        return $this->commandes;
+    }
+
+    public function addCommande(Commandes $commande): static
+    {
+        if (!$this->commandes->contains($commande)) {
+            $this->commandes->add($commande);
+            $commande->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommande(Commandes $commande): static
+    {
+        if ($this->commandes->removeElement($commande)) {
+            // set the owning side to null (unless already changed)
+            if ($commande->getUser() === $this) {
+                $commande->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getActivation(): ?string
+    {
+        return $this->activation;
+    }
+
+    public function setActivation(?string $activation): static
+    {
+        $this->activation = $activation;
 
         return $this;
     }

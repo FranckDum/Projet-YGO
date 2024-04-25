@@ -1,6 +1,6 @@
     {# Barre de navigation Bootstrap #}
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid bg-secondary">
+    <nav class="navbar navbar-expand-lg bg-primary">
+        <div class="container-fluid">
             <a class="navbar-brand" href="{{path('accueil')}}">
                 <img class="logo" src="{{asset('images/Logomini.png')}}" alt="Logo du site">
             </a>
@@ -9,20 +9,17 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
+                    <form action="{{ path('app_search') }}" id="searchthis" method="get" class="d-flex form-inline rounded-custom my-2 my-lg-0 d-lg-none">
+                        <input id="search" name="q" class="form-control me-2" type="text" placeholder="Recherche" aria-label="Search">
+                    </form>
                     {# Liens de navigation #}
                     <li class="nav-item {% if app.request.attributes.get('_route') == 'accueil' %}active{% endif %}">
                         <a class="nav-link" href="{{path('accueil')}}">Accueil</a>
                     </li>
-                    <li class="nav-item dropdown {% if app.request.attributes.get('_route') in ['cartes_all', 'display', 'deck_structure'] %}active{% endif %}">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Produits
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{path('cartes_all')}}">Carte à l'Unité</a></li>
-                            <li><a class="dropdown-item" href="#">Display</a></li>
-                            <li><a class="dropdown-item" href="#">Deck de Structure</a></li>
-                        </ul>
+                    <li class="nav-item {% if app.request.attributes.get('_route') == 'cartes_all' %}active{% endif %}">
+                        <a class="nav-link" href="{{path('cartes_all')}}">Carte à l'Unité</a>
                     </li>
+
                     {# Back office pour les administrateurs #}
                     {% if app.user %}
                         {% if is_granted('ROLE_ADMIN') %}
@@ -32,10 +29,10 @@
                         {% endif %}
                     {% endif %}
                 </ul>
-                <ul class="navbar-nav ms-auto me-5">
+                <ul class="navbar-nav me-auto">
                     {# Formulaire de recherche #}
-                    <form action="{{ path('app_search') }}" id="searchthis" method="get" class="d-flex form-inline my-2 my-lg-0">
-                        <input id="search" name="q" class="form-control me-2" type="text" placeholder="Recherche" aria-label="Search">
+                    <form action="{{ path('app_search') }}" id="searchthis" method="get" class="d-lg-flex form-inline my-2 my-lg-0 d-none">
+                        <input id="search" name="q" class="form-control rounded-custom me-2" type="text" placeholder="Recherche" aria-label="Search">
                     </form>
                     {# Menu utilisateur ou liens de connexion #}
                     {% if app.user %}

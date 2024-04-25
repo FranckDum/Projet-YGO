@@ -17,26 +17,27 @@
     </style>
 {% endblock %}
 
+{% block title %}Accueil{% endblock %}
+
+{% block h1 %}Accueil{% endblock %}
+
 
 {% block body %}
 
-    <main>
-        <h1 class="text-center font-face">Accueil</h1>
-
-        <div class="w-100 h-25">
+        {# <div class="w-100 h-25">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
                     <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img src="/images/Carrousel1.jpeg" class="d-block ygo-w" alt="...">
+                            <img src="/images/Carrousel4.jpg" class="d-block ygo-w" alt="Image Carousel 1">
                         </div>
                         <div class="carousel-item">
-                            <img src="/images/Carrousel2.jpeg" class="d-block ygo-w" alt="...">
+                            <img src="/images/Carrousel5.jpg" class="d-block ygo-w" alt="Image Carousel 2">
                         </div>
                         <div class="carousel-item">
-                            <img src="/images/Carrousel3.jpeg" class="d-block ygo-w" alt="...">
+                            <img src="/images/Carrousel6.jpg" class="d-block ygo-w" alt="Image Carousel 3">
                         </div>
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
@@ -51,7 +52,114 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </div> #}
+
+
+<main class="container mt-5">
+    <div class="ms-auto me-auto col-10" id="container" data-animated>
+        <ul id="list" class="ulAside" draggable="true"> <!-- Ajout de l'attribut draggable -->
+            {% for card in cards %}
+                <li>
+                    {# <a class="a" href="{{ path('detailProduit', {'id': card.id}) }}"> #}
+                        <img class="img-fluid" src="/Images/ImgCartes/small/{{ card.ygoId }}.jpg" alt="{{ card.nomProduit }}">
+                    {# </a> #}
+                </li>
+            {% endfor %}
+            <!-- Dupliquer la totalité des éléments pour un effet d'enchaînement continu -->
+            {% for card in cards %}
+                <li>
+                    {# <a class="a" href="{{ path('detailProduit', {'id': card.id}) }}"> #}
+                        <img class="img-fluid" src="/Images/ImgCartes/small/{{ card.ygoId }}.jpg" alt="{{ card.nomProduit }}">
+                    {# </a> #}
+                </li>
+            {% endfor %}
+            <!-- Dupliquer la totalité des éléments pour un effet d'enchaînement continu -->
+            {# {% for card in cards %}
+                <li>
+                    <a class="a" href="{{ path('detailProduit', {'id': card.id}) }}">
+                        <img class="img-fluid" src="/Images/ImgCartes/small/{{ card.ygoId }}.jpg" alt="{{ card.nomProduit }}">
+                    </a>
+                </li>
+            {% endfor %} #}
+        </ul>
+    </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.10.11/interact.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.hoverintent/1.10.1/jquery.hoverIntent.min.js"></script>
+
+
+<script>
+    // Active la fonctionnalité de glisser-déposer sur l'élément avec l'ID 'list'
+    interact('#list')
+        .draggable({
+            inertia: true, // Active l'inertie lors du glissement
+            onstart: function(event) { // Exécuté au début du glissement
+                event.target.classList.add('draggable', 'dragging'); // Ajoute les classes 'draggable' et 'dragging' à l'élément glissé
+            },
+            onend: function(event) { // Exécuté à la fin du glissement
+                event.target.classList.remove('dragging'); // Supprime la classe 'dragging' de l'élément glissé
+            },
+            onmove: dragMoveHandler, // Appelle la fonction dragMoveHandler lors du déplacement
+        });
+
+    // Fonction pour gérer le mouvement de glissement
+    function dragMoveHandler(event) {
+        var target = event.target;
+        var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx; // Calcule la nouvelle position horizontale
+
+        target.style.transform = 'translateX(' + x + 'px)'; // Applique la transformation de translation horizontale à l'élément
+
+        target.setAttribute('data-x', x); // Met à jour l'attribut 'data-x' de l'élément avec la nouvelle position horizontale
+    }
+</script>
+
+
+<script>
+    // Sélectionne l'élément avec l'ID 'list' et stocke-le dans la variable 'carousel'
+    const carousel = document.getElementById('list');
+    const carouselAnimation = carousel.style.animation; // Stocke l'animation CSS actuellement appliquée à 'carousel'
+    let isPaused = false; // Initialise une variable pour suivre l'état de pause de l'animation
+    let cursorSet = false; // Initialise une variable pour suivre l'état de détection du curseur
+
+    // Fonction pour détecter le survol du carousel
+    function hoverCarousel() {
+        if (!isPaused) { // Si l'animation n'est pas en pause
+            if (!cursorSet) { // Si le curseur n'est pas déjà configuré comme une main
+                carousel.classList.add('draggable'); // Ajoute la classe 'draggable' à 'carousel' pour afficher le curseur comme une main
+                cursorSet = true; // Met à jour l'état du curseur à configuré
+            }
+        }
+    }
+
+    // Fonction pour détecter la fin du survol du carousel
+    function unhoverCarousel() {
+        if (cursorSet) { // Si le curseur est configuré comme une main
+            carousel.classList.remove('draggable'); // Supprime la classe 'draggable' de 'carousel' pour restaurer l'apparence du curseur par défaut
+            cursorSet = false; // Met à jour l'état du curseur à non configuré
+        }
+    }
+
+    // Ajoute des écouteurs d'événements pour détecter le survol et la fin du survol du carousel
+    carousel.addEventListener('mouseenter', hoverCarousel);
+    carousel.addEventListener('mouseleave', unhoverCarousel);
+
+    // Sélectionne tous les éléments img enfants de 'carousel' et stocke-les dans 'images'
+    const images = carousel.querySelectorAll('img');
+    // Pour chaque élément img, ajoute des écouteurs d'événements pour détecter le survol et la fin du survol
+    images.forEach((img) => {
+        img.addEventListener('mouseenter', () => {
+            isPaused = true; // Met à jour l'état de pause de l'animation à vrai
+            carousel.style.animationPlayState = 'paused'; // Met l'état de lecture de l'animation à "paused" pour arrêter l'animation
+        });
+
+        img.addEventListener('mouseleave', () => {
+            isPaused = false; // Met à jour l'état de pause de l'animation à faux
+            carousel.style.animationPlayState = 'running'; // Met l'état de lecture de l'animation à "running" pour reprendre l'animation
+        });
+    });
+</script>
+
 
 {% endblock %}

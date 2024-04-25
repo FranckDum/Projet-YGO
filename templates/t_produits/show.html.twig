@@ -6,9 +6,9 @@
 
 {% block body %}
 <main class="col-md-10 mx-auto p-2">
-    <a class="btn btn-dark" href="{{ path('app_t_produits_index') }}">Retour</a>
+    <a class="btn btn-dark rounded-custom" href="{{ path('app_t_produits_index') }}">Retour</a>
 
-    <table class="table">
+    <table class="table mt-3 rounded-custom">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -37,7 +37,7 @@
         </tbody>
     </table>
 
-    <a class="btn btn-success m-2 w-100" href="{{ path('app_t_produits_edit', {'id': t_produit.id}) }}">Modifier</a>
+    <a class="btn btn-success rounded-custom w-100" href="{{ path('app_t_produits_edit', {'id': t_produit.id}) }}">Modifier</a>
 
     {{ include('t_produits/_delete_form.html.twig') }}
 </main>

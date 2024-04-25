@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon profil{% endblock %}
+
+{% block h1 %}Modifier mon profil{% endblock %}
+
+{% block jQuery %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}
+
+{% block select2 %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.select-multiple').select2();
+    });
+</script>
+
+{% endblock %}
+
+{% block body %}
+<main class="col-md-10 mx-auto p-2">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="card rounded-custom col-md-6 mx-auto bg-lighter text-black">
+                {{form_start(form)}}
+                    <div class="mb-3 mt-3">
+                        <label for="edit_user_profil_form_nom">Nom</label>
+                        <div class="text-danger">{{form_errors(form.nom)}}</div>
+                        {{form_widget(form.nom, {'attr': {'class':'form-control rounded-custom'}})}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_user_profil_form_prenom">Prénom</label>
+                        <div class="text-danger">{{form_errors(form.prenom)}}</div>
+                        {{form_widget(form.prenom, {'attr': {'class':'form-control rounded-custom'}})}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_user_profil_form_email">Email</label>
+                        <div class="text-danger">{{form_errors(form.email)}}</div>
+                        {{form_widget(form.email, {'attr': {'class':'form-control rounded-custom'}})}}
+                    </div>
+                    {% if "ROLE_ADMIN" in app.user.roles %}
+                        <div class="mb-3">
+                            <label for="edit_user_profil_form_roles">Les rôles</label>
+                            <div class="text-danger">{{form_errors(form.roles)}}</div>
+                            {{form_widget(form.roles, {'attr': {'class':'form-control select-multiple rounded-custom'}})}}
+                        </div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label for="edit_user_profil_form_dateNaissance">Date de naissance</label>
+                        <div class="text-danger">{{form_errors(form.date_naissance)}}</div>
+                        {{form_widget(form.date_naissance, {'attr': {'class':'form-control rounded-custom'}})}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_user_profil_form_adresse">Adresse</label>
+                        <div class="text-danger">{{form_errors(form.adresse)}}</div>
+                        {{form_widget(form.adresse, {'attr': {'class':'form-control rounded-custom'}})}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_user_profil_form_tel">Téléphone</label>
+                        <div class="text-danger">{{form_errors(form.tel)}}</div>
+                        {{form_widget(form.tel, {'attr': {'class':'form-control rounded-custom'}})}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_user_profil_form_ville">Ville</label>
+                        <div class="text-danger">{{form_errors(form.ville)}}</div>
+                        {{form_widget(form.ville, {'attr': {'class':'form-control rounded-custom'}})}}
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_user_profil_form_codePostal">Code postal</label>
+                        <div class="text-danger">{{form_errors(form.code_postal)}}</div>
+                        {{form_widget(form.code_postal, {'attr': {'class':'form-control rounded-custom'}})}}
+                    </div>
+                    <div>
+                        <input formnovalidate type="submit" value="Modifier" class="btn btn-primary mb-3 rounded-custom">
+                    </div>
+                {{form_end(form)}}
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

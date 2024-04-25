@@ -94,26 +94,52 @@ class TProduitsController extends AbstractController
         return $this->redirectToRoute('app_t_produits_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/toggle-activation/{id<\d+>}', name: 'toggle_activation', methods: ['POST'])]
-    public function toggleActivation(TProduits $product, EntityManagerInterface $entityManager, Request $request): Response
+    #[Route('/toggle/activation', name: 'toggle_activation', methods: ['POST'])]
+    public function toggleActivation(EntityManagerInterface $em, TProduitsRepository $tProduitsRepository, Request $request): Response
     {
-        // Activer ou désactiver le produit
-        if ($product->isActivation() === false) {
-            $product->setActivation(true);
-        } else {
-            $product->setActivation(false);
+        $id = $request->request->get('id');
+        $product = $tProduitsRepository->find($id);
+//         dump($id);
+// dd($product);
+        $message = 'inconnu';
+
+        if($product)
+        {
+            if ($product->isActivation()) {
+                $product->setActivation(false);
+                $message = 'désactivé';
+            } else{
+                $product->setActivation(true);
+                $message = 'activé';
+            }
+
+            $em->flush();
         }
 
-        // Enregistrer les modifications dans la base de données
-        $entityManager->persist($product);
-        $entityManager->flush();
 
-        // Récupérer le paramètre de recherche de la requête actuelle
-        $search = $request->query->get('search');
-
-        // Rediriger vers la route index en incluant uniquement le paramètre de recherche
-        return $this->redirectToRoute("app_t_produits_index", ['search' => $search]);
+        return new JsonResponse($message);
     }
+
+    // #[Route('/toggle-activation/{id<\d+>}', name: 'toggle_activation', methods: ['POST'])]
+    // public function toggleActivation(TProduits $product, EntityManagerInterface $entityManager, Request $request): Response
+    // {
+    //     // Activer ou désactiver le produit
+    //     if ($product->isActivation() === false) {
+    //         $product->setActivation(true);
+    //     } else {
+    //         $product->setActivation(false);
+    //     }
+
+    //     // Enregistrer les modifications dans la base de données
+    //     $entityManager->persist($product);
+    //     $entityManager->flush();
+
+    //     // Récupérer le paramètre de recherche de la requête actuelle
+    //     $search = $request->query->get('search');
+
+    //     // Rediriger vers la route index en incluant uniquement le paramètre de recherche
+    //     return $this->redirectToRoute("app_t_produits_index", ['search' => $search]);
+    // }
 
 
 }

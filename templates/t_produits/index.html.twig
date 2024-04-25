@@ -4,34 +4,14 @@
 
 {% block h1 %}Gestion des produits{% endblock %}
 
-{% block customScripts %}
-<script>
-        function toggleActivation(productId) {
-            $.ajax({
-                url: '{{ path('toggle_activation') }}',
-                method: 'POST',
-                data: {
-                    productId: productId
-                },
-                success: function(response) {
-                    console.log(response);
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        };
-</script>
-{% endblock %}
-
 
 {% block body %}
 <main class="col-md-10 mx-auto p-2">
     <nav class="navbar bg-body">
     <div class="container-fluid">
     <form class="d-flex" role="search">
-        <input class="form-control me-2" type="text" name="search" placeholder="Produit(s)..." aria-label="Search">
-        <button class="btn btn-outline-secondary" type="submit">Rechercher</button>
+        <input class="form-control rounded-custom me-2" type="text" name="search" placeholder="Produit(s)..." aria-label="Search">
+        <button class="btn btn-outline-secondary rounded-custom" type="submit">Rechercher</button>
     </form>
     </div>
     </nav>
@@ -55,24 +35,22 @@
             <tr>
                 <td>{{ t_produit.id }}</td>
                 <td>
-                    <form action="{{path('toggle_activation', {'id': t_produit.id})}}" method="POST">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="activationSwitch{{ t_produit.id }}" {{ t_produit.activation ? 'checked' : '' }} {# onclick="return confirm('Confirmer?')" #} onchange="this.form.submit()">
+                            <input class="form-check-input checkActivation" type="checkbox" id="activationSwitch{{ t_produit.id }}" {{ t_produit.activation ? 'checked' : '' }} {# onclick="return confirm('Confirmer?')" #} value="{{ t_produit.id }}">
                         </div>
-                    </form>
                 </td>
                 <td>{{ t_produit.stock }}</td>
                 <td>{{ t_produit.prix|number_format(2) }} €</td>
                 <td>{{ t_produit.nomProduit }}</td>
                 <td>{{ t_produit.ygoId }}</td>
                 <td>
-                    <a class="btn btn-secondary" href="{{ path('app_t_produits_show', {'id': t_produit.id}) }}">Fiche</a>
+                    <a class="btn btn-secondary rounded-custom" href="{{ path('app_t_produits_show', {'id': t_produit.id}) }}">Fiche</a>
                 </td>
                 <td>
-                    <a class="btn btn-success" href="{{ path('app_t_produits_edit', {'id': t_produit.id}) }}">Modif</a>
+                    <a class="btn btn-success rounded-custom" href="{{ path('app_t_produits_edit', {'id': t_produit.id}) }}">Modif</a>
                 </td>
                 <td>
-                    <a class="btn btn-danger" href="{{ path('app_t_produits_delete', {'id': t_produit.id}) }}">Suppr</a>
+                    <a class="btn btn-danger rounded-custom" href="{{ path('app_t_produits_delete', {'id': t_produit.id}) }}">Suppr</a>
                 </td>
             </tr>
         {% else %}
@@ -83,11 +61,57 @@
         </tbody>
     </table>
 
-    <a class="btn btn-primary" href="{{ path('app_t_produits_new') }}">Ajouter produit</a>
+    <a class="btn btn-primary rounded-custom" href="{{ path('app_t_produits_new') }}">Ajouter produit</a>
 
     {# display navigation #}
     <div class="my-3 d-flex justify-content-end align-items-center">
         {{ knp_pagination_render(t_produits) }}
     </div>
 </main>
+{% endblock %}
+{% block javascripts %}
+<script>
+        {# function toggleActivation(productId) {
+            $.ajax({
+                url: '{{ path('toggle_activation') }}',
+                method: 'POST',
+                data: {
+                    productId: productId
+                },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }; #}
+
+        let checkActivation = $('.checkActivation');
+
+        checkActivation.change(function()
+        {
+            console.log('ici');
+            let data = {
+                'id' : $(this).val()
+            }
+
+            $.ajax({
+                method: 'POST',
+                url: "{{ path('toggle_activation')}}",
+                data : data,
+                dataType: 'json',
+
+                success: function(response)
+                {
+                    console.log(response)
+                },
+                error: function()
+                {
+                    alert('error')
+                }
+                
+            })       
+        })
+        </script>
 {% endblock %}
