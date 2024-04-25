@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails du produit{% endblock %}
+{% block title %}Détails du produit: {{ produit.nomProduit }}{% endblock %}
 
 {% block h1 %}Détails du produit : {{ produit.nomProduit }}{% endblock %}
 
@@ -11,21 +11,21 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="bg-secondary rounded p-3">
+                    <div class="bg-white rounded-custom p-3">
                         <div class="row">
                             <div class="col-md-4">
-                                <h2 class="text-center h2Produit">{{ produit.nomProduit }}</h2>
-                                <img class="img-fluid" src="/Images/ImgCartes/normal/{{ carte.id }}.jpg">
+                                <img class="img-fluid" src="/Images/ImgCartes/normal/{{ carte.id }}.jpg" alt="{{ produit.nomProduit }}">
                             </div>
                             <div class="col-md-8">
-                                <h3 class="mt-3">Description :</h3>
-                                <div class="mt-3 lead">{{ carte.desc }}</div>
+                                <h2 class="text-center titreProduit">{{ produit.nomProduit }}</h2>
+                                <h3 class="mt-3 titreProduit">Description :</h3>
+                                <div class="mt-3 lead pCarte">{{ carte.desc }}</div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="mt-3 lead">Stock : {{ produit.stock }}</div>
+                                        <div class="mt-3 lead pCarte">Stock : {{ produit.stock }}</div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="mt-3 lead">Prix : {{ produit.prix|number_format(2) }} €</div>
+                                        <div class="mt-3 lead pCarte">Prix : {{ produit.prix|number_format(2) }} €</div>
                                     </div>
                                 </div>
                             </div>
@@ -42,20 +42,20 @@
 {% if produitsSimilaires %}
 
             <div class="row d-flex justify-content-center flex-wrap mt-5">
-            <h3 class="text-center">Vous avez choisi {{ produit.nomProduit }}, vous aimerez aussi :</h3>
+            <h3 class="text-center text-warning">Vous avez choisi {{ produit.nomProduit }}, vous aimerez aussi :</h3>
                 {% for produitSimilaire in produitsSimilaires %}
-                    <div class="col-12 col-md-4 col-lg-2 d-flex flex-column align-items-center border border-3 border-opacity-50 border-black mx-3 my-3 rounded bg-secondary carte">
+                    <div class="col-12 col-md-4 col-lg-2 d-flex flex-column align-items-center border border-3 border-opacity-50 border-black mx-3 my-3 rounded-custom bg-lighter carte">
                         <a class="a" href="{{ path('detailProduit', {'id': produitSimilaire.id}) }}">
-                            <h4 class="text-center">{{ produitSimilaire.nomProduit }}</h4>
+                            <h4 class="text-center titreProduit">{{ produitSimilaire.nomProduit }}</h4>
                         </a>
                         <a class="a mt-auto" href="{{ path('detailProduit', {'id': produitSimilaire.id}) }}">
                             <div>
-                            <img class="img-fluid mt-auto" src="/Images/ImgCartes/normal/{{ produitSimilaire.getYgoId() }}.jpg">
+                            <img class="img-fluid mt-auto" src="/Images/ImgCartes/normal/{{ produitSimilaire.getYgoId() }}.jpg" alt="{{ produit.nomProduit }}">
                             </div>
                         </a>
                         <div>
-                            <p class="card-text">Stock : {{ produitSimilaire.stock }}</p>
-                            <p class="card-text">Prix : {{ produitSimilaire.prix|number_format(2) }} €</p>
+                            <p class="card-text pCarte">Stock : {{ produitSimilaire.stock }}</p>
+                            <p class="card-text pCarte">Prix : {{ produitSimilaire.prix|number_format(2) }} €</p>
                         </div>
                     </div>
                 {% endfor %}

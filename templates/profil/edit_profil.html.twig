@@ -23,57 +23,57 @@
 <main class="col-md-10 mx-auto p-2">
     <div class="container mt-5">
         <div class="row">
-            <div class="card col-md-6 mx-auto">
+            <div class="card rounded-custom col-md-6 mx-auto bg-lighter text-black">
                 {{form_start(form)}}
-                    <div class="mb-3">
+                    <div class="mb-3 mt-3">
                         <label for="edit_user_profil_form_nom">Nom</label>
                         <div class="text-danger">{{form_errors(form.nom)}}</div>
-                        {{form_widget(form.nom, {'attr': {'class':'form-control'}})}}
+                        {{form_widget(form.nom, {'attr': {'class':'form-control rounded-custom'}})}}
                     </div>
                     <div class="mb-3">
                         <label for="edit_user_profil_form_prenom">Prénom</label>
                         <div class="text-danger">{{form_errors(form.prenom)}}</div>
-                        {{form_widget(form.prenom, {'attr': {'class':'form-control'}})}}
+                        {{form_widget(form.prenom, {'attr': {'class':'form-control rounded-custom'}})}}
                     </div>
                     <div class="mb-3">
                         <label for="edit_user_profil_form_email">Email</label>
                         <div class="text-danger">{{form_errors(form.email)}}</div>
-                        {{form_widget(form.email, {'attr': {'class':'form-control'}})}}
+                        {{form_widget(form.email, {'attr': {'class':'form-control rounded-custom'}})}}
                     </div>
                     {% if "ROLE_ADMIN" in app.user.roles %}
                         <div class="mb-3">
                             <label for="edit_user_profil_form_roles">Les rôles</label>
                             <div class="text-danger">{{form_errors(form.roles)}}</div>
-                            {{form_widget(form.roles, {'attr': {'class':'form-control select-multiple'}})}}
+                            {{form_widget(form.roles, {'attr': {'class':'form-control select-multiple rounded-custom'}})}}
                         </div>
                     {% endif %}
                     <div class="mb-3">
-                        <label for="edit_user_profil_form_email">Date de naissance</label>
+                        <label for="edit_user_profil_form_dateNaissance">Date de naissance</label>
                         <div class="text-danger">{{form_errors(form.date_naissance)}}</div>
-                        {{form_widget(form.date_naissance, {'attr': {'class':'form-control'}})}}
+                        {{form_widget(form.date_naissance, {'attr': {'class':'form-control rounded-custom'}})}}
                     </div>
                     <div class="mb-3">
-                        <label for="edit_user_profil_form_email">Adresse</label>
+                        <label for="edit_user_profil_form_adresse">Adresse</label>
                         <div class="text-danger">{{form_errors(form.adresse)}}</div>
-                        {{form_widget(form.adresse, {'attr': {'class':'form-control'}})}}
+                        {{form_widget(form.adresse, {'attr': {'class':'form-control rounded-custom'}})}}
                     </div>
                     <div class="mb-3">
-                        <label for="edit_user_profil_form_email">Téléphone</label>
+                        <label for="edit_user_profil_form_tel">Téléphone</label>
                         <div class="text-danger">{{form_errors(form.tel)}}</div>
-                        {{form_widget(form.tel, {'attr': {'class':'form-control'}})}}
+                        {{form_widget(form.tel, {'attr': {'class':'form-control rounded-custom'}})}}
                     </div>
                     <div class="mb-3">
-                        <label for="edit_user_profil_form_email">Ville</label>
+                        <label for="edit_user_profil_form_ville">Ville</label>
                         <div class="text-danger">{{form_errors(form.ville)}}</div>
-                        {{form_widget(form.ville, {'attr': {'class':'form-control'}})}}
+                        {{form_widget(form.ville, {'attr': {'class':'form-control rounded-custom'}})}}
                     </div>
                     <div class="mb-3">
-                        <label for="edit_user_profil_form_email">Code postal</label>
+                        <label for="edit_user_profil_form_codePostal">Code postal</label>
                         <div class="text-danger">{{form_errors(form.code_postal)}}</div>
-                        {{form_widget(form.code_postal, {'attr': {'class':'form-control'}})}}
+                        {{form_widget(form.code_postal, {'attr': {'class':'form-control rounded-custom'}})}}
                     </div>
                     <div>
-                        <input formnovalidate type="submit" value="Modifier" class="btn btn-primary">
+                        <input formnovalidate type="submit" value="Modifier" class="btn btn-primary mb-3 rounded-custom">
                     </div>
                 {{form_end(form)}}
             </div>

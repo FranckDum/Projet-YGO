@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TProduitsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TProduitsRepository::class)]
@@ -33,6 +35,14 @@ class TProduits
 
     #[ORM\Column]
     private ?int $ygo_id = null;
+
+    #[ORM\OneToMany(mappedBy: 'tProduits', targetEntity: DetailCommande::class)]
+    private Collection $detailCommande;
+
+    public function __construct()
+    {
+        $this->detailCommande = new ArrayCollection();
+    }
     // Annotation définissant une colonne de type INTEGER pour l'identifiant YGO
 
     // Méthodes getters et setters pour accéder et modifier les propriétés de l'entité
@@ -100,6 +110,36 @@ class TProduits
     public function setYgoId(int $ygo_id): static
     {
         $this->ygo_id = $ygo_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DetailCommande>
+     */
+    public function getDetailCommande(): Collection
+    {
+        return $this->detailCommande;
+    }
+
+    public function addDetailCommande(DetailCommande $detailCommande): static
+    {
+        if (!$this->detailCommande->contains($detailCommande)) {
+            $this->detailCommande->add($detailCommande);
+            $detailCommande->setTProduits($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDetailCommande(DetailCommande $detailCommande): static
+    {
+        if ($this->detailCommande->removeElement($detailCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($detailCommande->getTProduits() === $this) {
+                $detailCommande->setTProduits(null);
+            }
+        }
 
         return $this;
     }

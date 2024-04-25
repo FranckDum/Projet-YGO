@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\TProduits;
+use App\Form\FilterCardsFormType;
 use App\Repository\TProduitsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -15,21 +16,63 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class PagesController extends AbstractController
 {
 
-    #[Route('/', name:'accueil')]
+    #[Route('/', name:'accueil', methods: ['GET'])]
     // Annotation définissant la route pour la page d'accueil
-    public function accueil(): Response
+    public function accueil(TProduitsRepository $tProduitsRepository): Response
     {
-        return $this->render('pages/accueil.html.twig', []);
+        // Effectuer la requête pour récupérer les produits activés
+        $produitsActifs = $tProduitsRepository->createQueryBuilder('p')
+        ->where('p.activation = :activation')
+        ->setParameter('activation', true)
+        ->getQuery()
+        ->getResult();
+
+        return $this->render('pages/accueil.html.twig', [
+            'cards' => $produitsActifs
+        ]);
     }
 
-    #[Route('pages/all', name:'cartes_all')]
+    #[Route('pages/all', name:'cartes_all', methods: ['GET'])]
     // Annotation définissant la route pour la page affichant toutes les cartes
     public function cartes(EntityManagerInterface $em, TProduitsRepository $tProduitsRepository, HttpClientInterface $client, PaginatorInterface $paginator, Request $request): Response
     {
         // $tProduit = new TProduits();
 
+        // $client->request("GE")
+
         set_time_limit(0);
         ini_set('memory_limit', '512M');
+
+
+
+        // 1- Récupérer toutes les cartes
+        // $client
+
+        // 2- Extraire 6 infos en fonction de chaque carte: type, atk, def, level, race, attribute
+        //  Les ranger chacune dans son, tableau
+
+        // 3- Passer chaque tableau au type du formulaire
+        //  Afin de recuperer les données et les insérer dans les champs
+
+        // 4- Afficher le formulaire du filtre sur la page
+
+        // Recuperer les données de la requete
+
+        // Associer au formulaire les données de la requête
+
+        // Récupérer chaque filtre sélectionné
+
+        // Préparer l'url en fonction du filtre choisi
+
+        // Effectuer la requête à l'api afin de récupérer uniquement les cartes en fonction des filtres
+
+
+
+
+
+
+
+
 
         // $api_url = "https://db.ygoprodeck.com/api/v7/cardinfo.php?language=fr";
         // // URL de l'API pour récupérer les données sur les cartes
@@ -101,6 +144,136 @@ class PagesController extends AbstractController
 
         $data = $responseApiArray['data'];
 
+        $filterTypes        = [];
+        $filterAtks         = [];
+        $filterDefs         = [];
+        $filterLevels       = [];
+        $filterRaces        = [];
+        $filterAttributes   = [];
+        // 2- Extraire 6 infos en fonction de chaque carte: type, atk, def, level, race, attribute
+        //  Les ranger chacune dans son, tableau
+
+
+        // dd($responseApiArray['data']);
+
+        foreach ($data as $card) 
+        {
+            if (isset($card['type']) && !empty($card['type'])) 
+            {
+                $filterTypes[] = $card['type'];
+            }
+
+            if (isset($card['atk']) && !empty($card['atk'])) 
+            {
+                $filterAtks[] = $card['atk'];
+            }
+
+            if (isset($card['def']) && !empty($card['def'])) 
+            {
+                $filterDefs[] = $card['def'];
+            }
+
+            if (isset($card['level']) && !empty($card['level'])) 
+            {
+                $filterLevels[] = $card['level'];
+            }
+
+            if (isset($card['race']) && !empty($card['race'])) 
+            {
+                $filterRaces[] = $card['race'];
+            }
+
+            if (isset($card['attribute']) && !empty($card['attribute'])) 
+            {
+                $filterAttributes[] = $card['attribute'];
+            }
+        }
+
+        $form = $this->createForm(FilterCardsFormType::class, null, [
+            "filterTypes"       => \array_unique($filterTypes),
+            "filterAtks"        => \array_unique($filterAtks),
+            "filterDefs"        => \array_unique($filterDefs),
+            "filterLevels"      => \array_unique($filterLevels),
+            "filterRaces"       => \array_unique($filterRaces),
+            "filterAttributes"  => \array_unique($filterAttributes),
+        ]);
+
+        $form->handleRequest($request);
+
+        // Si le formulaire est soumis et que le formulaire est valide,
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+            // Récupérer chaque filtre sélectionné
+            $formData = $form->getData();
+
+            $url = "https://db.ygoprodeck.com/api/v7/cardinfo.php?";
+
+            $prepareFilters = ["type","atk" ,"def", "level", "race", "attribute"];
+
+            foreach ($formData as $key => $value) 
+            {
+                if (in_array($key, $prepareFilters) && !empty($value)) 
+                {
+                    $url = "{$url}{$key}={$value}&"; 
+                }
+            }
+
+            mb_substr($url, -1, 1);
+            $url = mb_substr($url, 0, -1);
+
+            // dd($url);
+
+            $filterResponseApi = $client->request("GET", $url);
+
+            // dd($filterResponseApi);
+            
+            // dd('test');
+            // dd($filterResponseApi->getStatusCode());
+
+            if ( 400 == $filterResponseApi->getStatusCode() ) 
+            {
+                $this->addFlash("warning", "Aucun résultat trouvé.");
+                return $this->redirectToRoute("cartes_all");
+            }
+
+            $filterResponseApiArray = $filterResponseApi->toArray();
+
+            $productsWithCards = $paginator->paginate(
+                $filterResponseApiArray['data'], /* query NOT result */
+                $request->query->getInt('page', 1), /*page number*/
+                10 /*limit per page*/
+            );
+
+            if($productsWithCards){
+                
+                $test = [];
+                foreach($produitsActifs as $actif){
+                    foreach($data as $card){
+                        if($actif->getYgoId() == $card["id"]){
+                            $test[] = [
+                                "product" => $actif,
+                                "card" => $card
+                            ];
+                            break;
+                        }
+                    }
+                }
+            }
+            return $this->render('pages/cartes_all.html.twig', [
+                "form" => $form->createView(),
+                "productsWithCard" => $test,
+                'meta' => [
+                    'total_pages' => $totalPages,
+                ]
+            ]);
+
+
+        }
+
+        // Préparer l'url en fonction du filtre choisi
+
+        // Effectuer la requête à l'api afin de récupérer uniquement les cartes en fonction des filtres
+
         $productsWithCards = [];
         foreach($produitsActifs as $actif){
             foreach($data as $card){
@@ -117,6 +290,7 @@ class PagesController extends AbstractController
 //  Renvoyer le template Twig avec les données de la carte
         return $this->render('pages/cartes_all.html.twig',[
             'productsWithCard' => $productsWithCards,
+            "form" => $form->createView(),
             'meta' => [
                 'total_pages' => $totalPages,
             ]

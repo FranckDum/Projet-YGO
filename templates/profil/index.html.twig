@@ -47,24 +47,30 @@
 
 <div class="container mt-5">
     <div class="row">
-        <div class="card col-md-8 mx-auto">
-        <div class="card-body">
-            <p class="card-title"><strong>Nom</strong>: {{ app.user.nom }}</p>
-            <p class="card-title"><strong>Prénom</strong>: {{ app.user.prenom }}</p>
-            <p class="card-title"><strong>Email</strong>: {{ app.user.email }}</p>
-            <p class="card-title"><strong>Date de naissance</strong>: {{ app.user.dateNaissance|format_date() }}</p>
-            <p class="card-title"><strong>Adresse</strong>: {{ app.user.adresse }}</p>
-            <p class="card-title"><strong>Ville</strong>: {{ app.user.ville }}</p>
-            <p class="card-title"><strong>Code Postal</strong>: {{ app.user.codePostal }}</p>
-            <p class="card-title"><strong>Téléphone</strong>: {{ app.user.tel }}</p>
+        <div class="card rounded-custom col-md-7 col-lg-6 mx-auto bg-lighter">
+        <div class="card-body ">
+            <p class="card-title text-black"><strong>Nom</strong>: {{ app.user.nom }}</p>
+            <p class="card-title text-black"><strong>Prénom</strong>: {{ app.user.prenom }}</p>
+            <p class="card-title text-black"><strong>Email</strong>: {{ app.user.email }}</p>
+            <p class="card-title text-black"><strong>Date de naissance</strong>: 
+                {% if app.user.dateNaissance %}
+                    {{app.user.dateNaissance|date('d/m/Y')}}
+                {% else %}
+                    <span class="text-danger fst-italic">Aucune date</span>  
+                {% endif %}
+            </p>
+            <p class="card-title text-black"><strong>Adresse</strong>: {{ app.user.adresse }}</p>
+            <p class="card-title text-black"><strong>Ville</strong>: {{ app.user.ville }}</p>
+            <p class="card-title text-black"><strong>Code Postal</strong>: {{ app.user.codePostal }}</p>
+            <p class="card-title text-black"><strong>Téléphone</strong>: {{ app.user.tel }}</p>
             
-            <a href="{{path('app_profil_edit')}}" class="m-2 btn btn-secondary">Modifier votre profil</a>
-            <a href="{{path('app_profil_edit_password')}}" class="m-2 btn btn-dark">Modifier votre mot de passe</a>
+            <a href="{{path('app_profil_edit')}}" class="mt-2 btn btn-primary rounded-custom w-100">Modifier votre profil</a>
+            <a href="{{path('app_profil_edit_password')}}" class="mt-2 btn btn-dark rounded-custom w-100">Modifier votre mot de passe</a>
             {% if "ROLE_SUPER_ADMIN" not in app.user.roles %}
-                <form method="POST" action="{{path('app_profil_delete')}}">
+                <form method="POST" action="{{path('app_profil_delete')}}" class="w-100">
                     <input type="hidden" name="_method" value="DELETE">
                     <input type="hidden" name="csrf_token" value="{{csrf_token('delete_profil')}}">
-                    <input onclick="return confirm('Confirmer la suppression de votre compte ?')" type="submit" class="m-2 btn btn-danger" value="Supprimer votre compte">
+                    <input onclick="return confirm('Confirmer la suppression de votre compte ?')" type="submit" class="mt-2 btn btn-danger rounded-custom w-100" value="Supprimer votre compte">
                 </form>
             {% endif %}
         </div>

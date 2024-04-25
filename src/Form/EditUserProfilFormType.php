@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 
 class EditUserProfilFormType extends AbstractType
 {
@@ -42,9 +43,10 @@ class EditUserProfilFormType extends AbstractType
                     // 'required' => false, // Champ facultatif car les rôles peuvent être vides
                     'choices' => [
                         "Utilisateur" => "ROLE_USER",
-                        "Administrateur" => "ROLE_ADMIN"
+                        "Administrateur" => "ROLE_ADMIN",
+                        "Super Administrateur" => "ROLE_SUPER_ADMIN"
                     ],
-                    'expanded' => false,
+                    'expanded' => true,
                     'multiple' => true
                 ])
                 ->add('nom', TextType::class, [
@@ -75,8 +77,8 @@ class EditUserProfilFormType extends AbstractType
                         ]),
                     ],
                 ])
-                ->add('date_naissance', DateType::class, [
-                    'years' => range(date('Y'),date('Y') - 120),
+                ->add('date_naissance', BirthdayType::class, [
+                    'widget' => 'single_text',
                     'required'=> false
                 ])
                 ->add('adresse', TextType::class, [
@@ -157,9 +159,9 @@ class EditUserProfilFormType extends AbstractType
                 ->add('nom', TextType::class, [
                     'required'=> false,
                     'constraints'=> [
-                        new NotBlank([
-                            'message' => 'Entrez un nom svp',
-                        ]),
+                        // new NotBlank([
+                        //     'message' => 'Entrez un nom svp',
+                        // ]),
                         new Length([
                             'min' => 1,
                             'minMessage' => 'Votre nom doit contenir au moins {{ limit }} caractères.',
@@ -171,9 +173,9 @@ class EditUserProfilFormType extends AbstractType
                 ->add('prenom', TextType::class, [
                     'required'=> false,
                     'constraints'=> [
-                        new NotBlank([
-                            'message' => 'Entrez un nom svp',
-                        ]),
+                        // new NotBlank([
+                        //     'message' => 'Entrez un nom svp',
+                        // ]),
                         new Length([
                             'min' => 1,
                             'minMessage' => 'Votre prénom doit contenir au moins {{ limit }} caractères.',
@@ -182,16 +184,16 @@ class EditUserProfilFormType extends AbstractType
                         ]),
                     ],
                 ])
-                ->add('date_naissance', DateType::class, [
-                    'years' => range(date('Y'),date('Y') - 120),
+                ->add('date_naissance', BirthdayType::class, [
+                    'widget' => 'single_text',
                     'required'=> false
                 ])
                 ->add('adresse', TextType::class, [
                     'required'=> false,
                     'constraints'=> [
-                        new NotBlank([
-                            'message' => 'Entrez une adresse svp',
-                        ]),
+                        // new NotBlank([
+                        //     'message' => 'Entrez une adresse svp',
+                        // ]),
                         new Length([
                             'min' => 1,
                             'minMessage' => 'Votre adresse doit contenir au moins {{ limit }} caractères.',
@@ -203,9 +205,9 @@ class EditUserProfilFormType extends AbstractType
                 ->add('tel', TextType::class, [
                     'required'=> false,
                     'constraints'=> [
-                        new NotBlank([
-                            'message' => 'Entrez un numéro de téléphone svp',
-                        ]),
+                        // new NotBlank([
+                        //     'message' => 'Entrez un numéro de téléphone svp',
+                        // ]),
                         new Length([
                             'min' => 10,
                             'minMessage' => 'Votre adresse doit contenir au moins {{ limit }} chiffres.',
@@ -218,9 +220,9 @@ class EditUserProfilFormType extends AbstractType
                 ->add('ville', TextType::class, [
                     'required'=> false,
                     'constraints'=> [
-                        new NotBlank([
-                            'message' => 'Entrez un nom de ville svp',
-                        ]),
+                        // new NotBlank([
+                        //     'message' => 'Entrez un nom de ville svp',
+                        // ]),
                         new Length([
                             'min' => 1,
                             'minMessage' => 'Votre un nom de ville doit contenir au moins {{ limit }} caractères.',
@@ -232,9 +234,9 @@ class EditUserProfilFormType extends AbstractType
                 ->add('code_postal', NumberType::class, [
                     'required'=> false,
                     'constraints' => [
-                        new NotBlank([
-                            'message' => 'Entrez un code postal svp',
-                        ]),
+                        // new NotBlank([
+                        //     'message' => 'Entrez un code postal svp',
+                        // ]),
                         new Length([
                             'min' => 5,
                             'minMessage' => 'Le code postal doit contenir 5 chiffres',

@@ -1,5 +1,5 @@
-<nav aria-label="Page navigation"> <!-- Début de la barre de pagination -->
-    <ul class="pagination justify-content-center"> <!-- Liste des éléments de pagination, centrée -->
+<nav aria-label="Page navigation rounded-custom"> <!-- Début de la barre de pagination -->
+    <ul class="pagination justify-content-center ms-auto me-auto col-10"> <!-- Liste des éléments de pagination, centrée -->
         <!-- Bouton "Première page" -->
         <li class="page-item {% if app.request.query.get('offset', '0')|default(0) == 0 %}disabled{% endif %}"> <!-- Item de pagination pour la première page, désactivé si déjà sur la première page -->
             <a class="page-link" href="?offset=0" aria-label="First"> <!-- Lien vers la première page -->

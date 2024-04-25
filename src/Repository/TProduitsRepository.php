@@ -66,7 +66,7 @@ dump('archetype similaires api:', $apiArchetype);
             }
         }
     
-        // Si aucun produit similaire n'a été trouvé par archetype ou si le nombre maximal de résultats est inférieur à 6, rechercher par type
+        // Si aucun produit similaire n'a été trouvé par archetype ou si le nombre maximal de résultats est inférieur à 5, rechercher par type
         $type = isset($apiProduit[0]['type']) ? $apiProduit[0]['type'] : null;
 dump('type:', $type);
         if ($type !== null) {
@@ -143,11 +143,31 @@ dump('type similaire bdd api :', $apiType);
                 ->orWhere('p.prix LIKE :search')
                 ->setParameter('search', '%' . $search . '%'); 
         }
+        else {
+            // Si le paramètre de recherche est vide, retourner un tableau vide
+            return [];
+        }
 
         return $query
             ->getQuery()
             ->getResult();
     }
+
+
+//     public function index(Request $request, EntityManagerInterface $em, HttpClientInterface $client): Response
+// {
+//     // Récupérer la requête de l'utilisateur
+//     $query = $request->query->get('q');
+
+//     // Vérifier si la requête est vide
+//     if (empty($query)) {
+//         // Ne rien faire, laisser le code continuer
+//     } else {
+//         // Le reste du code pour la recherche
+//         // ...
+//     }
+// }
+
 
 //    /**
 //     * @return TProduits[] Returns an array of TProduits objects

@@ -89,8 +89,11 @@ class ProfilController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete_profil', $request->request->get('csrf_token')))
         {
+            /** @var App\Entity\User */
             $user = $this->getUser();
             $this->addFlash('success', "{$user->getNom()} {$user->getPrenom()} a été supprimé!" );
+
+            $this->container->get('security.token_storage')->setToken(null);
 
             $em->remove($user);
             $em->flush();

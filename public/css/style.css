@@ -3,6 +3,82 @@
     padding: 0;
 }
 
+/* Carousel */
+
+#container {
+    width: 100%; /* Réduire la largeur du conteneur */
+    margin: 0 auto; /* Centrer le conteneur horizontalement */
+    /* Les deux lignes ci-dessous ajoutent un effet de transparence sur les extrémités du carousel logos */
+    mask: linear-gradient(90deg, transparent, white 40%, white 60%, transparent); /* Ajuster les pourcentages pour adapter à la nouvelle largeur */
+    -webkit-mask: linear-gradient(60deg, transparent, white 40%, white 60%, transparent); /* Ajuster les pourcentages pour adapter à la nouvelle largeur */
+}
+
+
+.ulAside {
+    display: flex;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+}
+
+.liAside {
+    background: var(--light-blue);
+    color: var(--text-color);
+    /* padding: 10px 20px; */
+    padding: 10px 34px; /* Marge intérieure supérieure et inférieure de 10px, marge intérieure gauche et droite de 34px */
+    border-radius: 7px;
+    /* border: 1px outset var(--text-color); */
+    box-shadow: 
+        2px 2px 2px var(--dark-blue-shadow),    
+        2px 3px 3px var(--dark-blue-shadow),
+        2px 5px 5px var(--dark-blue-shadow),
+        2px 8px 8px var(--dark-blue-shadow);
+}
+
+#container[data-animated] {
+    overflow: hidden; /* Cache le débordement du contenu */
+}
+
+/* Les nouvelles règles CSS pour l'effet de défilement continu */
+#container[data-animated] #list li {
+    margin-right: 20px; /* Ajoute un espace entre les images pour éviter les sauts */
+}
+
+#container[data-animated] #list img {
+    flex-shrink: 0; /* Empêche les images de se rétrécir lorsqu'elles sont dupliquées */
+}
+
+#container[data-animated] #list {
+    width: max-content;
+    animation: scroll 220s linear infinite; /* Applique l'animation de défilement */
+}
+
+@keyframes scroll {
+    to {
+        translate: calc(-50% - 5px); /* Déplace le contenu vers la gauche pour simuler le défilement */
+    }
+}
+
+#list.draggable {
+    cursor: grab !important; /* Curseur comme une main fermée lorsqu'il est attrapé */
+}
+
+#list.dragging {
+    cursor: grabbing !important; /* Curseur comme une main ouverte pendant le drag and drop */
+}
+
+
+
+
+/* .table-rounded th,
+.table-rounded td {
+    border-radius: 0.25rem;
+} */
+
+.rounded-custom { /* Arrondi */
+    border-radius: 0.25rem;
+}
+
 /* Pour mettre en place le footer, il faut définir une hauteur de 100% pour le body */
 html, body {
     height: 100%;
@@ -11,7 +87,12 @@ html, body {
 /* Ensuite, il faut utiliser les grid. On découpe la page en 3 zones : le header à auto, le body à une fraction et le footer à auto. Ainsi, la hauteur du header et du footer s'ajuste en fonction de la hauteur du body (qui dépend de son contenu. */
 body {
     display: grid;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto auto 1fr auto;
+}
+
+.bg-lighter
+{
+    background: rgb(199, 219, 225) !important;
 }
 
 .content {
@@ -37,17 +118,17 @@ body {
     width: 100%;
     height: 100%; 
     /* Image de fond avec une opacité de 0.7 */
-    background-image: url('/Images/background-image5.png');
-    background-size: cover;
+    /* background-image: url('/Images/image-background5.jpeg'); */
+    /* background-size: cover;
     background: rgba(255,255,255,0.6);
-    background-blend-mode: lighten;
+    background-blend-mode: lighten; */
     /* background-size: 100% 100%; */
     /* background-position: center; */
     /* opacity: .5; */
     /* Ajustez le positionnement de l'image */
     /* background-position: center; */
     /* Assurez-vous que l'image est derrière le contenu */
-    z-index: -1;
+    /* z-index: -1; */
     /* background-color: rgba(0, 0, 0, 0.2); */
 }
 
@@ -55,9 +136,9 @@ body {
     width: 200px;
 }
 
-.navbar-toggler{
+/* .navbar-toggler{
     background-color: aliceblue;
-}
+} */
 
 .current-page {
     color: red;
@@ -70,22 +151,35 @@ body {
 }
 
 h1{
-    /* font-family: 'YGO', sans-serif; */
     /* color : #827731;  jaune plus foncé */
     /* color: #ebe964; jaune un peu clair */
     /* color: #2c2611;  jaune très très foncé */
     /* color: #2c2611; */
     /* color: #827831; */
     /* color: #61dafbaa; */
-    font-family: 'YGO', sans-serif; /* Remplacez "MaPolice" par le nom de votre police */
-    -webkit-text-stroke: 0.5px #72a996; /* Contour noir de 2 pixels autour du texte */
-    color: #212529; /* Couleur du texte */
+    /* font-family: 'YGO', sans-serif;  */
+    /* -webkit-text-stroke: 1px #d4be18; Contour noir de 2 pixels autour du texte */
+    /* color: #212529; Couleur du texte */
     /* background-color: white;
     width: 20%; */
+    color: #d4be18;
+    font-size: 60px;
+    height: 72px;
 }
 
-.h2Produit{
-    color: #d4be18;
+.titreProduit{
+    /* color: #d4be18; */
+    color: rgb(110, 56, 110);
+}
+
+p{
+    color:black;
+}
+
+/*--------------------------------------------------- Card ---------------------------------------------------*/
+
+.pCarte{
+    color:black;
 }
 
 a{
@@ -107,7 +201,7 @@ a{
     opacity: 0.8;
 } */
 
-/* Style personnalisé pour la pagination */
+/* --------------------------- Style personnalisé pour la pagination ----------------------------------*/
 .pagination {
     background-color: #343a40; /* Couleur de fond sombre */
     border-radius: 0.25rem; /* Coins arrondis */
@@ -130,19 +224,20 @@ a{
     border-color: #61dafbaa; /* Couleur de la bordure au survol */
 }
 
-/* Ajoutez cette règle CSS dans votre fichier style.css */
+/*------------------------------------------------ Navbar ---------------------------------------------*/
 .navbar-nav .nav-item.active .nav-link {
-    color: #d4be18;;
+    color: black;
     transition: text-shadow 0.3s ease; /* Ajout d'une transition fluide */
 }
 
 .navbar-nav .nav-link {
-    color: #61dafbaa;
+    color: #0e436e;
+    /* color: white; */
     transition: color 0.3s ease, text-shadow 0.3s ease; /* Ajout d'une transition fluide pour la couleur et l'ombre du texte */
 }
 
 .navbar-nav .nav-link:hover {
-    color: #d4be18; /* Changement de couleur du texte au survol */
+    color: black; /* Changement de couleur du texte au survol */
     text-shadow: 0 0 5px black; /* Ajout de l'ombre autour du texte */
 }
 
