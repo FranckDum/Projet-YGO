@@ -22,11 +22,40 @@
                                 <div class="mt-3 lead pCarte">{{ carte.desc }}</div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="mt-3 lead pCarte">Stock : {{ produit.stock }}</div>
-                                    </div>
-                                    <div class="col-md-6">
                                         <div class="mt-3 lead pCarte">Prix : {{ produit.prix|number_format(2) }} €</div>
                                     </div>
+                                    {# <div class="col-md-6">
+                                        <a href="{{path('visitor_cart_add', {'id':produit.id})}}" class="btn btn-primary rounded-custom mt-3">Ajouter au panier</a>
+                                    </div> #}
+                                </div>
+                                {# <div>
+                                    {% if produit.stock > 0 %}
+                                        <span class="badge text-bg-success">Produit disponible</span>
+                                    {% else %}
+                                        <span class="badge text-bg-danger">Stock épuisé</span>
+                                    {% endif %}
+                                </div> #}
+                                <div>
+                                    {% if produit.stock %}
+                                        <form method="post" action="{{ path("app_panier_new") }}">
+                                            <select name="quantite">
+
+                                            {% set quantity = produit.stock %}
+
+                                            {% if produit.stock > 10 %}
+                                                {% set quantity = 10 %}
+                                            {% endif %}
+
+                                            {% for i in 1 .. quantity %}
+                                                <option value="{{i}}">{{i}}</option>
+                                            {% endfor %}
+                                            <input type="hidden" name="produit" value="{{produit.id}}" class="btn btn-success">
+                                            <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
+                                        </form>
+                                    {% else %}
+                                        <h3 class="text-danger">Rupture de stock</h3>
+                                    {% endif %}
+                                    
                                 </div>
                             </div>
                         </div>
@@ -54,8 +83,9 @@
                             </div>
                         </a>
                         <div>
-                            <p class="card-text pCarte">Stock : {{ produitSimilaire.stock }}</p>
-                            <p class="card-text pCarte">Prix : {{ produitSimilaire.prix|number_format(2) }} €</p>
+                            {# <p class="card-text pCarte">Stock : {{ produitSimilaire.stock }}</p> #}
+                            <p class="card-text pCarte mt-2">Prix : {{ produitSimilaire.prix|number_format(2) }} €</p>
+                            {# <a href="{{path('visitor_cart_add', {'id':produitSimilaire.id})}}" class="btn btn-primary rounded-custom mb-2">Ajouter au panier</a> #}
                         </div>
                     </div>
                 {% endfor %}

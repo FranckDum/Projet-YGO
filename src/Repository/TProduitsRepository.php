@@ -143,10 +143,6 @@ dump('type similaire bdd api :', $apiType);
                 ->orWhere('p.prix LIKE :search')
                 ->setParameter('search', '%' . $search . '%'); 
         }
-        else {
-            // Si le paramètre de recherche est vide, retourner un tableau vide
-            return [];
-        }
 
         return $query
             ->getQuery()
