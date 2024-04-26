@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Panier{% endblock %}
+{% block h1 %}Mon Panier{% endblock %}
+
+{% block body %}
+
+    <main class="container">
+        {% if app.user %}
+            <a class="btn btn-success rounded-custom" href="{{path('app_stripe')}}">Payer</a>
+        {% else %}
+            <h2>Veuillez vous connectez pour accéder au paiement</h2>
+        {% endif %}
+    </main>
+
+{% endblock %}

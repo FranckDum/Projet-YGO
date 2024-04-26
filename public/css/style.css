@@ -85,10 +85,10 @@ html, body {
 }
 
 /* Ensuite, il faut utiliser les grid. On découpe la page en 3 zones : le header à auto, le body à une fraction et le footer à auto. Ainsi, la hauteur du header et du footer s'ajuste en fonction de la hauteur du body (qui dépend de son contenu. */
-body {
+/* body {
     display: grid;
     grid-template-rows: auto auto 1fr auto;
-}
+} */
 
 .bg-lighter
 {
@@ -117,6 +117,8 @@ body {
     left: 0; */
     width: 100%;
     height: 100%; 
+    display: flex;
+    flex-direction: column;
     /* Image de fond avec une opacité de 0.7 */
     /* background-image: url('/Images/image-background5.jpeg'); */
     /* background-size: cover;
@@ -130,6 +132,10 @@ body {
     /* Assurez-vous que l'image est derrière le contenu */
     /* z-index: -1; */
     /* background-color: rgba(0, 0, 0, 0.2); */
+}
+
+main{
+    flex-grow: 1;
 }
 
 .logo {
@@ -164,7 +170,7 @@ h1{
     width: 20%; */
     color: #d4be18;
     font-size: 60px;
-    height: 72px;
+    height: auto;
 }
 
 .titreProduit{

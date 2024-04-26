@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\TProduits;
+use App\Service\CartService;
 use App\Form\FilterCardsFormType;
 use App\Repository\TProduitsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,7 +16,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PagesController extends AbstractController
 {
-
     #[Route('/', name:'accueil', methods: ['GET'])]
     // Annotation définissant la route pour la page d'accueil
     public function accueil(TProduitsRepository $tProduitsRepository): Response

@@ -19,7 +19,7 @@ class DetailCommande
     #[ORM\Column(nullable: true)]
     private ?int $quantity = null;
 
-    #[ORM\ManyToOne(inversedBy: 'detailCommande')]
+    #[ORM\ManyToOne(inversedBy: 'detailCommande', cascade:['persist'])]
     private ?Commandes $commandes = null;
 
     #[ORM\ManyToOne(inversedBy: 'detailCommande')]

@@ -28,7 +28,7 @@ class Commandes
     #[ORM\ManyToOne(inversedBy: 'commandes')]
     private ?User $user = null;
 
-    #[ORM\OneToMany(mappedBy: 'commandes', targetEntity: DetailCommande::class)]
+    #[ORM\OneToMany(mappedBy: 'commandes', targetEntity: DetailCommande::class, cascade:['persist', 'remove'])]
     private Collection $detailCommande;
 
     public function __construct()
@@ -41,12 +41,12 @@ class Commandes
         return $this->id;
     }
 
-    public function getDateLivraison(): ?\DateTimeInterface
+    public function getDateLivraison(): ?\DateTimeImmutable
     {
         return $this->date_livraison;
     }
 
-    public function setDateLivraison(?\DateTimeInterface $date_livraison): static
+    public function setDateLivraison(?\DateTimeImmutable $date_livraison): static
     {
         $this->date_livraison = $date_livraison;
 

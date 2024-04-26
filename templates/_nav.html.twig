@@ -10,7 +10,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <form action="{{ path('app_search') }}" id="searchthis" method="get" class="d-flex form-inline rounded-custom my-2 my-lg-0 d-lg-none">
-                        <input id="search" name="q" class="form-control me-2" type="text" placeholder="Recherche" aria-label="Search">
+                        <input id="search" name="q" class="form-control rounded-custom me-2" type="text" placeholder="Recherche" aria-label="Search">
                     </form>
                     {# Liens de navigation #}
                     <li class="nav-item {% if app.request.attributes.get('_route') == 'accueil' %}active{% endif %}">
@@ -31,9 +31,13 @@
                 </ul>
                 <ul class="navbar-nav me-auto">
                     {# Formulaire de recherche #}
-                    <form action="{{ path('app_search') }}" id="searchthis" method="get" class="d-lg-flex form-inline my-2 my-lg-0 d-none">
-                        <input id="search" name="q" class="form-control rounded-custom me-2" type="text" placeholder="Recherche" aria-label="Search">
+                    {# id supprimer car duplication de la barre de recherche #}
+                    <form action="{{ path('app_search') }}" method="get" class="d-lg-flex form-inline my-2 my-lg-0 d-none">
+                        <input name="q" class="form-control rounded-custom me-2" type="text" placeholder="Recherche" aria-label="Search">
                     </form>
+                    {# <li class="nav-item">
+                        <a class="nav-link" href="{{path('app_panier')}}">Mon panier</a>
+                    </li> #}
                     {# Menu utilisateur ou liens de connexion #}
                     {% if app.user %}
                         <li class="nav-item dropdown">
