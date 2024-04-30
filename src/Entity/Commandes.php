@@ -17,19 +17,19 @@ class Commandes
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $date_livraison = null;
+    private ?\DateTimeInterface $date_commande = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $statut = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $facture = null;
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
     private ?User $user = null;
 
     #[ORM\OneToMany(mappedBy: 'commandes', targetEntity: DetailCommande::class, cascade:['persist', 'remove'])]
     private Collection $detailCommande;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $numeros = null;
 
     public function __construct()
     {
@@ -41,14 +41,14 @@ class Commandes
         return $this->id;
     }
 
-    public function getDateLivraison(): ?\DateTimeImmutable
+    public function getDateCommande(): ?\DateTimeImmutable
     {
-        return $this->date_livraison;
+        return $this->date_commande;
     }
 
-    public function setDateLivraison(?\DateTimeImmutable $date_livraison): static
+    public function setDateCommande(?\DateTimeImmutable $date_commande): static
     {
-        $this->date_livraison = $date_livraison;
+        $this->date_commande = $date_commande;
 
         return $this;
     }
@@ -61,18 +61,6 @@ class Commandes
     public function setStatut(?string $statut): static
     {
         $this->statut = $statut;
-
-        return $this;
-    }
-
-    public function getFacture(): ?string
-    {
-        return $this->facture;
-    }
-
-    public function setFacture(?string $facture): static
-    {
-        $this->facture = $facture;
 
         return $this;
     }
@@ -118,4 +106,17 @@ class Commandes
 
         return $this;
     }
+
+    public function getNumeros(): ?string
+    {
+        return $this->numeros;
+    }
+
+    public function setNumeros(?string $numeros): static
+    {
+        $this->numeros = $numeros;
+
+        return $this;
+    }
+
 }

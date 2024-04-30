@@ -67,7 +67,7 @@
     cursor: grabbing !important; /* Curseur comme une main ouverte pendant le drag and drop */
 }
 
-
+/* ------------------------------------------------------------------------------------------------------------------ */
 
 
 /* .table-rounded th,
@@ -77,6 +77,19 @@
 
 .rounded-custom { /* Arrondi */
     border-radius: 0.25rem;
+}
+
+.imagePanier {
+    height: 100px;
+}
+
+.imageAccueil {
+    height: 150px!important;
+    width: 102px!important;
+}
+
+.btnPanier {
+    width: 23%;
 }
 
 /* Pour mettre en place le footer, il faut définir une hauteur de 100% pour le body */
@@ -93,6 +106,10 @@ html, body {
 .bg-lighter
 {
     background: rgb(199, 219, 225) !important;
+}
+
+ul {
+    list-style-type: none;
 }
 
 .content {
@@ -168,7 +185,8 @@ h1{
     /* color: #212529; Couleur du texte */
     /* background-color: white;
     width: 20%; */
-    color: #d4be18;
+    /* color: #d4be18; */
+    color: #df6919;
     font-size: 60px;
     height: auto;
 }
@@ -182,7 +200,23 @@ p{
     color:black;
 }
 
+/*---------------------------------------------------Panier---------------------------------------------------*/
+.btn-quantite {
+    cursor: pointer; /* Ajoute un curseur pointeur */
+}
+
 /*--------------------------------------------------- Card ---------------------------------------------------*/
+
+/* Limiter la largeur de la carte et forcer la largeur maximale */
+.cardAccueil {
+    max-width: 18rem;
+    flex-grow: 1;
+}
+
+.h3-card {
+    font-size: 1.25rem; /* taille de police de 1.25rem (environ 20 pixels) */
+    min-height: 3.6rem;
+}
 
 .pCarte{
     color:black;
@@ -251,7 +285,19 @@ a{
     height: 10vh !important; 212529
 } */
 
+/* ------------------------------------------Footer---------------------------------------------------- */
+.aLink {
+    color: #0e436e;
+}
 
+.aLink:active {
+    color: black;
+}
+
+.aLink:hover {
+    color: black;
+    text-shadow: 0 0 5px black; /* Ajout de l'ombre autour du texte */
+}
 
 /* ------------------------------------------Laptop---------------------------------------------------- */
 @media screen and (min-width: 991px)

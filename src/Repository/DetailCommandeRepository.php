@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\DetailCommande;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr;
 
 /**
  * @extends ServiceEntityRepository<DetailCommande>
@@ -19,6 +20,18 @@ class DetailCommandeRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, DetailCommande::class);
+    }
+
+    public function findTop5Ventes(): array
+    {
+        return $this->createQueryBuilder('dc')
+            ->select('t.id AS productId, t.nom_produit AS productNom, t.ygo_id AS ygoId, t.prix AS productPrix, t.stock AS productStock, COUNT(dc) AS totalVentes')
+            ->leftJoin('dc.tProduits', 't')
+            ->groupBy('t.id, t.nom_produit, t.ygo_id, t.prix, t.stock') // Inclure le champ id dans GROUP BY si nécessaire
+            ->orderBy('totalVentes', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**
