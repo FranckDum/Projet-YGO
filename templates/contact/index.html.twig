@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contactez nous{% endblock %}
+{% block h1 %}Contactez nous{% endblock %}
+
+{% block body %}
+
+<main class="container">
+    <div class="col-md-6 ms-auto me-auto">
+        {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.message) }}
+
+        <button type="submit" class="btn btn-primary rounded-custom">Envoyer</button>
+        {{ form_end(form) }}
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,48 @@
+{# <footer class="footer mt-auto py-3 bg-light"> #}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <h5>Navigation</h5>
+                <ul class="list-unstyled">
+                    <li><a class="aLink" href="{{ path('accueil') }}">Accueil</a></li>
+                    <li><a class="aLink" href="{{ path('cartes_all') }}">Nos produits</a></li>
+                    <li><a class="aLink" href="{{ path('app_a_propos') }}">À propos</a></li>
+                    {# <li><a class="aLink" href="#" data-bs-toggle="modal" data-bs-target="#contactModal">Contactez-nous</a></li> #}
+                    <li><a class="aLink" href="{{ path('contact') }}">Contactez-nous</a></li>
+                    {# <li><a class="aLink" href="{{ path('accueil') }}">FAQ</a></li> #}
+                    <li><a class="aLink" href="{{ path('app_mentions_legales') }}">Mentions Légales</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Informations sur la société</h5>
+                <ul class="list-unstyled">
+                    <li class="text-dark">DuelDestinyShop!</li>
+                    <li class="text-dark"> 123 Rue des Duellistes</li>
+                    <li class="text-dark">75000 Paris, France</li>
+                    <li class="text-dark">+33 1 23 45 67 89</li>
+                    <li class="text-dark">DuelDestinyShp@gmail.com</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Suivez-nous</h5>
+                <ul class="list-unstyled">
+                    <li><a class="aLink" href="https://www.facebook.com/?locale=fr_FR">
+                    <img class="ps-2" src={{asset("Images/logo-facebook.png")}} alt="Logo et lien Facebook">Facebook
+                    </a></li>
+                    <li><a class="aLink" href="https://www.instagram.com/">
+                    <img class="ps-2" src={{asset("Images/logo-instagram.png")}} alt="Logo et lien Instagram">Instagram
+                    </a></li>
+                    <li><a class="aLink" href="https://twitter.com/?lang=fr">
+                    <img class="ps-2" src={{asset("Images/logo-twitter.png")}} alt="Logo et lien X (anciennement Twitter)">Twitter
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <p class="text-dark">© {{ 'now'|date('Y') }} Dumotier Franck. Tous droits réservés.</p>
+            </div>
+        </div>
+    </div>
+{# </footer> #}

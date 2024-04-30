@@ -91,14 +91,18 @@ class StripeController extends AbstractController
     #[Route('/payment_success', name: 'payment_success')]
     public function paymentSuccess(EntityManagerInterface $em): Response
     {
-        // new Commande new detailCommande
-        // soustraire les stocks
-        // vider le panier
+    // Récupérer les informations de la session ou d'autres sources appropriées
+    $statut = $this->session->get('statut', 'en cours');
+    $numeros = $this->session->get('numeros', null);
+    $user = $this->getUser(); // Cela suppose que vous utilisez Symfony pour gérer l'authentification des utilisateurs
+    $prix = $this->getMontantTotal(); // Ou toute autre source appropriée pour le prix
 
-        // return $this->render('stripe/payment_success.html.twig');
             // Créer une nouvelle commande
     $commande = new Commandes();
-    $commande->setDateLivraison(new \DateTimeImmutable());
+    $commande->setDateCommande(new \DateTimeImmutable());
+    $commande->setStatut($statut);
+    $commande->setNumeros($numeros);
+    $commande->setUser($user);
     // Vous pouvez ajouter d'autres données à votre commande ici
 
     $panier = $this->session->get('panier', []);
@@ -114,6 +118,7 @@ class StripeController extends AbstractController
         $detailCommande = new DetailCommande();
         $detailCommande->setCommandes($commande);
         $detailCommande->setTProduits($produit);
+        $detailCommande->setPrix($prix);
         $detailCommande->setQuantity($quantite);
         // Vous pouvez ajouter d'autres données au détail de la commande ici
 

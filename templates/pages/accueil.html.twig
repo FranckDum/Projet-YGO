@@ -3,7 +3,6 @@
 {% block stylesheets %}
     <style>
         .ygo-w {
-            /* width: 100% !important; */
             height: auto;
             width: 100% !important;
         }
@@ -83,6 +82,131 @@
             {% endfor %} #}
         </ul>
     </div>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-3 d-flex flex-column align-items-center mx-3 my-3 rounded-custom bg-dark">
+            {% if top5Ventes %}
+                <h2 class="text-primary mt-3 text-center">Meilleures ventes :</h2>
+                <div class="d-flex flex-wrap justify-content-center">
+                    {% for vente in top5Ventes %}
+                        <div class="card m-2 bg-dark rounded-custom cardAccueil"> <!-- Limiter la largeur de la carte et forcer la largeur maximale -->
+                            <h3 class="card-title text-warning text-center h3-card mb-0">{{ vente.productNom }}</h3> <!-- Définir une hauteur minimale pour le titre -->
+                            <img class="card-img-top" src="/Images/ImgCartes/small/{{ vente.ygoId }}.jpg" alt="{{ vente.productNom }}">
+                            <div class="card-body">
+                                <p class="card-text text-white text-center">Prix : {{ vente.productPrix }} €</p>
+                            </div>
+                            <div class="ms-auto me-auto">
+                                {% if vente.productStock %}
+                                    <form method="post" action="{{ path("app_panier_new") }}">
+                                        <select name="quantite">
+
+                                        {% set quantity = vente.productStock %}
+
+                                        {% if vente.productStock > 10 %}
+                                            {% set quantity = 10 %}
+                                        {% endif %}
+
+                                        {% for i in 1 .. quantity %}
+                                            <option value="{{i}}">{{i}}</option>
+                                        {% endfor %}
+                                        <input type="hidden" name="produit" value="{{vente.productId}}" class="btn btn-success">
+                                        <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
+                                    </form>
+                                {% else %}
+                                    <h3 class="text-danger h3-custom text-center">Rupture de stock</h3>
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-12 col-md-3 d-flex flex-column align-items-center border-opacity-50 mx-3 my-3 rounded-custom bg-dark">
+            {% if derniersProduitsActifs %}
+                <h2 class="text-primary mt-3 text-center">Nouveautés :</h2>
+                <div class="d-flex flex-wrap justify-content-center">
+                    {% for dernierAjouts in derniersProduitsActifs %}
+                        <div class="card m-2 bg-dark rounded-custom cardAccueil"> 
+                            <h3 class="card-title text-warning text-center h3-card mb-0">{{ dernierAjouts.nomProduit }}</h3> <!-- Définir une hauteur minimale pour le titre -->
+                            <img class="card-img-top" src="/Images/ImgCartes/small/{{ dernierAjouts.ygoId }}.jpg" alt="{{ dernierAjouts.nomProduit }}">
+                            <div class="card-body">
+                                <p class="card-text text-white text-center">Prix : {{ dernierAjouts.Prix }} €</p>
+                            </div>
+                            <div class="ms-auto me-auto">
+                                {% if dernierAjouts.Stock %}
+                                    <form method="post" action="{{ path("app_panier_new") }}">
+                                        <select name="quantite">
+
+                                        {% set quantity = dernierAjouts.Stock %}
+
+                                        {% if dernierAjouts.Stock > 10 %}
+                                            {% set quantity = 10 %}
+                                        {% endif %}
+
+                                        {% for i in 1 .. quantity %}
+                                            <option value="{{i}}">{{i}}</option>
+                                        {% endfor %}
+                                        <input type="hidden" name="produit" value="{{dernierAjouts.id}}" class="btn btn-success">
+                                        <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
+                                    </form>
+                                {% else %}
+                                    <h3 class="text-danger h3-custom text-center">Rupture de stock</h3>
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-12 col-md-3 d-flex flex-column align-items-center mx-3 my-3 rounded-custom bg-dark">
+            {% if top5Ventes %}
+                <h2 class="text-primary mt-3 text-center">Meilleures ventes :</h2>
+                <div class="d-flex flex-wrap justify-content-center">
+                    {% for vente in top5Ventes %}
+                        <div class="card m-2 bg-dark rounded-custom cardAccueil"> <!-- Limiter la largeur de la carte et forcer la largeur maximale -->
+                            <h3 class="card-title text-warning text-center h3-card mb-0">{{ vente.productNom }}</h3> <!-- Définir une hauteur minimale pour le titre -->
+                            <img class="card-img-top" src="/Images/ImgCartes/small/{{ vente.ygoId }}.jpg" alt="{{ vente.productNom }}">
+                            <div class="card-body">
+                                <p class="card-text text-white text-center">Prix : {{ vente.productPrix }} €</p>
+                            </div>
+                            <div class="ms-auto me-auto">
+                                {% if vente.productStock %}
+                                    <form method="post" action="{{ path("app_panier_new") }}">
+                                        <select name="quantite">
+
+                                        {% set quantity = vente.productStock %}
+
+                                        {% if vente.productStock > 10 %}
+                                            {% set quantity = 10 %}
+                                        {% endif %}
+
+                                        {% for i in 1 .. quantity %}
+                                            <option value="{{i}}">{{i}}</option>
+                                        {% endfor %}
+                                        <input type="hidden" name="produit" value="{{vente.productId}}" class="btn btn-success">
+                                        <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
+                                    </form>
+                                {% else %}
+                                    <h3 class="text-danger h3-custom text-center">Rupture de stock</h3>
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+
+
+
+
+
+
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.10.11/interact.min.js"></script>

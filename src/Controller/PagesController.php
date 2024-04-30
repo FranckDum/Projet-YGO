@@ -8,27 +8,35 @@ use App\Form\FilterCardsFormType;
 use App\Repository\TProduitsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use App\Repository\DetailCommandeRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 
 class PagesController extends AbstractController
 {
     #[Route('/', name:'accueil', methods: ['GET'])]
-    // Annotation définissant la route pour la page d'accueil
-    public function accueil(TProduitsRepository $tProduitsRepository): Response
+    public function accueil(TProduitsRepository $tProduitsRepository, DetailCommandeRepository $detailCommandeRepository): Response
     {
-        // Effectuer la requête pour récupérer les produits activés
+        // Appel de la méthode pour récupérer les 5 meilleures ventes
+        $top5Ventes = $detailCommandeRepository->findTop5Ventes();
+
+        // Récupérer les 5 derniers produits activés ajoutés en base de données
+        $derniersProduitsActifs = $tProduitsRepository->findDerniersProduitsActifs(5);
+
+        // Récupérer d'autres données si nécessaire pour les produits activés
         $produitsActifs = $tProduitsRepository->createQueryBuilder('p')
-        ->where('p.activation = :activation')
-        ->setParameter('activation', true)
-        ->getQuery()
-        ->getResult();
+            ->where('p.activation = :activation')
+            ->setParameter('activation', true)
+            ->getQuery()
+            ->getResult();
 
         return $this->render('pages/accueil.html.twig', [
-            'cards' => $produitsActifs
+            'cards' => $produitsActifs,
+            'top5Ventes' => $top5Ventes, // Passer les données des 5 meilleures ventes à la vue
+            'derniersProduitsActifs' => $derniersProduitsActifs // Passer les données des 5 derniers produits activés à la vue
         ]);
     }
 

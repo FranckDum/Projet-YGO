@@ -23,6 +23,17 @@ class TProduitsRepository extends ServiceEntityRepository
         parent::__construct($registry, TProduits::class);
     }
 
+    public function findDerniersProduitsActifs(int $limit): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.activation = :activation')
+            ->setParameter('activation', true)
+            ->orderBy('p.id', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findSimilaires(HttpClientInterface $client, string $partieNomProduit, int $produitActuelId, int $ygoId): array
     {
         // Récupérer les données de l'API pour le produit actuel
