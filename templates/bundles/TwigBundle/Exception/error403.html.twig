@@ -1,0 +1,15 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Accès refusé{% endblock %}
+{% block h1 %}Accès refusé{% endblock %}
+
+{% block body %}
+
+<main class="container d-flex justify-content-center align-items-center">
+    <div class="d-flex flex-column justify-content-center align-items-center w-75">
+        <h2 class="text-center text-danger">Vous n'avez pas les autorisations nécessaires pour accéder à ce contenu</h2>
+        <img class="ps-2 img-fluid rounded w-75" src={{asset("Images/403.gif")}} alt="Gif animé Yu-Gi-Oh! représentant un non pour un accès refusé erreur 403">
+    </div>
+</main>
+
+{% endblock %}

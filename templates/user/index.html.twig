@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des utilisateurs{% endblock %}
+{% block h1 %}Gestion des utilisateurs{% endblock %}
+
+{% block body %}
+
+<main class="col-md-10 mx-auto p-2">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Fiche User</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    {% if is_granted('ROLE_SUPER_ADMIN') %}
+                        <form class="role-form" action="{{ path('app_user_update_roles', {'id': user.id}) }}" method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token('update_roles' ~ user.id) }}">
+                            <label for="role_super_admin_{{ user.id }}">Super Admin</label>
+                            <input type="checkbox" class="role-checkbox" id="role_super_admin_{{ user.id }}" name="roles[]" value="ROLE_SUPER_ADMIN" {% if 'ROLE_SUPER_ADMIN' in user.roles %}checked{% endif %}>
+                            <label for="role_admin_{{ user.id }}">Admin</label>
+                            <input type="checkbox" class="role-checkbox" id="role_admin_{{ user.id }}" name="roles[]" value="ROLE_ADMIN" {% if 'ROLE_ADMIN' in user.roles %}checked{% endif %}>
+                            <label for="role_user_{{ user.id }}">User</label>
+                            <input type="checkbox" class="role-checkbox" id="role_user_{{ user.id }}" name="roles[]" value="ROLE_USER" {% if 'ROLE_USER' in user.roles %}checked{% endif %}>
+                        </form>
+                    {% endif %}
+                </td>
+                <td>{{ user.nom }}</td>
+                <td>{{ user.prenom }}</td>
+                <td>
+                    <a class="btn btn-secondary rounded-custom" href="{{ path('app_user_show', {'id': user.id}) }}">Fiche</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">Aucun résultat</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</main>
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script>
+    $(document).ready(function() {
+        $('.role-checkbox').change(function() {
+            var form = $(this).closest('.role-form');
+            var formData = form.serialize();
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: formData,
+                success: function(data) {
+                    // Si la mise à jour réussit, affichez un message de succès
+                    // alert('Rôles mis à jour avec succès');
+                },
+                error: function(xhr, status, error) {
+                    // Si une erreur se produit lors de la mise à jour, affichez un message d'erreur
+                    alert('Erreur lors de la mise à jour des rôles');
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

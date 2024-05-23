@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier adresse de facturation{% endblock %}
+{% block h1 %}Modifier adresse de facturation{% endblock %}
+
+{% block body %}
+<main class="container mx-auto p-2">
+    <a class="btn btn-secondary rounded-custom" href="{{ path('app_adresse_facturation_index') }}">Retour</a>
+
+    {{ include('adresse_facturation/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+</main>
+
+{% endblock %}

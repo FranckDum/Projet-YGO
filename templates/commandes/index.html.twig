@@ -1,39 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Commandes index{% endblock %}
+{% block title %}Gestions des commandes{% endblock %}
+{% block h1 %}Gestions des commandes{% endblock %}
 
 {% block body %}
-    <h1>Commandes index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Date_livraison</th>
-                <th>Statut</th>
-                <th>Facture</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for commande in commandes %}
-            <tr>
-                <td>{{ commande.id }}</td>
-                <td>{{ commande.dateLivraison ? commande.dateLivraison|date('Y-m-d') : '' }}</td>
-                <td>{{ commande.statut }}</td>
-                <td>{{ commande.facture }}</td>
-                <td>
-                    <a href="{{ path('app_commandes_show', {'id': commande.id}) }}">show</a>
-                    <a href="{{ path('app_commandes_edit', {'id': commande.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_commandes_new') }}">Create new</a>
+<main class="container mx-auto p-2">
+        <table class="table">
+            <thead>
+                <tr>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <th>Id</th>
+                    {% endif %}
+                    <th>Numéros de commande</th>
+                    <th>Statut</th>
+                    <th>Fiche</th>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <th>Supprimer</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+            {% for commande in commandes %}
+                <tr>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <td>{{ commande.id }}</td>
+                    {% endif %}
+                    <td>{{ commande.numeros }}</td>
+                    <td>{{ commande.statut }}</td>
+                    <td>
+                        <a class="btn btn-secondary rounded-custom" href="{{ path('app_commandes_show', {'id': commande.id}) }}">Fiche</a>
+                    </td>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <td>
+                            <form method="post" action="{{ path('app_commandes_delete', {'id': commande.id}) }}" onsubmit="return confirm('Êtes vous sûr de vouloir supprimer cette commande ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commande.id) }}">
+                                <button type="submit" class="btn btn-danger rounded-custom">Suppr</button>
+                            </form>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Aucun résultat</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </main>
 {% endblock %}

@@ -14,9 +14,8 @@ class CommandesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('date_livraison')
             ->add('statut')
-            ->add('facture')
+            // ->add('facture')
             ->add('user', EntityType::class, [
                 'class' => User::class,
 'choice_label' => 'id',

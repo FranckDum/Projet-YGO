@@ -1,63 +1,93 @@
-    {# Barre de navigation Bootstrap #}
-    <nav class="navbar navbar-expand-lg bg-primary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{path('accueil')}}">
-                <img class="logo" src="{{asset('images/Logomini.png')}}" alt="Logo du site">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <form action="{{ path('app_search') }}" id="searchthis" method="get" class="d-flex form-inline rounded-custom my-2 my-lg-0 d-lg-none">
-                        <input id="search" name="q" class="form-control rounded-custom me-2" type="text" placeholder="Recherche" aria-label="Search">
-                    </form>
-                    {# Liens de navigation #}
-                    <li class="nav-item {% if app.request.attributes.get('_route') == 'accueil' %}active{% endif %}">
-                        <a class="nav-link" href="{{path('accueil')}}">Accueil</a>
-                    </li>
-                    <li class="nav-item {% if app.request.attributes.get('_route') == 'cartes_all' %}active{% endif %}">
-                        <a class="nav-link" href="{{path('cartes_all')}}">Carte à l'Unité</a>
-                    </li>
+{# Barre de navigation Bootstrap #}
+<nav class="navbar navbar-expand-lg bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{path('accueil')}}">
+            <img class="logo" src="{{asset('images/Logomini.png')}}" alt="Logo du site">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <form action="{{ path('app_search') }}" id="searchthis" method="get" class="d-flex form-inline rounded-custom my-2 my-lg-0 d-lg-none">
+                    <input id="search" name="q" class="form-control rounded-custom me-2" type="text" placeholder="Recherche" aria-label="Search">
+                </form>
+                {# Liens de navigation #}
+                <li class="nav-item {% if app.request.attributes.get('_route') == 'accueil' %}active{% endif %}">
+                    <a class="nav-link" href="{{path('accueil')}}">Accueil</a>
+                </li>
+                <li class="nav-item {% if app.request.attributes.get('_route') == 'cartes_all' %}active{% endif %}">
+                    <a class="nav-link" href="{{path('cartes_all')}}">Carte à l'Unité</a>
+                </li>
 
-                    {# Back office pour les administrateurs #}
-                    {% if app.user %}
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <li class="nav-item {% if app.request.attributes.get('_route') == 'app_admin' %}active{% endif %}">
-                                <a class="nav-link" href="{{path('app_admin')}}">Back Office</a>
-                            </li>
-                        {% endif %}
-                    {% endif %}
-                </ul>
-                <ul class="navbar-nav me-auto">
-                    {# Formulaire de recherche #}
-                    {# id supprimer car duplication de la barre de recherche #}
-                    <form action="{{ path('app_search') }}" method="get" class="d-lg-flex form-inline my-2 my-lg-0 d-none">
-                        <input name="q" class="form-control rounded-custom me-2" type="text" placeholder="Recherche" aria-label="Search">
-                    </form>
-                    {# <li class="nav-item">
-                        <a class="nav-link" href="{{path('app_panier')}}">Mon panier</a>
-                    </li> #}
-                    {# Menu utilisateur ou liens de connexion #}
-                    {% if app.user %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                {{app.user.prenom}}
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{path('app_profil')}}">Mon Profil</a></li>
-                                <li><a class="dropdown-item" href="{{path('app_logout')}}">Déconnexion</a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{path('app_register')}}">Inscription</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{path('app_login')}}">Connexion</a>
+                {# Back office pour les administrateurs #}
+                {% if app.user %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item {% if app.request.attributes.get('_route') == 'app_admin' %}active{% endif %}">
+                            <a class="nav-link" href="{{path('app_admin')}}">Back Office</a>
                         </li>
                     {% endif %}
-                </ul>
-            </div>
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav me-auto">
+                {# Formulaire de recherche #}
+                {# id supprimer car duplication de la barre de recherche #}
+                <form action="{{ path('app_search') }}" method="get" class="d-lg-flex form-inline my-2 my-lg-0 d-none">
+                    <input name="q" class="form-control rounded-custom me-2" type="text" placeholder="Recherche" aria-label="Search">
+                </form>
+                {# Menu utilisateur ou liens de connexion #}
+                {% if app.user %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{app.user.prenom}}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{path('app_profil_espace')}}">Mon Espace</a></li>
+                            <li><a class="dropdown-item" href="{{path('app_logout')}}">Déconnexion</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{path('app_register')}}">Inscription</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{path('app_login')}}">Connexion</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-    </nav>
+        <a class="nav-link" href="{{ path('app_panier') }}">
+            <span id="cart-icon" class="material-icons text-dark">shopping_cart</span>
+            {# <span id="cart-count" class="text-dark"></span> #}
+            {% if notif.quantitePanier %}
+                <span class="text-dark" id="notifQuantitePanier">
+                {{ notif.quantitePanier }}
+                </span>
+            {% endif %}
+        </a>
+    </div>
+</nav>
+
+{% block javascripts %}
+    <script>
+
+        // Fonction pour mettre à jour le nombre d'articles dans le panier
+        function updateCartItemCount() {
+            fetch('{{ path('get_cart_item_count') }}')
+                .then(response => response.json())
+                .then(data => {
+                    var cartCountElement = document.getElementById('cart-count');
+                    if (data.itemCount > 0) {
+                        cartCountElement.textContent = data.itemCount;
+                    } else {
+                        cartCountElement.textContent = ''; // Affichez un espace vide s'il n'y a aucun article dans le panier
+                    }
+                })
+                .catch(error => console.error('Erreur lors de la récupération du nombre d\'articles :', error));
+        }
+
+        // Appeler la fonction pour mettre à jour le nombre d'articles périodiquement
+        {# setInterval(updateCartItemCount, 3000); // Mettre à jour toutes les 3 secondes (3000 millisecondes) #}
+
+    </script>
+{% endblock %}

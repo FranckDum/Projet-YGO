@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{# {% extends 'base.html.twig' %}
 
 {% block title %}Paiement refusé{% endblock %}
 {% block h1 %}Paiement refusé{% endblock %}
@@ -10,4 +10,19 @@
         <a class="text-center" href="{{path('app_panier')}}">Retour au panier</a>
     </main>
 
+{% endblock %} #}
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Payment Failure</h1>
+    <p>Unfortunately, your payment was not successful. Please try again.</p>
+    {# Include the flash message display block here #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
 {% endblock %}

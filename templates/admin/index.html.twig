@@ -5,9 +5,53 @@
 {% block h1 %}Back Office{% endblock %}
 
 {% block body %}
-<main class="col-md-10 mb-auto mx-auto p-2">
-    <div class="container">
-        <a class="btn btn-primary rounded-custom col-3" href="{{ path("app_t_produits_index") }}">Gestion des produits</a>
-    </div>
-</main>
+    <main class="container justify-content-center ms-auto me-auto row p-4">
+
+        <div class="col-xl-3 col-lg-4 col-md-6 my-4">
+
+            <ul class="list-group shadow p-0">
+                <li class="list-group-item list-group-item-info"><h2 class="titreDashboardh2 text-center">Produits</h2></li>
+
+                <a href="{{ path("app_t_produits_index") }}"><li class="list-group-item list-group-item-action">Gestion des produits</li></a>
+                <a href="{{ path('app_t_produits_new') }}"><li class="list-group-item list-group-item-action">Ajouter un produit</li></a>
+                {# <a href="{{ path('password_modification') }}"><li class="list-group-item list-group-item-action">Mot de passe</li></a> #}
+                {# <a href="{{ path('app_logout') }}"><li class="list-group-item list-group-item-action list-group-item-danger">Déconnexion</li></a> #}
+
+            </ul>
+
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 my-4">
+
+            <ul class="list-group shadow p-0">
+                <li class="list-group-item list-group-item-warning"><h2 class="titreDashboardh2 text-center">Utilisateurs</h2></li>
+                <a href="{{ path("app_user_index") }}"><li class="list-group-item list-group-item-action">Gestion des utilisateurs</li></a>
+                <a href="{{ path('app_user_new') }}"><li class="list-group-item list-group-item-action">Ajouter un utilisateur</li></a>
+            </ul>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 my-4">
+            <ul class="list-group shadow p-0">
+                <li class="list-group-item list-group-item-info"><h2 class="titreDashboardh2 text-center">Livraisons</h2></li>
+                <a href="{{ path('app_adresse_livraison_index') }}"><li class="list-group-item list-group-item-action">Gestions des adresses de livraison</li></a>
+                <a href="{{ path('app_adresse_livraison_new') }}"><li class="list-group-item list-group-item-action">Ajouter une adresse de livraison</li></a>
+            </ul>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 my-4">
+            <ul class="list-group shadow p-0">
+                <li class="list-group-item list-group-item-warning"><h2 class="titreDashboardh2 text-center">Facturations</h2></li>
+                <a href="{{ path('app_adresse_facturation_index') }}"><li class="list-group-item list-group-item-action">Gestions des adresses de facturation</li></a>
+                <a href="{{ path('app_adresse_facturation_new') }}"><li class="list-group-item list-group-item-action">Ajouter une adresse de facturation</li></a>
+            </ul>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 my-4">
+            <ul class="list-group shadow p-0">
+                <li class="list-group-item list-group-item-danger"><h2 class="titreDashboardh2 text-center">Commandes</h2></li>
+                <a href="{{ path('app_commandes_index') }}"><li class="list-group-item list-group-item-action">Gestions des commandes</li></a>
+            </ul>
+        </div>
+
+    </main>
 {% endblock %}

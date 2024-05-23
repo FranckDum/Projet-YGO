@@ -4,15 +4,26 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    private: '%kernel.project_dir%/private'
 
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-
+    # Définition explicite de votre service NotificationManagerService
+    App\Service\NotificationManagerService:
+        arguments:
+            $session: '@session'
     # Définition explicite de votre service MailerService
     App\Services\MailerService:
+    App\Service\PanierService:
+        arguments:
+            $tProduitsRepository: '@App\Repository\TProduitsRepository'
+            $livreurs: '@App\Repository\LivraisonRepository'
+            $requestStack: '@request_stack'
+            $tokenStorage: '@security.token_storage' # Injection de TokenStorageInterface
+            $em: '@doctrine.orm.entity_manager'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

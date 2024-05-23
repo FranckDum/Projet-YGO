@@ -6,44 +6,128 @@
 
 {% block body %}
 <main class="col-md-10 mx-auto p-2">
-<section class= "container">
+    <section class= "container">
     <div class="row d-flex justify-content-center">
-    {% if productsWithCard|length > 0 %}
-            {% for card in productsWithCard %}
-                {% set produit = card.product %}
-                {% set carte = card.card %}
-                    <div class="col-md-6 col-lg-3 d-flex flex-column align-items-center border border-3 border-opacity-50 border-black mx-3 my-3 rounded bg-secondary carte">
-                        <a class"a" href="{{ path('detailProduit', {'id': produit.id}) }}">
-                        <h2 class="text-center"> {{ produit.nomProduit }} </h2>
-                        </a>
-                        <div class="mt-auto">
-                            <div class="accordion" id="accordionDesc_{{produit.ygoId}}">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                        <a class"a" href="{{ path('detailProduit', {'id': produit.id}) }}">
-                                        <img class="img-fluid" src="/Images/ImgCartes/normal/{{carte.id}}.jpg">
-                                        </a>
-                                        <button class="accordion-button collapsed bg-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{produit.ygoId}}" aria-expanded="true" aria-controls="collapse_{{produit.ygoId}}">
-                                            Description :
-                                        </button>
-                                    </h2>
-                                    <div id="collapse_{{produit.ygoId}}" class="accordion-collapse collapse" data-bs-parent="#accordionDesc_{{produit.ygoId}}">
-                                        <div class="accordion-body bg-dark">
-                                            {{ carte.desc }}
-                                        </div>
+    <div id="flash-messages"></div> <!-- Conteneur pour les messages flash -->
+    {% if productsWithCard is empty %}
+        <div>
+            <h2 class="text-danger text-center">Aucun produit trouvé.</h2>
+        </div>
+    {% else %}
+        {% for card in productsWithCard %}
+            {% set produit = card.product %}
+            {% set carte = card.card %}
+                <div class="col-md-6 col-lg-3 d-flex flex-column align-items-center border border-3 border-opacity-50 border-black mx-3 my-3 rounded bg-secondary carte">
+                    <a class"a" href="{{ path('detailProduit', {'id': produit.id}) }}">
+                    <h2 class="text-center"> {{ produit.nomProduit }} </h2>
+                    </a>
+                    <div class="mt-auto">
+                        <div class="accordion" id="accordionDesc_{{produit.ygoId}}">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <a class"a" href="{{ path('detailProduit', {'id': produit.id}) }}">
+                                    <img class="img-fluid" src="/Images/ImgCartes/normal/{{carte.id}}.jpg">
+                                    </a>
+                                    <button class="accordion-button collapsed bg-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{produit.ygoId}}" aria-expanded="true" aria-controls="collapse_{{produit.ygoId}}">
+                                        Description :
+                                    </button>
+                                </h2>
+                                <div id="collapse_{{produit.ygoId}}" class="accordion-collapse collapse" data-bs-parent="#accordionDesc_{{produit.ygoId}}">
+                                    <div class="accordion-body bg-dark">
+                                        {{ carte.desc }}
                                     </div>
-                                </div>
+                                    </div>
                             </div>
-                                <div>Stock : {{ produit.stock }}</div>
-                                <div>{{ produit.prix|number_format(2) }} €</div>
+                        </div>
+                        <div>Prix : {{ produit.prix|number_format(2) }} €</div>
+                        <div class="ms-auto me-auto mb-3">
+                            {% if produit.Stock %}
+                                <form class="add-to-cart-form" method="post" action="{{ path("app_panier_new") }}">
+                                    <select name="quantite" aria-label= "Bouton pour choisir la quantité de l'article à ajouter au panier">
+
+                                    {% set quantity = produit.Stock %}
+
+                                    {% if produit.Stock > 10 %}
+                                        {% set quantity = 10 %}
+                                    {% endif %}
+
+                                    {% for i in 1 .. quantity %}
+                                        <option value="{{i}}">{{i}}</option>
+                                    {% endfor %}
+                                    <input type="hidden" name="produit" value="{{produit.id}}" class="btn btn-success">
+                                    <input type="hidden" name="nomProduit" value="{{produit.nomProduit}}" class="btn btn-success">
+                                    <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
+                                </form>
+                            {% else %}
+                                <h3 class="text-danger h3-custom text-center">Rupture de stock</h3>
+                            {% endif %}
+                            
                         </div>
                     </div>
-            {% endfor %}
-    {% else %}
-    <p>Aucun produit trouvé.</p>
+                </div>
+        {% endfor %}
     {% endif %}
     </div>
     {% include "_pagination_search.html.twig" %}
 </section>
 </main>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        // Ajouter produit au panier sans recharger la page et afficher un message flash
+        $(document).ready(function() {
+            $('.add-to-cart-form').on('submit', function(event) {
+                event.preventDefault(); // Empêche le formulaire de se soumettre normalement
+
+                let formData = $(this).serialize(); // Sérialise les données du formulaire
+
+                let flashKey = 'success_' + window.location.pathname;
+
+                let quantiteValue = $(this).find('select[name="quantite"]').val();
+
+                let productName = $(this).find('[name="nomProduit"]').val(); // Récupération du nom du produit depuis le formulaire
+
+                $.ajax({
+                    method: 'POST',
+                    url: "{{ path('app_panier_new') }}",
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            // Ajout du message flash de succès avec le nom du produit
+                            let flashMessage = $('<div class="alert alert-success" role="alert" data-flash-key="' + flashKey + '">L\'article "' + productName + '" a bien été ajouté au panier</div>');
+                            $('#flash-messages').append(flashMessage);
+
+                            let notifQuantitePanier = document.getElementById('notifQuantitePanier');
+                            let notifQuantitePanierInt = parseInt(notifQuantitePanier.textContent);
+                            quantiteValue = parseInt(quantiteValue);
+                            notifQuantitePanier.textContent = (notifQuantitePanierInt + quantiteValue);
+
+                            // Disparition du message après 5 secondes
+                            setTimeout(function() {
+                                $('[data-flash-key="' + flashKey + '"]').fadeOut('slow', function() {
+                                    $(this).remove();
+                                });
+                            }, 5000);
+                        } else {
+                            // Ajout du message d'erreur
+                            let errorMessage = $('<div class="alert alert-danger" role="alert">' + response.message + '</div>');
+                            $('#flash-messages').append(errorMessage);
+                            
+                            // Disparition du message d'erreur après 5 secondes
+                            setTimeout(function() {
+                                errorMessage.fadeOut('slow', function() {
+                                    $(this).remove();
+                                });
+                            }, 5000);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Erreur lors de la requête AJAX:', error);
+                    }
+                });
+            })
+        });
+    </script>
 {% endblock %}

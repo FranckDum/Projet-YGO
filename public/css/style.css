@@ -3,6 +3,51 @@
     padding: 0;
 }
 
+/* Formulaire stripe */
+
+.payment-form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.payment-form-title {
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.payment-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stripe-button-el {
+    background: #6772e5;
+    border: none;
+    color: white;
+    font-size: 16px;
+    padding: 12px 24px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.stripe-button-el:hover {
+    background: #5469d4;
+}
+
+.stripe-button-el:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(103, 114, 229, 0.5);
+}
+
+
 /* Carousel */
 
 #container {
@@ -50,7 +95,7 @@
 
 #container[data-animated] #list {
     width: max-content;
-    animation: scroll 220s linear infinite; /* Applique l'animation de défilement */
+    animation: scroll 100s linear infinite; /* Applique l'animation de défilement */
 }
 
 @keyframes scroll {
@@ -77,6 +122,11 @@
 
 .rounded-custom { /* Arrondi */
     border-radius: 0.25rem;
+}
+
+.bg-transparent-custom {
+    background-color: transparent;
+    border: none; /* Optionnel : supprimer les bordures si nécessaire */
 }
 
 .imagePanier {
@@ -152,7 +202,7 @@ body {
 }
 
 main{
-    flex-grow: 1;
+    flex-grow: 1!important;
 }
 
 .logo {
@@ -187,8 +237,9 @@ h1{
     width: 20%; */
     /* color: #d4be18; */
     color: #df6919;
-    font-size: 60px;
+    font-size: clamp(30px, 6vw, 60px)!important;
     height: auto;
+    margin-top: 130px; /* Ajoutez la hauteur de la barre de navigation fixée */
 }
 
 .titreProduit{
@@ -213,9 +264,14 @@ p{
     flex-grow: 1;
 }
 
+.h2-card-accueil {
+    font-size: 2rem;
+    min-height: 5rem;
+}
+
 .h3-card {
     font-size: 1.25rem; /* taille de police de 1.25rem (environ 20 pixels) */
-    min-height: 3.6rem;
+    min-height: 4.5rem;
 }
 
 .pCarte{
@@ -281,9 +337,40 @@ a{
     text-shadow: 0 0 5px black; /* Ajout de l'ombre autour du texte */
 }
 
+.navbar {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000; /* Assurez-vous que la barre de navigation est au-dessus de tous les autres éléments */
+}
+
+.w-20 {
+    width: 20%;
+}
+
+.w-200px{
+    width: 200px;
+}
+
 /* .carousel {
     height: 10vh !important; 212529
 } */
+
+/* Pour les tablettes et les mobiles */
+@media screen and (max-width: 991px) {
+    /* Déplacer le menu burger tout à gauche */
+    .navbar-toggler {
+        order: -1!important; /* Déplace le bouton en premier dans le flux du contenu */
+    }
+
+    /* Centrer le logo */
+    .navbar-brand {
+        margin: 0 auto!important; /* Centre le logo horizontalement */
+    }
+}
+
+
+
 
 /* ------------------------------------------Footer---------------------------------------------------- */
 .aLink {
@@ -300,6 +387,12 @@ a{
 }
 
 /* ------------------------------------------Laptop---------------------------------------------------- */
+@media screen and (max-width: 991px)
+{
+    h1{
+        margin-top: 100px; /* Ajoutez la hauteur de la barre de navigation fixée */
+    }
+}
 @media screen and (min-width: 991px)
 {
     .logo {
@@ -307,4 +400,11 @@ a{
     }
 }
 
+@media screen and (max-width: 575px)
+{
+    h1{
+        font-size: 30px;
+        margin-top: 100px; /* Ajoutez la hauteur de la barre de navigation fixée */
+    }
+}
 

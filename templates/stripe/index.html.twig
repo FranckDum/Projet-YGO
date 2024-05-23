@@ -1,22 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Formulaire de paiment{% endblock %}
-{% block h1 %}Formulaire de paiment{% endblock %}
+{% block title %}Formulaire de paiement{% endblock %}
+{% block h1 %}Formulaire de paiement{% endblock %}
 
 {% block body %}
-
-    <form action="{{path('process_payment')}}" method="post">
-
-        <script
-            src="https://checkout.stripe.com/checkout.js"
-            class="stripe-button"
-            data-key="{{ stripe_public_key }}"
-            data-amount="{{ montant }}"
-            data-name="DuelDestinyShop"
-            data-description="achat de carte à jouer/collectionner"
-            data-currency="eur"
-            data-locale="auto"
-
-    </form>
-
+    <main class="payment-form-container">
+        <h2 class="payment-form-title">Payer avec Stripe</h2>
+        <form action="{{ path('process_payment') }}" method="post" class="payment-form">
+            <script
+                src="https://checkout.stripe.com/checkout.js"
+                class="stripe-button"
+                data-key="{{ stripe_public_key }}"
+                data-amount="{{ montant }}"
+                data-name="DuelDestinyShop"
+                data-description="achat de carte à jouer/collectionner"
+                data-currency="eur"
+                data-locale="auto">
+            </script>
+        </form>
+    </main>
 {% endblock %}

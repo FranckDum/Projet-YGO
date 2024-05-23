@@ -7,14 +7,14 @@
 
 {% block body %}
 <main class="col-md-10 mx-auto p-2">
-    <nav class="navbar bg-body">
-    <div class="container-fluid">
+    {# <nav class="navbar bg-body"> #}
+    <div class="container-fluid bg-body">
     <form class="d-flex" role="search">
-        <input class="form-control rounded-custom me-2" type="text" name="search" placeholder="Produit(s)..." aria-label="Search">
+        <input class="form-control w-200px rounded-custom me-2" type="text" name="search" placeholder="Produit(s)..." aria-label="Search">
         <button class="btn btn-outline-secondary rounded-custom" type="submit">Rechercher</button>
     </form>
     </div>
-    </nav>
+    {# </nav> #}
 
     <table class="table text-center table-hover mt-4">
         <thead>
@@ -50,7 +50,10 @@
                     <a class="btn btn-success rounded-custom" href="{{ path('app_t_produits_edit', {'id': t_produit.id}) }}">Modif</a>
                 </td>
                 <td>
-                    <a class="btn btn-danger rounded-custom" href="{{ path('app_t_produits_delete', {'id': t_produit.id}) }}">Suppr</a>
+                    <form method="post" action="{{ path('app_t_produits_delete', {'id': t_produit.id}) }}" onsubmit="return confirm('Êtes vous sûr de vouloir supprimer ce produit ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ t_produit.id) }}">
+                        <button type="submit" class="btn btn-danger rounded-custom">Supprimer</button>
+                    </form>
                 </td>
             </tr>
         {% else %}

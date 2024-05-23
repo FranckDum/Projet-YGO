@@ -23,14 +23,33 @@ class TProduitsRepository extends ServiceEntityRepository
         parent::__construct($registry, TProduits::class);
     }
 
-    public function findDerniersProduitsActifs(int $limit): array
+    public function findByYgoIds(array $ygoIds): array
     {
         return $this->createQueryBuilder('p')
-            ->where('p.activation = :activation')
+            ->andWhere('p.ygo_id IN (:ygoIds)')
+            ->andWhere('p.activation = :activation')
+            ->setParameter('ygoIds', $ygoIds)
             ->setParameter('activation', true)
-            ->orderBy('p.id', 'DESC')
-            ->setMaxResults($limit)
+            ->setMaxResults(5) // Limiter le nombre de résultats à 5
             ->getQuery()
+            ->getResult();
+    }
+
+    public function findDerniersProduitsActifs(int $limit): array
+    {
+        // Crée un QueryBuilder pour l'entité 'Produit' avec l'alias 'p'
+        return $this->createQueryBuilder('p')
+            // Ajoute une condition WHERE pour sélectionner uniquement les produits actifs
+            ->where('p.activation = :activation')
+            // Définit le paramètre 'activation' à true
+            ->setParameter('activation', true)
+            // Trie les résultats par ID en ordre décroissant
+            ->orderBy('p.id', 'DESC')
+            // Limite le nombre de résultats retournés à la valeur de $limit
+            ->setMaxResults($limit)
+            // Convertit le QueryBuilder en une requête Doctrine
+            ->getQuery()
+            // Exécute la requête et retourne les résultats sous forme de tableau
             ->getResult();
     }
 

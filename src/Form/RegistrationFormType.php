@@ -53,7 +53,7 @@ class RegistrationFormType extends AbstractType
                 'attr' => ['autocomplete' => 'new-password'],
                 'first_options'  => ['label' => 'Mot de passe'],
                 'second_options' => ['label' => 'Répétez votre mot de passe'],
-                'invalid_message' => 'Votre mot de passe est invalide',
+                'invalid_message' => 'Vos mots de passe ne sont pas identiques',
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Entrez un mot de passe svp',

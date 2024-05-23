@@ -5,44 +5,34 @@
 {% block h1 %}Détails du produit : {{ produit.nomProduit }}{% endblock %}
 
 {% block body %}
-<main class="col-md-10 mx-auto p-2">
+<main class="container mx-auto p-2">
 {% for carte in apiProduits %} 
     {% if carte.id == produit.ygoId %}
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="bg-white rounded-custom p-3">
+                    <div class="bg-dark rounded-custom p-3">
                         <div class="row">
                             <div class="col-md-4">
                                 <img class="img-fluid" src="/Images/ImgCartes/normal/{{ carte.id }}.jpg" alt="{{ produit.nomProduit }}">
                             </div>
                             <div class="col-md-8">
-                                <h2 class="text-center titreProduit">{{ produit.nomProduit }}</h2>
-                                <h3 class="mt-3 titreProduit">Description :</h3>
-                                <div class="mt-3 lead pCarte">{{ carte.desc }}</div>
+                                <h2 class="text-center text-warning">{{ produit.nomProduit }}</h2>
+                                <h3 class="mt-3 text-warning">Description :</h3>
+                                <div class="mt-3 lead text-white">{{ carte.desc }}</div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="mt-3 lead pCarte">Prix : {{ produit.prix|number_format(2) }} €</div>
+                                        <div class="mt-3 lead text-white">Prix : {{ produit.prix|number_format(2) }} €</div>
                                     </div>
-                                    {# <div class="col-md-6">
-                                        <a href="{{path('visitor_cart_add', {'id':produit.id})}}" class="btn btn-primary rounded-custom mt-3">Ajouter au panier</a>
-                                    </div> #}
                                 </div>
-                                {# <div>
-                                    {% if produit.stock > 0 %}
-                                        <span class="badge text-bg-success">Produit disponible</span>
-                                    {% else %}
-                                        <span class="badge text-bg-danger">Stock épuisé</span>
-                                    {% endif %}
-                                </div> #}
-                                <div>
-                                    {% if produit.stock %}
-                                        <form method="post" action="{{ path("app_panier_new") }}">
-                                            <select name="quantite">
+                                <div class="col-md-3 ms-auto mb-3">
+                                    {% if produit.Stock %}
+                                        <form class="add-to-cart-form" method="post" action="{{ path("app_panier_new") }}">
+                                            <select name="quantite" aria-label= "Bouton pour choisir la quantité de l'article à ajouter au panier">
 
-                                            {% set quantity = produit.stock %}
+                                            {% set quantity = produit.Stock %}
 
-                                            {% if produit.stock > 10 %}
+                                            {% if produit.Stock > 10 %}
                                                 {% set quantity = 10 %}
                                             {% endif %}
 
@@ -50,12 +40,12 @@
                                                 <option value="{{i}}">{{i}}</option>
                                             {% endfor %}
                                             <input type="hidden" name="produit" value="{{produit.id}}" class="btn btn-success">
+                                            <input type="hidden" name="nomProduit" value="{{produit.nomProduit}}" class="btn btn-success">
                                             <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
                                         </form>
                                     {% else %}
-                                        <h3 class="text-danger">Rupture de stock</h3>
+                                        <h3 class="text-danger h3-custom text-center">Rupture de stock</h3>
                                     {% endif %}
-                                    
                                 </div>
                             </div>
                         </div>
@@ -66,16 +56,16 @@
     {% endif %}
 {% endfor %}
 
-
+<div id="flash-messages"></div> <!-- Conteneur pour les messages flash -->
 
 {% if produitsSimilaires %}
 
             <div class="row d-flex justify-content-center flex-wrap mt-5">
             <h3 class="text-center text-warning">Vous avez choisi {{ produit.nomProduit }}, vous aimerez aussi :</h3>
                 {% for produitSimilaire in produitsSimilaires %}
-                    <div class="col-12 col-md-4 col-lg-2 d-flex flex-column align-items-center border border-3 border-opacity-50 border-black mx-3 my-3 rounded-custom bg-lighter carte">
+                    <div class="col-12 col-md-4 col-lg-2 d-flex flex-column align-items-center border border-3 border-opacity-50 border-black mx-3 my-3 rounded-custom bg-dark carte">
                         <a class="a" href="{{ path('detailProduit', {'id': produitSimilaire.id}) }}">
-                            <h4 class="text-center titreProduit">{{ produitSimilaire.nomProduit }}</h4>
+                            <h4 class="text-center text-warning">{{ produitSimilaire.nomProduit }}</h4>
                         </a>
                         <a class="a mt-auto" href="{{ path('detailProduit', {'id': produitSimilaire.id}) }}">
                             <div>
@@ -84,13 +74,96 @@
                         </a>
                         <div>
                             {# <p class="card-text pCarte">Stock : {{ produitSimilaire.stock }}</p> #}
-                            <p class="card-text pCarte mt-2">Prix : {{ produitSimilaire.prix|number_format(2) }} €</p>
+                            <p class="card-text text-white mt-2">Prix : {{ produitSimilaire.prix|number_format(2) }} €</p>
                             {# <a href="{{path('visitor_cart_add', {'id':produitSimilaire.id})}}" class="btn btn-primary rounded-custom mb-2">Ajouter au panier</a> #}
+                        </div>
+                        <div class="ms-auto me-auto mb-3">
+                            {% if produitSimilaire.Stock %}
+                                <form class="add-to-cart-form" method="post" action="{{ path("app_panier_new") }}">
+                                    <select name="quantite" aria-label= "Bouton pour choisir la quantité de l'article à ajouter au panier">
+
+                                    {% set quantity = produitSimilaire.Stock %}
+
+                                    {% if produitSimilaire.Stock > 10 %}
+                                        {% set quantity = 10 %}
+                                    {% endif %}
+
+                                    {% for i in 1 .. quantity %}
+                                        <option value="{{i}}">{{i}}</option>
+                                    {% endfor %}
+                                    <input type="hidden" name="produit" value="{{produitSimilaire.id}}" class="btn btn-success">
+                                    <input type="hidden" name="nomProduit" value="{{produitSimilaire.nomProduit}}" class="btn btn-success">
+                                    <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
+                                </form>
+                            {% else %}
+                                <h3 class="text-danger h3-custom text-center">Rupture de stock</h3>
+                            {% endif %}
                         </div>
                     </div>
                 {% endfor %}
             </div>
 {% endif %}
 </main>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        // Ajouter produit au panier sans recharger la page et afficher un message flash
+$(document).ready(function() {
+    $('.add-to-cart-form').on('submit', function(event) {
+        event.preventDefault(); // Empêche le formulaire de se soumettre normalement
+
+        let formData = $(this).serialize(); // Sérialise les données du formulaire
+
+        let flashKey = 'success_' + window.location.pathname;
+
+        let quantiteValue = $(this).find('select[name="quantite"]').val();
+
+        let productName = $(this).find('[name="nomProduit"]').val(); // Récupération du nom du produit depuis le formulaire
+
+        $.ajax({
+            method: 'POST',
+            url: "{{ path('app_panier_new') }}",
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    // Ajout du message flash de succès avec le nom du produit
+                    let flashMessage = $('<div class="alert alert-success" role="alert" data-flash-key="' + flashKey + '">L\'article "' + productName + '" a bien été ajouté au panier</div>');
+                    $('#flash-messages').append(flashMessage);
+
+                    let notifQuantitePanier = document.getElementById('notifQuantitePanier');
+                    let notifQuantitePanierInt = parseInt(notifQuantitePanier.textContent);
+                    quantiteValue = parseInt(quantiteValue);
+                    console.log(typeof notifQuantitePanierInt);
+                    console.log(typeof quantiteValue);
+                    notifQuantitePanier.textContent = (notifQuantitePanierInt + quantiteValue);
+
+                    // Disparition du message après 5 secondes
+                    setTimeout(function() {
+                        $('[data-flash-key="' + flashKey + '"]').fadeOut('slow', function() {
+                            $(this).remove();
+                        });
+                    }, 5000);
+                } else {
+                    // Ajout du message d'erreur
+                    let errorMessage = $('<div class="alert alert-danger" role="alert">' + response.message + '</div>');
+                    $('#flash-messages').append(errorMessage);
+                    
+                    // Disparition du message d'erreur après 5 secondes
+                    setTimeout(function() {
+                        errorMessage.fadeOut('slow', function() {
+                            $(this).remove();
+                        });
+                    }, 5000);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Erreur lors de la requête AJAX:', error);
+            }
+        });
+    });
+});
+    </script>
 {% endblock %}
 

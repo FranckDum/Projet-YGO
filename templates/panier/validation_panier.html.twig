@@ -1,0 +1,161 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Récapitulatif de la commande{% endblock %}
+{% block h1 %}Récapitulatif de la commande{% endblock %}
+
+{% block body %}
+<main class="container row mx-auto p-2">
+    {% if app.user %}
+    <div class="row">
+        <!-- Côté gauche pour le récapitulatif du panier -->
+        <div class="col-md-6">
+        <h2 class="text-center mt-3">Récapitulatif de votre panier</h2>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Image</th>
+                            <th>Nom</th>
+                            <th>Quantité</th>
+                            <th>Prix</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for produit in produits %}
+                        <tr id="tr{{ produit.id }}">
+                            <td><img class="imagePanier" src="/Images/ImgCartes/small/{{ produit.ygoId }}.jpg" alt="{{ produit.nom }}"></td>
+                            <td>{{ produit.nom }}</td>
+                            <td>
+                                <span id="quantite{{ produit.id }}">{{ produit.quantite }}</span>
+                            </td>
+                            <td>{{ produit.prix }}</td>
+                            <td><span id="total{{ produit.id }}">{{ produit.total|number_format(2) }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="1"></td>
+                            <td class="text-primary display-5">Montant total du panier :</td>
+                            <td colspan="2"></td>
+                            <td><span id="montantTotal">{{ totalPanier|number_format(2) }}</span> €</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="shadow">
+                <h2 class="text-center mt-3" id="montantTotalCommande">Montant total de la commande : {{ montantTotalCommande|number_format(2) }} €</h2>
+            </div>
+        </div>
+
+        <!-- Côté droit pour les adresses -->
+        <div class="col-md-6">
+<form method="POST" action="{{ path('app_validation_panier') }}">
+    <div class="shadow">
+        <h2 class="text-center mt-3">Choisir votre adresse de livraison</h2>
+        <select name="adresse_livraison" id="livraison" class="form-control" aria-label="Bouton pour choisir l'adresse de livraison">
+            {% for adresseLivraison in app.user.adresseLivraisons %}
+                <option value="{{ adresseLivraison.id }}">{{ adresseLivraison.nom }} - {{ adresseLivraison.prenom }} - {{ adresseLivraison.adresse }} {{ adresseLivraison.complementAdresse }} - {{ adresseLivraison.cp }} - {{ adresseLivraison.ville }}</option>
+            {% endfor %}
+        </select>
+        <a class="btn btn-info" href="{{ path('app_adresse_livraison_index') }}">Gérer mes adresses de livraison</a>
+    </div>
+    <div class="shadow">
+        <h2 class="text-center mt-3">Choisir mode de livraison</h2>
+        <select name="livreur" id="livreur" class="form-control" aria-label="Bouton pour choisir mode de livraison">
+            {% for livreur in livreurs %}
+                <option value="{{ livreur.id }}">{{ livreur.transporteur }} - {{ livreur.prix }} €</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary mt-2">Valider mode de livraison</button>
+    </div>
+</form>
+
+
+            <div class="shadow mt-3">
+                <h2 class="text-center mt-3">Votre adresse de facturation</h2>
+                <ul class="list-group">
+                    <li class="list-group-item">Nom :
+                        {% if app.user.adresseFacturation %}
+                            {{ app.user.adresseFacturation.nom }}
+                        {% else %}
+                            <span class="fst-italic text-danger">Non renseigné</span>
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item">Prénom :
+                        {% if app.user.adresseFacturation %}
+                            {{ app.user.adresseFacturation.prenom }}
+                        {% else %}
+                            <span class="fst-italic text-danger">Non renseigné</span>
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item">Adresse :
+                        {% if app.user.adresseFacturation %}
+                            {{ app.user.adresseFacturation.adresse }}
+                        {% else %}
+                            <span class="fst-italic text-danger">Non renseigné</span>
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item">Complément d'adresse :
+                        {% if app.user.adresseFacturation %}
+                            {{ app.user.adresseFacturation.complementAdresse }}
+                        {% else %}
+                            <span class="fst-italic text-danger">Non renseigné</span>
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item">Code Postal :
+                        {% if app.user.adresseFacturation %}
+                            {{ app.user.adresseFacturation.cp }}
+                        {% else %}
+                            <span class="fst-italic text-danger">Non renseigné</span>
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item">Ville :
+                        {% if app.user.adresseFacturation %}
+                            {{ app.user.adresseFacturation.ville }}
+                        {% else %}
+                            <span class="fst-italic text-danger">Non renseignée</span>
+                        {% endif %}
+                    </li>
+                </ul>
+                {% if app.user.adresseFacturation %}
+                    <a class="btn btn-info" href="{{ path('app_adresse_facturation_edit', {'id': app.user.adresseFacturation.id}) }}">Modifier adresse de facturation</a>
+                {% else %}
+                    <a class="btn btn-info" href="{{ path('app_adresse_facturation_new') }}">Ajouter une adresse de facturation</a>
+                {% endif %}
+            </div>
+
+            {% if app.user.adresseFacturation and app.user.adresseLivraisons %}
+                {% set adresseFacturationComplete = app.user.adresseFacturation.nom is not null and app.user.adresseFacturation.prenom is not null and app.user.adresseFacturation.adresse is not null and app.user.adresseFacturation.cp is not null and app.user.adresseFacturation.ville is not null %}
+                {% set livraisonsComplete = true %}
+                {% for adresseLivraison in app.user.adresseLivraisons %}
+                    {% if adresseLivraison.nom is null or adresseLivraison.prenom is null or adresseLivraison.adresse is null or adresseLivraison.cp is null or adresseLivraison.ville is null %}
+                        {% set livraisonsComplete = false %}
+                    {% endif %}
+                {% endfor %}
+                {% set modeLivraisonValide = app.session.get('mode_livraison') is not null %}
+                {% set adresseLivraisonValide = app.session.get('adresse_livraison_id') is not null %}
+                {% if adresseFacturationComplete and livraisonsComplete and modeLivraisonValide and adresseLivraisonValide %}
+                    <a class="btn btn-success rounded-custom w-100 mt-3" href="{{ path('app_stripe') }}">Passer à l'étape suivante (paiement)</a>
+                {% endif %}
+            {% endif %}
+
+    {# Dump pour vérifier si l'ID du mode de livraison est présent dans la session #}
+    {% dump(app.session.get('mode_livraison')) %}
+
+    {# Dump pour vérifier si l'ID de l'adresse de livraison est présent dans la session #}
+    {% dump(app.session.get('adresse_livraison_id')) %}
+
+    {# Dump pour vérifier si l'ID de l'adresse de livraison est présent dans la session #}
+    {% dump(app.session.get('adresse_facturation_id')) %}
+
+    {% dump(app.session.get('user')) %}
+
+        </div>
+    </div>
+    {% else %}
+    <h2>Veuillez vous connecter pour accéder au paiement</h2>
+    {% endif %}
+</main>
+{% endblock %}

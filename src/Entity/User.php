@@ -62,10 +62,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $activation = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Livraison::class)]
+    private Collection $livraisons;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: AdresseLivraison::class, cascade:['persist', 'remove'])]
+    private Collection $adresseLivraisons;
+
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?AdresseFacturation $adresseFacturation = null;
+
 
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
+        $this->livraisons = new ArrayCollection();
+        $this->adresseLivraisons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -260,6 +271,88 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setActivation(?string $activation): static
     {
         $this->activation = $activation;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Livraison>
+     */
+    public function getLivraisons(): Collection
+    {
+        return $this->livraisons;
+    }
+
+    public function addLivraison(Livraison $livraison): static
+    {
+        if (!$this->livraisons->contains($livraison)) {
+            $this->livraisons->add($livraison);
+            $livraison->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLivraison(Livraison $livraison): static
+    {
+        if ($this->livraisons->removeElement($livraison)) {
+            // set the owning side to null (unless already changed)
+            if ($livraison->getUser() === $this) {
+                $livraison->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AdresseLivraison>
+     */
+    public function getAdresseLivraisons(): Collection
+    {
+        return $this->adresseLivraisons;
+    }
+
+    public function addAdresseLivraison(AdresseLivraison $adresseLivraison): static
+    {
+        if (!$this->adresseLivraisons->contains($adresseLivraison)) {
+            $this->adresseLivraisons->add($adresseLivraison);
+            $adresseLivraison->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdresseLivraison(AdresseLivraison $adresseLivraison): static
+    {
+        if ($this->adresseLivraisons->removeElement($adresseLivraison)) {
+            // set the owning side to null (unless already changed)
+            if ($adresseLivraison->getUser() === $this) {
+                $adresseLivraison->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAdresseFacturation(): ?AdresseFacturation
+    {
+        return $this->adresseFacturation;
+    }
+
+    public function setAdresseFacturation(?AdresseFacturation $adresseFacturation): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($adresseFacturation === null && $this->adresseFacturation !== null) {
+            $this->adresseFacturation->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($adresseFacturation !== null && $adresseFacturation->getUser() !== $this) {
+            $adresseFacturation->setUser($this);
+        }
+
+        $this->adresseFacturation = $adresseFacturation;
 
         return $this;
     }

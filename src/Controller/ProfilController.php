@@ -2,18 +2,24 @@
 
 namespace App\Controller;
 
-use App\Form\EditUserPasswordFormType;
 use App\Form\EditUserProfilFormType;
+use App\Form\EditUserPasswordFormType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/profil', methods:['GET', 'POST'])]
 class ProfilController extends AbstractController
 {
+    #[Route('/espace', name: 'app_profil_espace', methods:['GET'])]
+    public function espace(): Response
+    {
+        return $this->render('profil/espace.html.twig', []);
+    }
+
     #[Route('/', name: 'app_profil', methods:['GET'])]
     public function index(): Response
     {

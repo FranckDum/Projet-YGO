@@ -7,47 +7,10 @@
 {% block body %}
 
 <main class="col-md-10 mx-auto p-2">
-        <div class="container">
-
-            {% for message in app.flashes('warning') %}
-                <div class="alert alert-warning" role="alert">
-                    {{message}}
-                </div>
-            {% endfor %}
-
-            {{form_start(form)}}
-                <div class="row">
-                    <div class="col-md-2">
-                        {{form_widget(form.type, {'class':'form-control'})}}
-                    </div>
-                    <div class="col-md-2">
-                        {{form_widget(form.atk, {'class':'form-control'})}}
-                    </div>
-                    <div class="col-md-2">
-                        {{form_widget(form.def, {'class':'form-control'})}}
-                    </div>
-                    <div class="col-md-2">
-                        {{form_widget(form.level, {'class':'form-control'})}}
-                    </div>
-                    <div class="col-md-2">
-                        {{form_widget(form.race, {'class':'form-control'})}}
-                    </div>
-                    <div class="col-md-2">
-                        {{form_widget(form.attribute, {'class':'form-control'})}}
-                    </div>
-                    <div>
-                        <input type="submit" class="btn btn-sm btn-primary w-100" value="Filtrer">
-                    </div>
-                </div>
-            {{form_end(form)}}
-        </div>
-
     <section class= "container">
         <div class="row d-flex justify-content-center">
+        <div id="flash-messages"></div> <!-- Conteneur pour les messages flash -->
             {% for card in productsWithCard %}
-                {# <pre>
-                    {{ dump(card) }}
-                </pre> #}
                 {% set t_produit = card.product %}
                 {% set carte = card.card %}
                             <div class="col-md-6 col-lg-3 d-flex flex-column align-items-center border border-3 border-opacity-50 border-black mx-3 my-3 rounded-custom bg-light carte">
@@ -72,11 +35,26 @@
                                             </div>
                                         </div>
                                     </div>
-                                        {# <div class="text-black">Stock : {{ t_produit.stock }}</div> #}
-                                        <div class="text-black mt-2">Prix : {{ t_produit.prix|number_format(2) }} €</div>
-                                        {# <div class="mt-2 mb-2">
-                                            <a href="{{path('visitor_cart_add', {'id':t_produit.id})}}" class="btn btn-primary rounded-custom">Ajouter au panier</a>
-                                        </div> #}
+                                    <div class="text-black mt-2">Prix : {{ t_produit.prix|number_format(2) }} €</div>
+                                    <div class="ms-auto me-auto mb-3">
+                                        {% if t_produit.Stock %}
+                                            <form class="add-to-cart-form" method="post" action="{{ path("app_panier_new") }}">
+                                                <select name="quantite" aria-label= "Bouton pour choisir la quantité de l'article à ajouter au panier">
+                                                {% set quantity = t_produit.Stock %}
+                                                {% if t_produit.Stock > 10 %}
+                                                    {% set quantity = 10 %}
+                                                {% endif %}
+                                                {% for i in 1 .. quantity %}
+                                                    <option value="{{i}}">{{i}}</option>
+                                                {% endfor %}
+                                                <input type="hidden" name="produit" value="{{t_produit.id}}" class="btn btn-success">
+                                                <input type="hidden" name="nomProduit" value="{{t_produit.nomProduit}}" class="btn btn-success">
+                                                <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
+                                            </form>
+                                        {% else %}
+                                            <h3 class="text-danger h3-custom text-center">Rupture de stock</h3>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
             {% endfor %}
@@ -84,4 +62,65 @@
 {% include "_pagination.html.twig" %}
     </section>
 </main>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        // Ajouter produit au panier sans recharger la page et afficher un message flash
+$(document).ready(function() {
+    $('.add-to-cart-form').on('submit', function(event) {
+        event.preventDefault(); // Empêche le formulaire de se soumettre normalement
+
+        let formData = $(this).serialize(); // Sérialise les données du formulaire
+
+        let flashKey = 'success_' + window.location.pathname;
+
+        let quantiteValue = $(this).find('select[name="quantite"]').val();
+
+        let productName = $(this).find('[name="nomProduit"]').val(); // Récupération du nom du produit depuis le formulaire
+
+        $.ajax({
+            method: 'POST',
+            url: "{{ path('app_panier_new') }}",
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    // Ajout du message flash de succès avec le nom du produit
+                    let flashMessage = $('<div class="alert alert-success" role="alert" data-flash-key="' + flashKey + '">L\'article "' + productName + '" a bien été ajouté au panier</div>');
+                    $('#flash-messages').append(flashMessage);
+
+                    let notifQuantitePanier = document.getElementById('notifQuantitePanier');
+                    let notifQuantitePanierInt = parseInt(notifQuantitePanier.textContent);
+                    quantiteValue = parseInt(quantiteValue);
+                    console.log(typeof notifQuantitePanierInt);
+                    console.log(typeof quantiteValue);
+                    notifQuantitePanier.textContent = (notifQuantitePanierInt + quantiteValue);
+
+                    // Disparition du message après 5 secondes
+                    setTimeout(function() {
+                        $('[data-flash-key="' + flashKey + '"]').fadeOut('slow', function() {
+                            $(this).remove();
+                        });
+                    }, 5000);
+                } else {
+                    // Ajout du message d'erreur
+                    let errorMessage = $('<div class="alert alert-danger" role="alert">' + response.message + '</div>');
+                    $('#flash-messages').append(errorMessage);
+                    
+                    // Disparition du message d'erreur après 5 secondes
+                    setTimeout(function() {
+                        errorMessage.fadeOut('slow', function() {
+                            $(this).remove();
+                        });
+                    }, 5000);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Erreur lors de la requête AJAX:', error);
+            }
+        });
+    })
+});
+    </script>
 {% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle adresse de livraison{% endblock %}
+{% block h1 %}Nouvelle adresse de livraison{% endblock %}
+
+{% block body %}
+    <main class="container mx-auto p-2">
+
+        <a class="btn btn-secondary rounded-custom" href="{{ path('app_adresse_livraison_index') }}">Retour</a>
+
+        {{ include('adresse_livraison/_form.html.twig') }}
+
+    </main>
+{% endblock %}

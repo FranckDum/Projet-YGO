@@ -2,15 +2,26 @@
 
 namespace App\Controller;
 
+use Dompdf\Dompdf;
 use Stripe\Charge;
 use Stripe\Stripe;
+use Dompdf\Options;
 use App\Entity\Commandes;
+use App\Entity\Livraison;
 use App\Entity\DetailCommande;
+use App\Entity\AdresseLivraison;
+use Symfony\Component\Mime\Email;
+use App\Entity\AdresseFacturation;
+use Symfony\Component\Mime\Address;
 use App\Repository\TProduitsRepository;
+use App\Entity\AdresseLivraisonCommande;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\AdresseFacturationCommande;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\NumerosCommandesGeneratorService;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,7 +30,7 @@ class StripeController extends AbstractController
 {
     private $tProduitsRepository;
     private $session;
-
+    
     public function __construct(TProduitsRepository $tProduitsRepository, RequestStack $requestStack) {
         $this->tProduitsRepository = $tProduitsRepository;
         $this->session = $requestStack->getSession();
@@ -34,17 +45,21 @@ class StripeController extends AbstractController
     
     public function getMontantTotal(): float
     {
-        $montant = 0;
-        $panier = $this->session->get('panier', []);
-        foreach($panier as $idProduit => $quantite){
-            $produit = $this->tProduitsRepository->find($idProduit);
-            $montant += ($produit->getPrix() * 100) * $quantite;
-        }
+        // $montant = 0;
+        // $panier = $this->session->get('panier', []);
+        // foreach($panier as $idProduit => $quantite){
+        //     $produit = $this->tProduitsRepository->find($idProduit);
+        //     $montant += ($produit->getPrix() * 100) * $quantite;
+        // }
 
-        return $montant;
+        // return $montant;
+
+        return $this->session->get('montantTotalCommande', 0) * 100;
     }
+
+
     #[Route('/stripe', name: 'app_stripe')]
-    public function index(): Response
+    public function index(SessionInterface $session, EntityManagerInterface $em): Response
     {
         /*
             CB SUCCESS : 4242 4242 4242 4242
@@ -61,49 +76,178 @@ class StripeController extends AbstractController
         ]);
     }
 
+    // #[Route('/process_payment', name: 'process_payment')]
+    // public function processPayment(Request $request)
+    // {
+    //     $stripeSecretKey = $_ENV['STRIPE_SECRET_KEY'];
+    //     Stripe::setApiKey($stripeSecretKey);
+    //     $token = $request->request->get('stripeToken');
+    
+    //     $montant = $this->getMontantTotal();
+    //     if ($montant < 1) {
+    //         $this->addFlash('error', 'Invalid amount: ' . $montant);
+    //         return $this->redirectToRoute('payment_failure');
+    //     }
+    
+    //     try {
+    //         $charge = Charge::create([
+    //             'amount' => $montant,
+    //             'currency' => 'eur',
+    //             'description' => 'Achat effectué sur DuelDestinyShop!',
+    //             'source' => $token
+    //         ]);
+    
+    //         $stripeId = $charge->id; // id du stripe de la commande
+    
+    //         // Stocker l'ID Stripe dans la session
+    //         $this->session->set('stripeId', $stripeId);
+    
+    //         return $this->redirectToRoute('payment_success');
+    //     } catch (\Exception $e) {
+    //         // Log the error message
+    //         $this->addFlash('error', 'Payment failed: ' . $e->getMessage());
+    //         // Log the error to a file or other logging system
+    //         error_log('Payment failed: ' . $e->getMessage());
+    
+    //         // paiement failure
+    //         return $this->redirectToRoute('payment_failure');
+    //     }
+    // }
+
     #[Route('/process_payment', name: 'process_payment')]
-    public function processPayment(Request $request)
-    {
-        $stripeSecretKey = $_ENV['STRIPE_SECRET_KEY'];
-        Stripe::setApiKey($stripeSecretKey);
-        $token = $request->request->get('stripeToken');
+public function processPayment(Request $request, SessionInterface $session, EntityManagerInterface $em)
+{
 
-        // paiement success
-        try {
 
-            $charge = Charge::create([
-                'amount' => $this->getMontantTotal(),
-                'currency' => 'eur',
-                'description' => 'Achat effectué sur DuelDestinyShop!',
-                'source' => $token
-                
-            ]);
+    // Configurer l'API Stripe
+    $stripeSecretKey = $_ENV['STRIPE_SECRET_KEY'];
+    Stripe::setApiKey($stripeSecretKey);
+    $token = $request->request->get('stripeToken');
 
-            $stripeChargeId = $charge->id; // id du stripe de la commande
+    // Calculer le montant total de la commande
+    $montant = $this->getMontantTotal(); // Cette méthode doit calculer le montant total
 
-            return $this->redirectToRoute('payment_success');
-        } catch (\Exception $e) {
-            // paiement failure
-            return $this->redirectToRoute('payment_failure');
-        }
+    if ($montant < 1) {
+        $this->addFlash('error', 'Montant invalide: ' . $montant);
+        return $this->redirectToRoute('payment_failure');
     }
 
+    try {
+        $charge = Charge::create([
+            'amount' => $montant, // Le montant doit être en centimes
+            'currency' => 'eur',
+            'description' => 'Achat effectué sur DuelDestinyShop!',
+            'source' => $token
+        ]);
+
+        $stripeId = $charge->id; // ID Stripe de la commande
+
+        // Stocker l'ID Stripe dans la session
+        $session->set('stripeId', $stripeId);
+
+        return $this->redirectToRoute('payment_success');
+    } catch (\Exception $e) {
+        // Log the error message
+        $this->addFlash('error', 'Payment failed: ' . $e->getMessage());
+        error_log('Payment failed: ' . $e->getMessage());
+
+        return $this->redirectToRoute('payment_failure');
+    }
+}
+
     #[Route('/payment_success', name: 'payment_success')]
-    public function paymentSuccess(EntityManagerInterface $em): Response
+    public function paymentSuccess(EntityManagerInterface $em, NumerosCommandesGeneratorService $num, MailerInterface $mailer): Response
     {
     // Récupérer les informations de la session ou d'autres sources appropriées
     $statut = $this->session->get('statut', 'en cours');
-    $numeros = $this->session->get('numeros', null);
-    $user = $this->getUser(); // Cela suppose que vous utilisez Symfony pour gérer l'authentification des utilisateurs
-    $prix = $this->getMontantTotal(); // Ou toute autre source appropriée pour le prix
+    // $numeros = $this->session->get('numeros', null);
+    $user = $this->getUser(); // Gérer l'authentification des utilisateurs
+    $prix = $this->getMontantTotal(); // Montant total
 
-            // Créer une nouvelle commande
+    // Créer une nouvelle commande
     $commande = new Commandes();
+
     $commande->setDateCommande(new \DateTimeImmutable());
     $commande->setStatut($statut);
-    $commande->setNumeros($numeros);
+    $commande->setNumeros($num->generateNumeros());
     $commande->setUser($user);
-    // Vous pouvez ajouter d'autres données à votre commande ici
+    $commande->setMontantTotal($prix);
+    // Récupérer l'ID de l'adresse de livraison depuis la session
+    $adresseLivraisonId = $this->session->get('adresse_livraison_id');
+
+    dump($adresseLivraisonId); // Vérifiez l'ID récupéré depuis la session
+
+    // Récupérer l'adresse de livraison depuis la base de données
+    $adresseLivraison = $em->getRepository(AdresseLivraison::class)->find($adresseLivraisonId);
+
+    dump($adresseLivraison); // Vérifiez l'objet adresseLivraison récupéré depuis la base de données
+
+    if ($adresseLivraison) {
+        // Utilisez l'adresse de livraison pour remplir les détails de l'adresse de livraison de la commande
+        $livraisonCommande = new AdresseLivraisonCommande();
+        $livraisonCommande->setNom($adresseLivraison->getNom());
+        $livraisonCommande->setPrenom($adresseLivraison->getPrenom());
+        $livraisonCommande->setAdresse($adresseLivraison->getAdresse());
+        $livraisonCommande->setComplementAdresse($adresseLivraison->getComplementAdresse());
+        $livraisonCommande->setCp($adresseLivraison->getCp());
+        $livraisonCommande->setVille($adresseLivraison->getVille());
+
+        // Associez cette adresse de livraison à la commande
+        $commande->setAdresseLivraisonCommande($livraisonCommande);
+    } else {
+        // Gérez l'erreur si l'adresse de livraison n'est pas trouvée
+        // Par exemple, redirigez l'utilisateur vers une page d'erreur
+        return $this->redirectToRoute('error_page');
+    }
+
+    // $commande->setAdresseLivraisonCommande($livraisonCommande);
+    // Récupérer l'ID de l'adresse de facturation depuis la session
+    $adresseFacturationId = $this->session->get('adresse_facturation_id');
+
+    // Récupérer l'adresse de facturation depuis la base de données en utilisant son ID
+    $adresseFacturation = $em->getRepository(AdresseFacturation::class)->find($adresseFacturationId);
+
+    dump($adresseFacturation);
+    // Vérifier si l'adresse de facturation a été trouvée
+    if ($adresseFacturation) {
+        // Créez un nouvel objet AdresseFacturationCommande et remplissez-le avec les données de l'adresse de facturation
+        $facturationCommande = new AdresseFacturationCommande();
+        $facturationCommande->setNom($adresseFacturation->getNom());
+        $facturationCommande->setPrenom($adresseFacturation->getPrenom());
+        $facturationCommande->setAdresse($adresseFacturation->getAdresse());
+        $facturationCommande->setComplementAdresse($adresseFacturation->getComplementAdresse());
+        $facturationCommande->setCp($adresseFacturation->getCp());
+        $facturationCommande->setVille($adresseFacturation->getVille());
+
+        // Associez cette adresse de facturation à la commande
+        $commande->setAdresseFacturationCommande($facturationCommande);
+    } else {
+        // Gérez l'erreur si l'adresse de facturation n'est pas trouvée
+        return $this->redirectToRoute('error_page');
+    }
+    // $commande->setAdresseFacturationCommande($facturationCommande);
+            // Récupérer l'ID du mode de livraison depuis la session
+            $livraisonId = $this->session->get('mode_livraison');
+            dump($livraisonId);
+            if (!$livraisonId) {
+                // Gérez l'erreur si l'ID du mode de livraison n'est pas trouvé dans la session
+                return $this->redirectToRoute('app_validation_panier');
+            }
+            
+            // Récupérer le mode de livraison depuis la base de données en utilisant son ID
+            $livraison = $em->getRepository(Livraison::class)->find($livraisonId);
+
+            if ($livraison) {
+                // Associer l'objet Livraison récupéré à la commande
+                $commande->setLivraison($livraison);
+            } else {
+                // Gérez l'erreur si le mode de livraison n'est pas trouvé
+                return $this->redirectToRoute('app_validation_panier');
+            }
+
+    // Récupérer l'ID Stripe de la session
+    $stripeId = $this->session->get('stripeId');
+    $commande->setStripeId($stripeId); // Associer l'ID Stripe à la commande
 
     $panier = $this->session->get('panier', []);
 
@@ -120,23 +264,83 @@ class StripeController extends AbstractController
         $detailCommande->setTProduits($produit);
         $detailCommande->setPrix($prix);
         $detailCommande->setQuantity($quantite);
-        // Vous pouvez ajouter d'autres données au détail de la commande ici
+
+        // Ajoutez le détail de la commande à la collection de la commande
+        $commande->addDetailCommande($detailCommande);
 
         $em->persist($detailCommande);
     }
 
+    $em->persist($commande);
+
     // Vider le panier
     $this->session->set('panier', []);
+    $this->session->set('adresse_livraison_id', null);
+    $this->session->set('mode_livraison', null);
 
     // Mettre à jour les stocks dans la base de données
     $em->flush();
 
-    return $this->render('stripe/payment_success.html.twig');
+        // Récupérer les détails de la commande
+        $detailsCommande = $commande->getDetailCommande();
+    dump($detailsCommande);
+
+    // Configurer les options de Dompdf
+    $pdfOptions = new Options();
+    $pdfOptions->set('defaultFont', 'Arial');
+    $pdfOptions->set('isHtml5ParserEnabled', true);// Activer le parser HTML5
+    $pdfOptions->set('isPhpEnabled', true);  // Activer le support PHP
+
+    // Initialiser Dompdf avec les options
+    $dompdf = new Dompdf($pdfOptions); 
+    // $dompdf->set_option("enable_php", true);
+
+    $html = $this->renderView('pdf/fiche_commande.html.twig', [
+        'commande' => $commande,
+        'detailsCommande' => $detailsCommande,
+    ]);
+
+    // Charger le HTML dans Dompdf
+    $dompdf->loadHtml($html);
+    // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+    $dompdf->setPaper('A4', 'portrait');
+    // Rendre le HTML au format PDF
+    $dompdf->render();
+
+    // Sortie du PDF généré dans le navigateur (téléchargement forcé)
+    $pdf = $dompdf->output();
+
+    $fichier = $commande->getNumeros() . '.pdf';
+
+    $location = $this->getParameter('private') . '/' . $fichier;
+    file_put_contents($location, $pdf);
+
+    // mail ->attachFromPath($location);
+    // Envoi de l'email avec le PDF en pièce jointe
+    $email = (new Email())
+        ->from(new Address('duelDestinyShp@gmail.com', 'DuelDestinyShop!'))
+        ->to($user->getEmail())
+        ->subject('Merci pour votre commande')
+        ->html('<p>Merci pour votre commande.</p>')
+        ->attachFromPath($location);
+
+    $mailer->send($email);
+
+    return $this->render('stripe/payment_success.html.twig', [
+        'commande' => $commande,
+        'livraison' => $livraison,
+        'adresseFacturation' => $adresseFacturation,
+        'adresseLivraison' => $adresseLivraison,
+        'produits' => $produit,
+        'detailsCommande' => $detailsCommande,
+        'montantTotal' => $prix,
+    ]);
     }
 
     #[Route('/payment_failure', name: 'payment_failure')]
     public function paymentFailure(): Response
     {
+        $this->session->set('mode_livraison', null);
         return $this->render('stripe/payment_failure.html.twig');
     }
 }

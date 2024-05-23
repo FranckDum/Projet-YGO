@@ -16,274 +16,333 @@
     </style>
 {% endblock %}
 
-{% block title %}Accueil{% endblock %}
+{% block title %}DuelDestinyShop!{% endblock %}
 
-{% block h1 %}Accueil{% endblock %}
+{% block h1 %}DuelDestinyShop!{% endblock %}
 
 
 {% block body %}
 
-        {# <div class="w-100 h-25">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                    <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="/images/Carrousel4.jpg" class="d-block ygo-w" alt="Image Carousel 1">
-                        </div>
-                        <div class="carousel-item">
-                            <img src="/images/Carrousel5.jpg" class="d-block ygo-w" alt="Image Carousel 2">
-                        </div>
-                        <div class="carousel-item">
-                            <img src="/images/Carrousel6.jpg" class="d-block ygo-w" alt="Image Carousel 3">
-                        </div>
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                        </button>
+    {# <div class="w-100 h-25">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="/images/Carrousel4.jpg" class="d-block ygo-w" alt="Image Carousel 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="/images/Carrousel5.jpg" class="d-block ygo-w" alt="Image Carousel 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="/images/Carrousel6.jpg" class="d-block ygo-w" alt="Image Carousel 3">
                     </div>
                     </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
                 </div>
             </div>
-        </div> #}
+        </div>
+    </div> #}
 
-
-<main class="container mt-5">
-    <div class="ms-auto me-auto col-10" id="container" data-animated>
-        <ul id="list" class="ulAside" draggable="true"> <!-- Ajout de l'attribut draggable -->
-            {% for card in cards %}
-                <li>
-                    {# <a class="a" href="{{ path('detailProduit', {'id': card.id}) }}"> #}
-                        <img class="img-fluid" src="/Images/ImgCartes/small/{{ card.ygoId }}.jpg" alt="{{ card.nomProduit }}">
-                    {# </a> #}
-                </li>
-            {% endfor %}
-            <!-- Dupliquer la totalité des éléments pour un effet d'enchaînement continu -->
-            {% for card in cards %}
-                <li>
-                    {# <a class="a" href="{{ path('detailProduit', {'id': card.id}) }}"> #}
-                        <img class="img-fluid" src="/Images/ImgCartes/small/{{ card.ygoId }}.jpg" alt="{{ card.nomProduit }}">
-                    {# </a> #}
-                </li>
-            {% endfor %}
-            <!-- Dupliquer la totalité des éléments pour un effet d'enchaînement continu -->
-            {# {% for card in cards %}
-                <li>
-                    <a class="a" href="{{ path('detailProduit', {'id': card.id}) }}">
-                        <img class="img-fluid" src="/Images/ImgCartes/small/{{ card.ygoId }}.jpg" alt="{{ card.nomProduit }}">
-                    </a>
-                </li>
-            {% endfor %} #}
-        </ul>
-    </div>
-
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-3 d-flex flex-column align-items-center mx-3 my-3 rounded-custom bg-dark">
-            {% if top5Ventes %}
-                <h2 class="text-primary mt-3 text-center">Meilleures ventes :</h2>
-                <div class="d-flex flex-wrap justify-content-center">
-                    {% for vente in top5Ventes %}
-                        <div class="card m-2 bg-dark rounded-custom cardAccueil"> <!-- Limiter la largeur de la carte et forcer la largeur maximale -->
-                            <h3 class="card-title text-warning text-center h3-card mb-0">{{ vente.productNom }}</h3> <!-- Définir une hauteur minimale pour le titre -->
-                            <img class="card-img-top" src="/Images/ImgCartes/small/{{ vente.ygoId }}.jpg" alt="{{ vente.productNom }}">
-                            <div class="card-body">
-                                <p class="card-text text-white text-center">Prix : {{ vente.productPrix }} €</p>
-                            </div>
-                            <div class="ms-auto me-auto">
-                                {% if vente.productStock %}
-                                    <form method="post" action="{{ path("app_panier_new") }}">
-                                        <select name="quantite">
-
-                                        {% set quantity = vente.productStock %}
-
-                                        {% if vente.productStock > 10 %}
-                                            {% set quantity = 10 %}
-                                        {% endif %}
-
-                                        {% for i in 1 .. quantity %}
-                                            <option value="{{i}}">{{i}}</option>
-                                        {% endfor %}
-                                        <input type="hidden" name="produit" value="{{vente.productId}}" class="btn btn-success">
-                                        <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
-                                    </form>
-                                {% else %}
-                                    <h3 class="text-danger h3-custom text-center">Rupture de stock</h3>
-                                {% endif %}
-                                
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+    <main class="container mt-5" id="main">
+        <div class="ms-auto me-auto col-10" id="container" data-animated>
+            <ul id="list" class="ulAside" draggable="true"> <!-- Ajout de l'attribut draggable -->
+                {% for card in cards %}
+                    <li>
+                        {# <a class="a" href="{{ path('detailProduit', {'id': card.id}) }}"> #}
+                            <img class="img-fluid" src="/Images/ImgCartes/small/{{ card.ygoId }}.jpg" alt="Image carte Yu-Gi-Oh! dans un carousel : {{ card.nomProduit }}">
+                        {# </a> #}
+                    </li>
+                {% endfor %}
+                <!-- Dupliquer la totalité des éléments pour un effet d'enchaînement continu -->
+                {% for card in cards %}
+                    <li>
+                        {# <a class="a" href="{{ path('detailProduit', {'id': card.id}) }}"> #}
+                            <img class="img-fluid" src="/Images/ImgCartes/small/{{ card.ygoId }}.jpg" alt="Image carte Yu-Gi-Oh! dans un carousel : {{ card.nomProduit }}">
+                        {# </a> #}
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
 
-        <div class="col-12 col-md-3 d-flex flex-column align-items-center border-opacity-50 mx-3 my-3 rounded-custom bg-dark">
-            {% if derniersProduitsActifs %}
-                <h2 class="text-primary mt-3 text-center">Nouveautés :</h2>
-                <div class="d-flex flex-wrap justify-content-center">
-                    {% for dernierAjouts in derniersProduitsActifs %}
-                        <div class="card m-2 bg-dark rounded-custom cardAccueil"> 
-                            <h3 class="card-title text-warning text-center h3-card mb-0">{{ dernierAjouts.nomProduit }}</h3> <!-- Définir une hauteur minimale pour le titre -->
-                            <img class="card-img-top" src="/Images/ImgCartes/small/{{ dernierAjouts.ygoId }}.jpg" alt="{{ dernierAjouts.nomProduit }}">
-                            <div class="card-body">
-                                <p class="card-text text-white text-center">Prix : {{ dernierAjouts.Prix }} €</p>
+    <div id="flash-messages"></div> <!-- Conteneur pour les messages flash -->
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-3 d-flex flex-column align-items-center mx-3 my-3 rounded-custom bg-dark">
+                {% if top5Ventes %}
+                    <h2 class="text-primary mt-3 text-center h2-card-accueil">Meilleures Ventes</h2>
+                    <div class="d-flex flex-wrap justify-content-center">
+                        {% for vente in top5Ventes %}
+                            <div class="card m-2 bg-dark rounded-custom cardAccueil"> <!-- Limiter la largeur de la carte et forcer la largeur maximale -->
+                                <h3 class="card-title text-warning text-center h3-card mb-0">{{ vente.productNom }}</h3> <!-- Définir une hauteur minimale pour le titre -->
+                                <a class"a" href="{{ path('detailProduit', {'id': vente.productId}) }}">
+                                    <img class="card-img-top" src="/Images/ImgCartes/small/{{ vente.ygoId }}.jpg" alt="Image carte Yu-Gi-Oh! des meilleures ventes : {{ vente.productNom }}">
+                                </a>
+                                <div class="card-body">
+                                    <p class="card-text text-white text-center">Prix : {{ vente.productPrix }} €</p>
+                                </div>
+                                <div class="ms-auto me-auto mb-3">
+                                    {% if vente.productStock %}
+                                        <form class="add-to-cart-form" method="post" action="{{ path("app_panier_new") }}">
+                                            <select name="quantite" aria-label= "Bouton pour choisir la quantité de l'article à ajouter au panier">
+
+                                            {% set quantity = vente.productStock %}
+
+                                            {% if vente.productStock > 10 %}
+                                                {% set quantity = 10 %}
+                                            {% endif %}
+
+                                            {% for i in 1 .. quantity %}
+                                                <option value="{{i}}">{{i}}</option>
+                                            {% endfor %}
+                                            <input type="hidden" name="produit" value="{{vente.productId}}" class="btn btn-success">
+                                            <input type="hidden" name="nomProduit" value="{{vente.productNom}}" class="btn btn-success">
+                                            <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
+                                        </form>
+                                    {% else %}
+                                        <h3 class="text-danger h3-custom text-center">Rupture de stock</h3>
+                                    {% endif %}
+                                    
+                                </div>
                             </div>
-                            <div class="ms-auto me-auto">
-                                {% if dernierAjouts.Stock %}
-                                    <form method="post" action="{{ path("app_panier_new") }}">
-                                        <select name="quantite">
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
 
-                                        {% set quantity = dernierAjouts.Stock %}
+            <div class="col-12 col-md-3 d-flex flex-column align-items-center border-opacity-50 mx-3 my-3 rounded-custom bg-dark">
+                {% if derniersProduitsActifs %}
+                    <h2 class="text-primary mt-3 text-center h2-card-accueil">Nouveautés</h2>
+                    <div class="d-flex flex-wrap justify-content-center">
+                        {% for dernierAjouts in derniersProduitsActifs %}
+                            <div class="card m-2 bg-dark rounded-custom cardAccueil"> 
+                                <h3 class="card-title text-warning text-center h3-card mb-0">{{ dernierAjouts.nomProduit }}</h3>
+                                <a class"a" href="{{ path('detailProduit', {'id': dernierAjouts.id}) }}">
+                                    <img class="card-img-top" src="/Images/ImgCartes/small/{{ dernierAjouts.ygoId }}.jpg" alt="Image carte Yu-Gi-Oh! des derniers produits ajoutés : {{ dernierAjouts.nomProduit }}">
+                                </a>
+                                <div class="card-body">
+                                    <p class="card-text text-white text-center">Prix : {{ dernierAjouts.Prix }} €</p>
+                                </div>
+                                <div class="ms-auto me-auto mb-3">
+                                    {% if dernierAjouts.Stock %}
+                                        <form class="add-to-cart-form" method="post" action="{{ path("app_panier_new") }}">
+                                            <select name="quantite" aria-label= "Bouton pour choisir la quantité de l'article à ajouter au panier">
 
-                                        {% if dernierAjouts.Stock > 10 %}
-                                            {% set quantity = 10 %}
-                                        {% endif %}
+                                            {% set quantity = dernierAjouts.Stock %}
 
-                                        {% for i in 1 .. quantity %}
-                                            <option value="{{i}}">{{i}}</option>
-                                        {% endfor %}
-                                        <input type="hidden" name="produit" value="{{dernierAjouts.id}}" class="btn btn-success">
-                                        <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
-                                    </form>
-                                {% else %}
-                                    <h3 class="text-danger h3-custom text-center">Rupture de stock</h3>
-                                {% endif %}
-                                
+                                            {% if dernierAjouts.Stock > 10 %}
+                                                {% set quantity = 10 %}
+                                            {% endif %}
+
+                                            {% for i in 1 .. quantity %}
+                                                <option value="{{i}}">{{i}}</option>
+                                            {% endfor %}
+                                            <input type="hidden" name="produit" value="{{dernierAjouts.id}}" class="btn btn-success">
+                                            <input type="hidden" name="nomProduit" value="{{dernierAjouts.nomProduit}}" class="btn btn-success">
+                                            <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
+                                        </form>
+                                    {% else %}
+                                        <h3 class="text-danger h3-custom text-center">Rupture de stock</h3>
+                                    {% endif %}
+                                    
+                                </div>
                             </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-12 col-md-3 d-flex flex-column align-items-center mx-3 my-3 rounded-custom bg-dark">
+                {% if swordsoulProducts %}
+                    <h2 class="text-primary mt-3 text-center h2-card-accueil">À l'Honneur</h2>
+                    <div class="d-flex flex-wrap justify-content-center">
+                        {% for carte in swordsoulProducts %}
+                            <div class="card m-2 bg-dark rounded-custom cardAccueil">
+                                <h3 class="card-title text-warning text-center h3-card mb-0">{{ carte.nomProduit }}</h3>
+                                <a class"a" href="{{ path('detailProduit', {'id': carte.id}) }}">
+                                    <img class="card-img-top" src="/Images/ImgCartes/small/{{ carte.ygoId }}.jpg" alt="Image carte Yu-Gi-Oh! de l'archétype Swordsoul : {{ carte.nomProduit }}">
+                                </a>
+                                <div class="card-body">
+                                    <p class="card-text text-white text-center">Prix : {{ carte.Prix }} €</p>
+                                </div>
+                                <div class="ms-auto me-auto mb-3">
+                                    {% if carte.Stock %}
+                                        <form class="add-to-cart-form" method="post" action="{{ path("app_panier_new") }}">
+                                            <select name="quantite" aria-label= "Bouton pour choisir la quantité de l'article à ajouter au panier">
+
+                                            {% set quantity = carte.Stock %}
+
+                                            {% if carte.Stock > 10 %}
+                                                {% set quantity = 10 %}
+                                            {% endif %}
+
+                                            {% for i in 1 .. quantity %}
+                                                <option value="{{i}}">{{i}}</option>
+                                            {% endfor %}
+                                            <input type="hidden" name="produit" value="{{carte.id}}" class="btn btn-success">
+                                            <input type="hidden" name="nomProduit" value="{{carte.nomProduit}}" class="btn btn-success">
+                                            <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
+                                        </form>
+                                    {% else %}
+                                        <h3 class="text-danger h3-custom text-center">Rupture de stock</h3>
+                                    {% endif %}
+                                    
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
         </div>
+            {# Dump pour vérifier si l'ID du mode de livraison est présent dans la session #}
+    {% dump(app.session.get('mode_livraison')) %}
 
-        <div class="col-12 col-md-3 d-flex flex-column align-items-center mx-3 my-3 rounded-custom bg-dark">
-            {% if top5Ventes %}
-                <h2 class="text-primary mt-3 text-center">Meilleures ventes :</h2>
-                <div class="d-flex flex-wrap justify-content-center">
-                    {% for vente in top5Ventes %}
-                        <div class="card m-2 bg-dark rounded-custom cardAccueil"> <!-- Limiter la largeur de la carte et forcer la largeur maximale -->
-                            <h3 class="card-title text-warning text-center h3-card mb-0">{{ vente.productNom }}</h3> <!-- Définir une hauteur minimale pour le titre -->
-                            <img class="card-img-top" src="/Images/ImgCartes/small/{{ vente.ygoId }}.jpg" alt="{{ vente.productNom }}">
-                            <div class="card-body">
-                                <p class="card-text text-white text-center">Prix : {{ vente.productPrix }} €</p>
-                            </div>
-                            <div class="ms-auto me-auto">
-                                {% if vente.productStock %}
-                                    <form method="post" action="{{ path("app_panier_new") }}">
-                                        <select name="quantite">
+    {# Dump pour vérifier si l'ID de l'adresse de livraison est présent dans la session #}
+    {% dump(app.session.get('adresse_livraison_id')) %}
+    </main>
 
-                                        {% set quantity = vente.productStock %}
-
-                                        {% if vente.productStock > 10 %}
-                                            {% set quantity = 10 %}
-                                        {% endif %}
-
-                                        {% for i in 1 .. quantity %}
-                                            <option value="{{i}}">{{i}}</option>
-                                        {% endfor %}
-                                        <input type="hidden" name="produit" value="{{vente.productId}}" class="btn btn-success">
-                                        <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
-                                    </form>
-                                {% else %}
-                                    <h3 class="text-danger h3-custom text-center">Rupture de stock</h3>
-                                {% endif %}
-                                
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-
-
-
-
-
-
-
-</main>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.10.11/interact.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.hoverintent/1.10.1/jquery.hoverIntent.min.js"></script>
-
-
-<script>
-    // Active la fonctionnalité de glisser-déposer sur l'élément avec l'ID 'list'
-    interact('#list')
-        .draggable({
-            inertia: true, // Active l'inertie lors du glissement
-            onstart: function(event) { // Exécuté au début du glissement
-                event.target.classList.add('draggable', 'dragging'); // Ajoute les classes 'draggable' et 'dragging' à l'élément glissé
-            },
-            onend: function(event) { // Exécuté à la fin du glissement
-                event.target.classList.remove('dragging'); // Supprime la classe 'dragging' de l'élément glissé
-            },
-            onmove: dragMoveHandler, // Appelle la fonction dragMoveHandler lors du déplacement
-        });
-
-    // Fonction pour gérer le mouvement de glissement
-    function dragMoveHandler(event) {
-        var target = event.target;
-        var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx; // Calcule la nouvelle position horizontale
-
-        target.style.transform = 'translateX(' + x + 'px)'; // Applique la transformation de translation horizontale à l'élément
-
-        target.setAttribute('data-x', x); // Met à jour l'attribut 'data-x' de l'élément avec la nouvelle position horizontale
-    }
-</script>
-
-
-<script>
-    // Sélectionne l'élément avec l'ID 'list' et stocke-le dans la variable 'carousel'
-    const carousel = document.getElementById('list');
-    const carouselAnimation = carousel.style.animation; // Stocke l'animation CSS actuellement appliquée à 'carousel'
-    let isPaused = false; // Initialise une variable pour suivre l'état de pause de l'animation
-    let cursorSet = false; // Initialise une variable pour suivre l'état de détection du curseur
-
-    // Fonction pour détecter le survol du carousel
-    function hoverCarousel() {
-        if (!isPaused) { // Si l'animation n'est pas en pause
-            if (!cursorSet) { // Si le curseur n'est pas déjà configuré comme une main
-                carousel.classList.add('draggable'); // Ajoute la classe 'draggable' à 'carousel' pour afficher le curseur comme une main
-                cursorSet = true; // Met à jour l'état du curseur à configuré
-            }
-        }
-    }
-
-    // Fonction pour détecter la fin du survol du carousel
-    function unhoverCarousel() {
-        if (cursorSet) { // Si le curseur est configuré comme une main
-            carousel.classList.remove('draggable'); // Supprime la classe 'draggable' de 'carousel' pour restaurer l'apparence du curseur par défaut
-            cursorSet = false; // Met à jour l'état du curseur à non configuré
-        }
-    }
-
-    // Ajoute des écouteurs d'événements pour détecter le survol et la fin du survol du carousel
-    carousel.addEventListener('mouseenter', hoverCarousel);
-    carousel.addEventListener('mouseleave', unhoverCarousel);
-
-    // Sélectionne tous les éléments img enfants de 'carousel' et stocke-les dans 'images'
-    const images = carousel.querySelectorAll('img');
-    // Pour chaque élément img, ajoute des écouteurs d'événements pour détecter le survol et la fin du survol
-    images.forEach((img) => {
-        img.addEventListener('mouseenter', () => {
-            isPaused = true; // Met à jour l'état de pause de l'animation à vrai
-            carousel.style.animationPlayState = 'paused'; // Met l'état de lecture de l'animation à "paused" pour arrêter l'animation
-        });
-
-        img.addEventListener('mouseleave', () => {
-            isPaused = false; // Met à jour l'état de pause de l'animation à faux
-            carousel.style.animationPlayState = 'running'; // Met l'état de lecture de l'animation à "running" pour reprendre l'animation
-        });
-    });
-</script>
 
 
 {% endblock %}
+
+{% block javascripts %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.10.11/interact.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.hoverintent/1.10.1/jquery.hoverIntent.min.js"></script>
+    <script>
+            // Active la fonctionnalité de glisser-déposer sur l'élément avec l'ID 'list'
+            interact('#list')
+                .draggable({
+                    inertia: true, // Active l'inertie lors du glissement
+                    onstart: function(event) { // Exécuté au début du glissement
+                        event.target.classList.add('draggable', 'dragging'); // Ajoute les classes 'draggable' et 'dragging' à l'élément glissé
+                    },
+                    onend: function(event) { // Exécuté à la fin du glissement
+                        event.target.classList.remove('dragging'); // Supprime la classe 'dragging' de l'élément glissé
+                    },
+                    onmove: dragMoveHandler, // Appelle la fonction dragMoveHandler lors du déplacement
+                });
+
+            // Fonction pour gérer le mouvement de glissement
+            function dragMoveHandler(event) {
+                let target = event.target;
+                let x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx; // Calcule la nouvelle position horizontale
+
+                target.style.transform = 'translateX(' + x + 'px)'; // Applique la transformation de translation horizontale à l'élément
+
+                target.setAttribute('data-x', x); // Met à jour l'attribut 'data-x' de l'élément avec la nouvelle position horizontale
+            }
+
+            // Sélectionne l'élément avec l'ID 'list' et stocke-le dans la variable 'carousel'
+            const carouselCard = document.getElementById('list');
+            const carouselAnimation = carouselCard.style.animation; // Stocke l'animation CSS actuellement appliquée à 'carousel'
+            let isPaused = false; // Initialise une variable pour suivre l'état de pause de l'animation
+            let cursorSet = false; // Initialise une variable pour suivre l'état de détection du curseur
+
+            // Fonction pour détecter le survol du carousel
+            function hoverCarousel() {
+                if (!isPaused) { // Si l'animation n'est pas en pause
+                    if (!cursorSet) { // Si le curseur n'est pas déjà configuré comme une main
+                        carouselCard.classList.add('draggable'); // Ajoute la classe 'draggable' à 'carousel' pour afficher le curseur comme une main
+                        cursorSet = true; // Met à jour l'état du curseur à configuré
+                    }
+                }
+            }
+
+            // Fonction pour détecter la fin du survol du carousel
+            function unhoverCarousel() {
+                if (cursorSet) { // Si le curseur est configuré comme une main
+                    carouselCard.classList.remove('draggable'); // Supprime la classe 'draggable' de 'carousel' pour restaurer l'apparence du curseur par défaut
+                    cursorSet = false; // Met à jour l'état du curseur à non configuré
+                }
+            }
+
+            // Ajoute des écouteurs d'événements pour détecter le survol et la fin du survol du carousel
+            carouselCard.addEventListener('mouseenter', hoverCarousel);
+            carouselCard.addEventListener('mouseleave', unhoverCarousel);
+
+            // Sélectionne tous les éléments img enfants de 'carousel' et stocke-les dans 'images'
+            const images = carouselCard.querySelectorAll('img');
+            // Pour chaque élément img, ajoute des écouteurs d'événements pour détecter le survol et la fin du survol
+            images.forEach((img) => {
+                img.addEventListener('mouseenter', () => {
+                    isPaused = true; // Met à jour l'état de pause de l'animation à vrai
+                    carouselCard.style.animationPlayState = 'paused'; // Met l'état de lecture de l'animation à "paused" pour arrêter l'animation
+                });
+
+                img.addEventListener('mouseleave', () => {
+                    isPaused = false; // Met à jour l'état de pause de l'animation à faux
+                    carouselCard.style.animationPlayState = 'running'; // Met l'état de lecture de l'animation à "running" pour reprendre l'animation
+                });
+            });
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            $(document).ready(function() {
+                $('.add-to-cart-form').on('submit', function(event) {
+                    event.preventDefault(); // Empêche le formulaire de se soumettre normalement
+
+                    let formData = $(this).serialize(); // Sérialise les données du formulaire
+                    // Récupérer la valeur sélectionnée dans le menu déroulant
+                    let quantiteValue = $(this).find('select[name="quantite"]').val();
+
+                    let flashKey = 'success_' + window.location.pathname;
+
+                    let productName = $(this).find('[name="nomProduit"]').val(); // Récupération du nom du produit depuis le formulaire
+
+                    $.ajax({
+                        method: 'POST',
+                        url: "{{ path('app_panier_new') }}",
+                        data: formData,
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.success) {
+                                // Ajout du message flash de succès avec le nom du produit
+                                let flashMessage = $('<div class="alert alert-success" role="alert" data-flash-key="' + flashKey + '">L\'article "' + productName + '" a bien été ajouté au panier</div>');
+                                $('#flash-messages').append(flashMessage);
+                            let notifQuantitePanier = document.getElementById('notifQuantitePanier');
+                            let notifQuantitePanierInt = parseInt(notifQuantitePanier.textContent);
+                            quantiteValue = parseInt(quantiteValue);
+                            console.log(typeof notifQuantitePanierInt);
+                            console.log(typeof quantiteValue);
+                            notifQuantitePanier.textContent = (notifQuantitePanierInt + quantiteValue);
+                                // Disparition du message après 5 secondes
+                                setTimeout(function() {
+                                    $('[data-flash-key="' + flashKey + '"]').fadeOut('slow', function() {
+                                        $(this).remove();
+                                    });
+                                }, 5000);
+                            } else {
+                                // Ajout du message d'erreur
+                                let errorMessage = $('<div class="alert alert-danger" role="alert">' + response.message + '</div>');
+                                $('#flash-messages').append(errorMessage);
+                                
+                                // Disparition du message d'erreur après 5 secondes
+                                setTimeout(function() {
+                                    errorMessage.fadeOut('slow', function() {
+                                        $(this).remove();
+                                    });
+                                }, 5000);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Erreur lors de la requête AJAX:', error);
+                        }
+                    })
+                })
+            })
+        })
+
+    </script>
+
+{% endblock %}
+

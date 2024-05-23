@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Espace{% endblock %}
+
+{% block h1 %}Mon Espace{% endblock %}
+
+{% block body %}
+    <main class="container justify-content-center ms-auto me-auto row p-4">
+
+        <div class="col-xl-3 col-lg-4 col-md-6 my-4">
+            <ul class="list-group shadow p-0">
+                <li class="list-group-item list-group-item-info"><h2 class="titreDashboardh2 text-center">Profil</h2></li>
+                <a href="{{ path("app_profil") }}"><li class="list-group-item list-group-item-action">Voir mon profil</li></a>
+                <a href="{{ path('app_profil_edit') }}"><li class="list-group-item list-group-item-action">Modifier mon profil</li></a>
+                <a href="{{ path('app_profil_edit_password') }}"><li class="list-group-item list-group-item-action">Modifier mon mot de passe</li></a>
+            </ul>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 my-4">
+            <ul class="list-group shadow p-0">
+                <li class="list-group-item list-group-item-warning"><h2 class="titreDashboardh2 text-center">Livraisons</h2></li>
+                <a href="{{ path('app_adresse_livraison_index') }}"><li class="list-group-item list-group-item-action">Voir mes adresses de livraison</li></a>
+                <a href="{{ path('app_adresse_livraison_new') }}"><li class="list-group-item list-group-item-action">Ajouter une adresse de livraison</li></a>
+            </ul>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 my-4">
+            <ul class="list-group shadow p-0">
+                <li class="list-group-item list-group-item-info"><h2 class="titreDashboardh2 text-center">Facturations</h2></li>
+                <a href="{{ path("app_adresse_facturation_index") }}"><li class="list-group-item list-group-item-action">Voir mon adresse de facturation</li></a>
+                <a href="{{ path('app_adresse_facturation_edit', {'id': app.user.adresseFacturation.id}) }}"><li class="list-group-item list-group-item-action">Modifier mon adresse de facturation</li></a>
+            </ul>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6 my-4">
+            <ul class="list-group shadow p-0">
+                <li class="list-group-item list-group-item-warning"><h2 class="titreDashboardh2 text-center">Commandes</h2></li>
+                <a href="{{ path("app_commandes_index") }}"><li class="list-group-item list-group-item-action">Voir mes commandes</li></a>
+            </ul>
+        </div>
+
+    </main>
+{% endblock %}

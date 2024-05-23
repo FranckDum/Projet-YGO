@@ -8,6 +8,59 @@
     <main class="container">
         <h2 class="text-primary text-center mt-5">Merci pour votre achat.</h2>
         <p class="text-white text-center mt-4">Nous commençons dès que possible la préparation de votre commande</p>
+        {# <a class="btn btn-success rounded-custom w-25" href="{{ path('app_commandes_new') }}">Récapitulatif de la commande</a> #}
+
+
+    {# <a href="{{ path('app_commandes_index') }}">Retour</a> #}
+    {% if app.user %}
+    <h2 class="text-primary">Commande n° :</h2>
+    <p class="text-white">{{ commande.getNumeros() }}</p>
+    <h3 class="text-primary">Adresse de livraison :</h3>
+    <p class="text-white">{{ adresseLivraison.getAdresse() }}</p>
+    <h3 class="text-primary">Adresse de facturation :</h3>
+    <p class="text-white">{{ adresseFacturation.getAdresse() }}</p>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>Image</th>
+                    <th>Nom</th>
+                    <th>Quantité</th>
+                    <th>Prix</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detail in detailsCommande %}
+                    <tr id="tr{{ detail.tProduits.getId }}">
+                        <td>
+                            <img class="imagePanier" src="/Images/ImgCartes/small/{{ detail.tProduits.getYgoId }}.jpg" alt="{{ detail.tProduits.getNomProduit }}">
+                        </td>
+                        <td>{{ detail.tProduits.getNomProduit }}</td>
+                        <td>
+                            <span id="quantite{{ detail.tProduits.getId }}">{{ detail.getQuantity }}</span>
+                        </td>
+                        <td>{{ detail.tProduits.getPrix|number_format(2) }} €</td>
+                        <td>
+                            <span id="total{{ detail.tProduits.getId }}">
+                                {{ ((detail.tProduits.getPrix * detail.getQuantity)|number_format(2)  ) }} €
+                            </span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="mt-3 text-center">
+        <h4><span class="text-primary">Frais de livraison : </span>{{ livraison.getPrix|number_format(2) }} €, <span class="text-primary">expédié par : </span> {{ livraison.getTransporteur }}.</h4>
+    </div>
+    <div class="mt-3 text-center">
+        <h4 ><span class="text-primary">Total du Panier : </span>{{ (montantTotal / 100)|number_format(2)  }} €</h4>
+    </div>
+    {% else %}
+        <h2>Veuillez vous connecter pour accéder au récapitulatif de la commande</h2>
+    {% endif %}
     </main>
 
 {% endblock %}

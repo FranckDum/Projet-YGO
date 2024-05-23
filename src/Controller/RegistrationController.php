@@ -2,8 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\AdresseFacturation;
 use App\Entity\User;
-use App\Service\CodeManager;
+use App\Service\CodeManagerService;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use Symfony\Component\Mime\Address;
@@ -20,7 +21,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, CodeManager $codeManager, MailerInterface $mailer): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, CodeManagerService $codeManager, MailerInterface $mailer): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -41,6 +42,9 @@ class RegistrationController extends AbstractController
 
             $user->setActivation($codeManager->getCode());
             $entityManager->persist($user);
+            $adresseFacturation = new AdresseFacturation();
+            $adresseFacturation->setUser($user);
+            $entityManager->persist($adresseFacturation);
             $entityManager->flush();
             // do anything else you need here, like send an email
 

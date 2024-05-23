@@ -1,0 +1,15 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Page non trouvée{% endblock %}
+{% block h1 %}Page non trouvée{% endblock %}
+
+{% block body %}
+
+<main class="container d-flex justify-content-center align-items-center">
+    <div class="d-flex flex-column justify-content-center align-items-center w-75">
+        <h2 class="text-center text-danger">La page que vous recherchez n'existe pas</h2>
+        <img class="ps-2 img-fluid rounded w-75" src={{asset("Images/404.gif")}} alt="Gif animé Yu-Gi-Oh! représentant une défaite pour une page non trouvé erreur 404">
+    </div>
+</main>
+
+{% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CommandesRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -30,6 +31,27 @@ class Commandes
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $numeros = null;
+
+    #[ORM\ManyToOne(inversedBy: 'commandes', targetEntity: Livraison::class, cascade: ['persist'])]
+    private ?Livraison $livraison = null;
+
+    #[ORM\OneToOne(mappedBy: 'commandes', cascade: ['persist', 'remove'])]
+    private ?AdresseLivraisonCommande $adresseLivraisonCommande = null;
+
+    #[ORM\OneToOne(mappedBy: 'commandes', cascade: ['persist', 'remove'])]
+    private ?AdresseFacturationCommande $adresseFacturationCommande = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $montant_total = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripe_id = null;
+
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $this->date_commande = new \DateTimeImmutable();
+    }
 
     public function __construct()
     {
@@ -115,6 +137,86 @@ class Commandes
     public function setNumeros(?string $numeros): static
     {
         $this->numeros = $numeros;
+
+        return $this;
+    }
+
+    public function getLivraison(): ?Livraison
+    {
+        return $this->livraison;
+    }
+
+    public function setLivraison(?Livraison $livraison): static
+    {
+        $this->livraison = $livraison;
+
+        return $this;
+    }
+
+    public function getAdresseLivraisonCommande(): ?AdresseLivraisonCommande
+    {
+        return $this->adresseLivraisonCommande;
+    }
+
+    public function setAdresseLivraisonCommande(?AdresseLivraisonCommande $adresseLivraisonCommande): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($adresseLivraisonCommande === null && $this->adresseLivraisonCommande !== null) {
+            $this->adresseLivraisonCommande->setCommandes(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($adresseLivraisonCommande !== null && $adresseLivraisonCommande->getCommandes() !== $this) {
+            $adresseLivraisonCommande->setCommandes($this);
+        }
+
+        $this->adresseLivraisonCommande = $adresseLivraisonCommande;
+
+        return $this;
+    }
+
+    public function getAdresseFacturationCommande(): ?AdresseFacturationCommande
+    {
+        return $this->adresseFacturationCommande;
+    }
+
+    public function setAdresseFacturationCommande(?AdresseFacturationCommande $adresseFacturationCommande): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($adresseFacturationCommande === null && $this->adresseFacturationCommande !== null) {
+            $this->adresseFacturationCommande->setCommandes(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($adresseFacturationCommande !== null && $adresseFacturationCommande->getCommandes() !== $this) {
+            $adresseFacturationCommande->setCommandes($this);
+        }
+
+        $this->adresseFacturationCommande = $adresseFacturationCommande;
+
+        return $this;
+    }
+
+    public function getMontantTotal(): ?float
+    {
+        return $this->montant_total;
+    }
+
+    public function setMontantTotal(?float $montant_total): static
+    {
+        $this->montant_total = $montant_total;
+
+        return $this;
+    }
+
+    public function getStripeId(): ?string
+    {
+        return $this->stripe_id;
+    }
+
+    public function setStripeId(?string $stripe_id): static
+    {
+        $this->stripe_id = $stripe_id;
 
         return $this;
     }

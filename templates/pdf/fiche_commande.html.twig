@@ -1,0 +1,152 @@
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture de commande</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .order-info {
+            margin-bottom: 20px;
+        }
+        .order-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .order-info td, .order-info th, .order-info td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Facture de commande</h1>
+        </div>
+        <div class="order-info">
+            <h2>Informations sur la commande</h2>
+            <table>
+                <tr>
+                    <th>Numéro de commande</th>
+                    <td>{{ commande.getNumeros() }}</td>
+                </tr>
+                <tr>
+                    <th>Statut</th>
+                    <td>{{ commande.getStatut() }}</td>
+                </tr>
+                <tr>
+                    <th>Nom</th>
+                    <td>{{ commande.user.getNom() }}</td>
+                </tr>
+                <tr>
+                    <th>Prénom</th>
+                    <td>{{ commande.user.getPrenom() }}</td>
+                </tr>
+                <tr>
+                    <th>Date Commande</th>
+                    <td>{{ commande.getDateCommande().format('d/m/Y')}}</td>
+                </tr>
+                <tr>
+                    <th>Adresse de livraison</th>
+                    <td>{{ commande.adresseLivraisonCommande.getAdresse() }}</td>
+                </tr>
+                <tr>
+                    <th>Code postal de livraison</th>
+                    <td>{{ commande.adresseLivraisonCommande.getCp() }}</td>
+                </tr>
+                <tr>
+                    <th>Ville de livraison</th>
+                    <td>{{ commande.adresseLivraisonCommande.getVille() }}</td>
+                </tr>
+                <tr>
+                    <th>Adresse de facturation</th>
+                    <td>{{ commande.adresseFacturationCommande.getAdresse() }}</td>
+                </tr>
+                <tr>
+                    <th>Code postal de facturation</th>
+                    <td>{{ commande.adresseFacturationCommande.getCp() }}</td>
+                </tr>
+                <tr>
+                    <th>Ville de facturation</th>
+                    <td>{{ commande.adresseFacturationCommande.getVille() }}</td>
+                </tr>
+                <tr>
+                    <th>Prix total des produits</th>
+                    <td>{{ ((commande.getMontantTotal()  / 100) - (commande.livraison.getPrix()))}} €</td>
+                </tr>
+                <tr>
+                    <th>Mode de livraison</th>
+                    <td>{{ commande.livraison.getTransporteur() }}</td>
+                </tr>
+                <tr>
+                    <th>Prix de livraison</th>
+                    <td>{{ commande.livraison.getPrix() }}</td>
+                </tr>
+                <tr>
+                    <th>Total de la commande</th>
+                    <td>{{ commande.getMontantTotal() / 100}} €</td>
+                </tr>
+                <!-- Ajoutez d'autres informations de commande si nécessaire -->
+            </table>
+        </div>
+
+        <div>
+            <table>
+                    <thead>
+                        <tr>
+                            <th>Article(s) commandé(s)</th>
+                            <th>Quantité</th>
+                            <th>Prix</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>{{ commande.getDateCommande().format('d/m/Y')}}</td>
+                    </tr>
+                    {% for detail in detailsCommande %}
+                        <tr id="tr{{ detail.tProduits.getId }}">
+                            <td>{{ detail.tProduits.getNomProduit }}</td>
+                            <td>
+                                <span id="quantite{{ detail.tProduits.getId }}">{{ detail.getQuantity }}</span>
+                            </td>
+                            <td>{{ detail.tProduits.getPrix|number_format(2) }} €</td>
+                            <td>
+                                <span id="total{{ detail.tProduits.getId }}">
+                                    {{ ((detail.tProduits.getPrix|number_format(2)) * detail.getQuantity  ) }} €
+                                </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+            </table>
+        </div>
+        <div class="customer-info">
+            <h2>Informations sur le client</h2>
+            <p>Nom: {{ commande.user.getNom() }}</p>
+            <p>Prénom: {{ commande.user.getPrenom() }}</p>
+            <p>Email: {{ commande.user.getEmail() }}</p>
+            <!-- Ajoutez d'autres informations sur le client si nécessaire -->
+        </div>
+        <div class="footer">
+            <p>Merci pour votre commande.</p>
+            <p>À bientôt sur DuelDestinyShop!</p>
+        </div>
+    </div>
+</body>
+</html>
