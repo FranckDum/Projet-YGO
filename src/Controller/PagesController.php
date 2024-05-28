@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\TProduits;
-use App\Service\CartService;
-use App\Form\FilterCardsFormType;
 use App\Repository\TProduitsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -13,13 +11,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PagesController extends AbstractController
 {
+    
     #[Route('/', name:'accueil', methods: ['GET'])]
-    public function accueil(TProduitsRepository $tProduitsRepository, DetailCommandeRepository $detailCommandeRepository, HttpClientInterface $client): Response
+    public function accueil(TProduitsRepository $tProduitsRepository, DetailCommandeRepository $detailCommandeRepository, HttpClientInterface $client, SessionInterface $session): Response
     {
+        // $session->set('panier', []);
         // Récupérer les données de l'API Yu-Gi-Oh
         $response = $client->request('GET', 'https://db.ygoprodeck.com/api/v7/cardinfo.php?archetype=Swordsoul');
         $data = $response->toArray();
@@ -118,6 +119,10 @@ class PagesController extends AbstractController
         //         $em->persist($produit);
         //         $em->flush();
         //         // Persiste et flush les changements dans la base de données
+
+                // Télécharger l'image et l'enregistrer dans un dossier
+                // $image_data = file_get_contents($image_url);
+                // file_put_contents("asset/Images/cropped/{$ygoId}.jpg", $image_data);
         //     }
         // }
 

@@ -22,7 +22,7 @@ class PanierController extends AbstractController
     {
         // Appel du service pour obtenir les données du panier
         $panierData = $this->panierService->index();
-        
+        dump($panierData);
         // Génération de la réponse HTML en utilisant le template approprié
         return $this->render('panier/index.html.twig', $panierData);
     }

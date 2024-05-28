@@ -37,7 +37,8 @@ class RegistrationFormType extends AbstractType
                 'required'=> false
             ])
             ->add('agreeTerms', CheckboxType::class, [
-                                'mapped' => false,
+                'mapped' => false,
+                'label' => 'Acceptez les termes et conditions',
                 'constraints' => [
                     new IsTrue([
                         'message' => "Vous devez accepter les conditions d'utilisations",
@@ -93,72 +94,6 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ]);
-            // ->add('date_naissance', DateType::class, [
-            //     'years' => range(date('Y'),date('Y') - 120),
-            //     'required'=> false
-            // ]);
-        //     ->add('ville', TextType::class, [
-        //         'required'=> false,
-        //         'constraints'=> [
-        //             new NotBlank([
-        //                 'message' => 'Entrez un nom de ville svp',
-        //             ]),
-        //             new Length([
-        //                 'min' => 1,
-        //                 'minMessage' => 'Votre un nom de ville doit contenir au moins {{ limit }} caractères.',
-        //                 'max' => 100,
-        //                 'maxMessage' => 'Votre un nom de ville doit contenir au maximum {{ limit }} caractères.'
-        //             ]),
-        //         ],
-        //     ])
-        //     ->add('code_postal', NumberType::class, [
-        //         'required'=> false,
-        //         'constraints' => [
-        //             new NotBlank([
-        //                 'message' => 'Entrez un code postal svp',
-        //             ]),
-        //             new Length([
-        //                 'min' => 5,
-        //                 'minMessage' => 'Le code postal doit contenir 5 chiffres',
-        //                 'max' =>5,
-                        
-        //                 'maxMessage' => 'Le code postal ne doit pas contenir plus de 5 chiffres'
-        //             ]),
-        //             new Positive([
-        //                 'message' => 'Veuillez saisir un nombre positif'
-        //             ])
-        //         ],
-        //     ])
-        //     ->add('adresse', TextType::class, [
-        //         'required'=> false,
-        //         'constraints'=> [
-        //             new NotBlank([
-        //                 'message' => 'Entrez une adresse svp',
-        //             ]),
-        //             new Length([
-        //                 'min' => 1,
-        //                 'minMessage' => 'Votre adresse doit contenir au moins {{ limit }} caractères.',
-        //                 'max' => 100,
-        //                 'maxMessage' => 'Votre adresse doit contenir au maximum {{ limit }} caractères.'
-        //             ]),
-        //         ],
-        //     ])
-        //     ->add('tel', TextType::class, [
-        //         'required'=> false,
-        //         'constraints'=> [
-        //             new NotBlank([
-        //                 'message' => 'Entrez un numéro de téléphone svp',
-        //             ]),
-        //             new Length([
-        //                 'min' => 10,
-        //                 'minMessage' => 'Votre adresse doit contenir au moins {{ limit }} chiffres.',
-        //                 'max' => 14,
-        //                 'maxMessage' => 'Votre numéro de téléphone est invalide.'
-        //             ]),
-        //         ],
-        //     ])
-        // ;
-    
     }
 
     public function configureOptions(OptionsResolver $resolver): void

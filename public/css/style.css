@@ -327,7 +327,7 @@ a{
 }
 
 .navbar-nav .nav-link {
-    color: #0e436e;
+    color: white;
     /* color: white; */
     transition: color 0.3s ease, text-shadow 0.3s ease; /* Ajout d'une transition fluide pour la couleur et l'ombre du texte */
 }
@@ -374,7 +374,7 @@ a{
 
 /* ------------------------------------------Footer---------------------------------------------------- */
 .aLink {
-    color: #0e436e;
+    color: white;
 }
 
 .aLink:active {

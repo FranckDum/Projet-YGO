@@ -41,16 +41,18 @@
                         </div>
                         <div>Prix : {{ produit.prix|number_format(2) }} €</div>
                         <div class="ms-auto me-auto mb-3">
+                            {% set searchPanier = searchIdProduit(produit.id) %}
                             {% if produit.Stock %}
+                                {% set quantity = produit.Stock %}
+                                {% if produit.Stock > 10 %}
+                                    {% set quantity = 10 %}
+                                {% endif %}
+                                {% if searchPanier.search %}
+                                    {% set quantity = quantity - searchPanier.q %}
+                                {% endif %}
+                                {% if quantity %}
                                 <form class="add-to-cart-form" method="post" action="{{ path("app_panier_new") }}">
                                     <select name="quantite" aria-label= "Bouton pour choisir la quantité de l'article à ajouter au panier">
-
-                                    {% set quantity = produit.Stock %}
-
-                                    {% if produit.Stock > 10 %}
-                                        {% set quantity = 10 %}
-                                    {% endif %}
-
                                     {% for i in 1 .. quantity %}
                                         <option value="{{i}}">{{i}}</option>
                                     {% endfor %}
@@ -58,6 +60,9 @@
                                     <input type="hidden" name="nomProduit" value="{{produit.nomProduit}}" class="btn btn-success">
                                     <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
                                 </form>
+                                {% else %}
+                                    <p class="text-center text-danger">Quantité maximum autorisée.</p>
+                                {% endif %}
                             {% else %}
                                 <h3 class="text-danger h3-custom text-center">Rupture de stock</h3>
                             {% endif %}
@@ -101,6 +106,9 @@
 
                             let notifQuantitePanier = document.getElementById('notifQuantitePanier');
                             let notifQuantitePanierInt = parseInt(notifQuantitePanier.textContent);
+                            if (isNaN(notifQuantitePanierInt)) {
+                                notifQuantitePanierInt = 0;
+                            }
                             quantiteValue = parseInt(quantiteValue);
                             notifQuantitePanier.textContent = (notifQuantitePanierInt + quantiteValue);
 

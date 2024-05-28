@@ -37,13 +37,18 @@
                                     </div>
                                     <div class="text-black mt-2">Prix : {{ t_produit.prix|number_format(2) }} €</div>
                                     <div class="ms-auto me-auto mb-3">
+                                    {% set searchPanier = searchIdProduit(t_produit.id) %}
                                         {% if t_produit.Stock %}
+                                            {% set quantity = t_produit.Stock %}
+                                            {% if t_produit.Stock > 10 %}
+                                                {% set quantity = 10 %}
+                                            {% endif %}
+                                            {% if searchPanier.search %}
+                                                {% set quantity = quantity - searchPanier.q %}
+                                            {% endif %}
+                                            {% if quantity %}
                                             <form class="add-to-cart-form" method="post" action="{{ path("app_panier_new") }}">
                                                 <select name="quantite" aria-label= "Bouton pour choisir la quantité de l'article à ajouter au panier">
-                                                {% set quantity = t_produit.Stock %}
-                                                {% if t_produit.Stock > 10 %}
-                                                    {% set quantity = 10 %}
-                                                {% endif %}
                                                 {% for i in 1 .. quantity %}
                                                     <option value="{{i}}">{{i}}</option>
                                                 {% endfor %}
@@ -51,6 +56,9 @@
                                                 <input type="hidden" name="nomProduit" value="{{t_produit.nomProduit}}" class="btn btn-success">
                                                 <input type="submit" value="Ajouter au panier" class="btn btn-success rounded-custom">
                                             </form>
+                                            {% else %}
+                                                <p class="text-center text-danger">Quantité maximum autorisée.</p>
+                                            {% endif %}
                                         {% else %}
                                             <h3 class="text-danger h3-custom text-center">Rupture de stock</h3>
                                         {% endif %}
@@ -92,6 +100,9 @@ $(document).ready(function() {
 
                     let notifQuantitePanier = document.getElementById('notifQuantitePanier');
                     let notifQuantitePanierInt = parseInt(notifQuantitePanier.textContent);
+                    if (isNaN(notifQuantitePanierInt)) {
+                        notifQuantitePanierInt = 0;
+                    }
                     quantiteValue = parseInt(quantiteValue);
                     console.log(typeof notifQuantitePanierInt);
                     console.log(typeof quantiteValue);

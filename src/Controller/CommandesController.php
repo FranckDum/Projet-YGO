@@ -40,52 +40,6 @@ class CommandesController extends AbstractController
         ]);
     }
 
-    // #[Route('/new', name: 'app_commandes_new', methods: ['GET', 'POST'])]
-    // public function new(Request $request, EntityManagerInterface $entityManager): Response
-    // {
-    //     $panier = $this->session->get('panier', []);
-    //     $produitsDetails = [];
-    //     $totalPanier = 0; // Initialiser le total à zéro
-
-    //     // Récupérer les détails des produits présents dans le panier
-    //     foreach ($panier as $produitId => $quantite) {
-    //         $produit = $this->tProduitsRepository->find($produitId);
-
-    //         // Si le produit existe, ajoutez-le à la liste des détails de produit
-    //         if ($produit) {
-    //             $produitsDetails[] = [
-    //                 'id' => $produit->getId(),
-    //                 'ygoId' => $produit->getYgoId(),
-    //                 'nom' => $produit->getNomProduit(),
-    //                 'quantite' => $quantite,
-    //                 'prix' => $produit->getPrix(),
-    //                 'total' => $quantite * $produit->getPrix(),
-    //             ];
-
-    //         // Ajouter le prix du produit au total
-    //         $totalPanier += $quantite * $produit->getPrix();
-    //         }
-    //     }
-
-    //     $commande = new Commandes();
-    //     $form = $this->createForm(CommandesType::class, $commande);
-    //     $form->handleRequest($request);
-
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         $entityManager->persist($commande);
-    //         $entityManager->flush();
-
-    //         return $this->redirectToRoute('app_commandes_index', [], Response::HTTP_SEE_OTHER);
-    //     }
-
-    //     return $this->render('commandes/new.html.twig', [
-    //         'commande' => $commande,
-    //         'form' => $form,
-    //         'produits' => $produitsDetails,
-    //         'totalPanier' => $totalPanier
-    //     ]);
-    // }
-
     #[Route('/new', name: 'app_commandes_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -108,7 +62,6 @@ class CommandesController extends AbstractController
                     'ygoId' => $produit->getYgoId(),
                     'nom' => $produit->getNomProduit(),
                     'prix' => $produit->getPrix(),
-                    // Ajoutez d'autres détails du produit si nécessaire
                 ];
             }
         }
@@ -121,14 +74,6 @@ class CommandesController extends AbstractController
             'commandeInfo' => $commandeInfo,
         ]);
     }
-
-    // #[Route('/{id}', name: 'app_commandes_show', methods: ['GET'])]
-    // public function show(Commandes $commande): Response
-    // {
-    //     return $this->render('commandes/show.html.twig', [
-    //         'commande' => $commande,
-    //     ]);
-    // }
 
     #[Route('/{id}', name: 'app_commandes_show', methods: ['GET'])]
     public function show(Commandes $commande): Response

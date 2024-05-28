@@ -7,11 +7,8 @@
 
     <main class="container">
         <h2 class="text-primary text-center mt-5">Merci pour votre achat.</h2>
-        <p class="text-white text-center mt-4">Nous commençons dès que possible la préparation de votre commande</p>
-        {# <a class="btn btn-success rounded-custom w-25" href="{{ path('app_commandes_new') }}">Récapitulatif de la commande</a> #}
+        <p class="text-white text-center mt-4">Nous commençons la préparation de votre commande</p>
 
-
-    {# <a href="{{ path('app_commandes_index') }}">Retour</a> #}
     {% if app.user %}
     <h2 class="text-primary">Commande n° :</h2>
     <p class="text-white">{{ commande.getNumeros() }}</p>

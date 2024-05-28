@@ -4,43 +4,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facture de commande</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .order-info {
-            margin-bottom: 20px;
-        }
-        .order-info table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .order-info td, .order-info th, .order-info td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/pdf.css') }}">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Facture de commande</h1>
+            <h1 class="text-dark">Facture de commande</h1>
         </div>
         <div class="order-info">
-            <h2>Informations sur la commande</h2>
+            <h2 class="text-dark">Informations sur la commande</h2>
             <table>
                 <tr>
                     <th>Numéro de commande</th>
@@ -102,7 +74,6 @@
                     <th>Total de la commande</th>
                     <td>{{ commande.getMontantTotal() / 100}} €</td>
                 </tr>
-                <!-- Ajoutez d'autres informations de commande si nécessaire -->
             </table>
         </div>
 
@@ -137,15 +108,14 @@
             </table>
         </div>
         <div class="customer-info">
-            <h2>Informations sur le client</h2>
+            <h2 class="text-dark">Informations sur le client</h2>
             <p>Nom: {{ commande.user.getNom() }}</p>
             <p>Prénom: {{ commande.user.getPrenom() }}</p>
             <p>Email: {{ commande.user.getEmail() }}</p>
-            <!-- Ajoutez d'autres informations sur le client si nécessaire -->
         </div>
         <div class="footer">
             <p>Merci pour votre commande.</p>
-            <p>À bientôt sur DuelDestinyShop!</p>
+            <p>À bientôt sur <strong>DuelDestinyShop!</strong></p>
         </div>
     </div>
 </body>

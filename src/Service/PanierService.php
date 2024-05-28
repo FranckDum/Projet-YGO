@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class PanierService
 {
@@ -50,22 +49,31 @@ class PanierService
         }
         return $this->session->get('panier', []);
     }
-
+    
+    /**
+     * Method getQuantitePanier
+     *
+     * @return int
+     */
     public function getQuantitePanier(): int
     {
         $quantite = 0;
-        $panier = $this->getPanier();
+        $panier = $this->session->get('panier', []);
 
-        if($panier['data']) {
-            foreach ($panier['data'] as $value) {
+        if($panier) {
+            foreach ($panier as $value) {
                 $quantite += $value;
             }
         }
 
-
         return $quantite;
     }
-
+    
+    /**
+     * Method montantTotal
+     *
+     * @return float
+     */
     public function montantTotal() : float
     {
         $panier = $this->session->get('panier', []);
@@ -82,15 +90,20 @@ class PanierService
             $totalPanier += $quantite * $produit->getPrix();
             }
         }
-        
 
         return $totalPanier;
     }
-
+    
+    /**
+     * Method index
+     *
+     * @return array
+     */
     public function index(): array
     {
         $panier = $this->session->get('panier', []);
-        $produitsDetails = [];
+        dump($panier);
+        $produitsDetails = []; 
         $totalPanier = 0; // Initialiser le total à zéro
 
         // Récupérer les détails des produits présents dans le panier
@@ -119,7 +132,14 @@ class PanierService
             'totalPanier' => $totalPanier
         ];
     }
-
+    
+    /**
+     * Method validationPanier
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return array
+     */
     public function validationPanier(Request $request): array
     {
     
@@ -172,48 +192,55 @@ class PanierService
                 // Ajouter les frais de livraison au montant total de la commande
                 $montantTotalCommande += $livreur->getPrix();
             // Stocker le mode de livraison dans la session
-        }
-        $this->session->set('mode_livraison', $livreurId);
-    
-        // Vérifier si l'adresse de livraison sélectionnée existe
-        if ($livraisonUser !== null) {
-            // Stocker l'adresse de livraison sélectionnée dans la session
-            $this->session->set('adresse_livraison_id', $adresseLivraisonId);
-        } else {
-            // Gérer le cas où l'adresse de livraison est invalide
-            return [
-                'livraison_valide' => false, // Indiquer que l'adresse de livraison est invalide
-                // Autres données nécessaires pour générer la réponse
-            ];
-        }
-    
-        // Stocker le montant total de la commande dans la session
-        $this->session->set('montantTotalCommande', $montantTotalCommande);
-    }
-    
-    // Retourner les données de validation
-    return [
-        'livraison_valide' => true, // Indiquer que l'adresse de livraison est valide
-        'produitsDetails' => $produitsDetails,
-        'totalPanier' => $totalPanier,
-        'livreurs' => $livreurs,
-        'montantTotalCommande' => $montantTotalCommande,
-        'adressesLivraison' => $adressesLivraison,
-        'adresseFacturationExistante' => $adresseFacturationExistante,
-        'user' => $user
-    ];
-    }
-    
+            }
 
+            $this->session->set('mode_livraison', $livreurId);
+        
+            // Vérifier si l'adresse de livraison sélectionnée existe
+            if ($livraisonUser !== null) {
+                // Stocker l'adresse de livraison sélectionnée dans la session
+                $this->session->set('adresse_livraison_id', $adresseLivraisonId);
+            } else {
+                // Gérer le cas où l'adresse de livraison est invalide
+                return [
+                    'livraison_valide' => false, // Indiquer que l'adresse de livraison est invalide
+                    // Autres données nécessaires pour générer la réponse
+                ];
+            }
+        
+            // Stocker le montant total de la commande dans la session
+            $this->session->set('montantTotalCommande', $montantTotalCommande);
+        }
+    
+        // Retourner les données de validation
+        return [
+            'livraison_valide' => true, // Indiquer que l'adresse de livraison est valide
+            'produitsDetails' => $produitsDetails,
+            'totalPanier' => $totalPanier,
+            'livreurs' => $livreurs,
+            'montantTotalCommande' => $montantTotalCommande,
+            'adressesLivraison' => $adressesLivraison,
+            'adresseFacturationExistante' => $adresseFacturationExistante,
+            'user' => $user
+        ];
+    }
+    /**
+     * Method getCartItemCount
+     *
+     * @return JsonResponse
+     */
     public function getCartItemCount(): JsonResponse
     {
-        // $panier = $this->session->get('panier', []);
-        // $totalItems = array_sum($panier); // Somme de toutes les quantités dans le panier
-        // return new JsonResponse(['itemCount' => $totalItems]);
         $itemCount = $this->notificationManager->getQuantitePanier();
         return new JsonResponse(['itemCount' => $itemCount]);
     }
-
+    /**
+     * Method add
+     *
+     * @param Request $request [explicite description]
+     *
+     * @return Response
+     */
     public function add(Request $request): Response
     {
         $produitId = $request->request->get('produit');
@@ -253,7 +280,7 @@ class PanierService
 
     public function verification($produitId, $quantite)
     {
-        $stock = 10; // Par exemple, la quantité en stock pour le produit $produitId est de 10
+        $stock = $this->tProduitsRepository->getStock($produitId);
     
         // Récupère le panier actuel
         $panier = $this->session->get('panier', []);
@@ -321,7 +348,7 @@ class PanierService
                 }
 
                 // Calculer le montant total mis à jour à partir du panier
-                $totalPanier = $this->calculateTotalPanier($panier, $this->tProduitsRepository);
+                $totalPanier = $this->montantTotal($panier, $this->tProduitsRepository);
 
                 // Calculer le total pour ce produit
                 $totalProduit = ($panier[$id] ?? 0) * $produit->getPrix();
@@ -342,20 +369,6 @@ class PanierService
         return new JsonResponse(['success' => false, 'message' => 'Le produit n\'a pas été trouvé ou le stock n\'est pas défini.']);
     }
 
-    private function calculateTotalPanier(array $panier): float
-    {
-        $totalPanier = 0;
-
-        foreach ($panier as $produitId => $quantite) {
-            $produit = $this->tProduitsRepository->find($produitId);
-            if ($produit) {
-                $totalPanier += $quantite * $produit->getPrix(); // Prix du produit * quantité
-            }
-        }
-
-        return $totalPanier;
-    }
-
     public function supprimerProduit($id)
     {
         $panier = $this->session->get('panier', []);
@@ -372,7 +385,7 @@ class PanierService
             $this->session->set('panier', $panier);
 
             // Récupérer le nouveau montant total
-            $totalPanier = $this->calculateTotalPanier($panier, $this->tProduitsRepository);
+            $totalPanier = $this->montantTotal($panier, $this->tProduitsRepository);
 
             // Retourne une réponse JSON avec le succès et le nouveau montant total
             return new JsonResponse(['success' => true, 'articleName' => $articleName, 'totalPanier' => $totalPanier]);
@@ -381,4 +394,5 @@ class PanierService
         // Retourne une réponse JSON indiquant l'échec si le produit n'est pas trouvé dans le panier
         return new JsonResponse(['success' => false, 'message' => 'Produit non trouvé dans le panier.']);
     }
+    
 }

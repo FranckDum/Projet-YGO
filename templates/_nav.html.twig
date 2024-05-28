@@ -58,12 +58,11 @@
         </div>
         <a class="nav-link" href="{{ path('app_panier') }}">
             <span id="cart-icon" class="material-icons text-dark">shopping_cart</span>
-            {# <span id="cart-count" class="text-dark"></span> #}
+            <span class="text-dark" id="notifQuantitePanier">
             {% if notif.quantitePanier %}
-                <span class="text-dark" id="notifQuantitePanier">
                 {{ notif.quantitePanier }}
-                </span>
             {% endif %}
+                </span>
         </a>
     </div>
 </nav>

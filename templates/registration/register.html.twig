@@ -12,7 +12,7 @@
 
                 {{ form_errors(registrationForm) }}
 
-                {{ form_start(registrationForm) }}
+                {{ form_start(registrationForm, {'attr' : {'novalidate' : 'novalidate'}}) }}
                     <div class="mb-3 mt-3">
                     {{ form_row(registrationForm.nom, {'attr': {'class':'form-control rounded-custom'}}, {
                         label: 'Nom'
@@ -38,7 +38,7 @@
                         label: 'Termes et Conditions'
                     }) }}
                     </div>
-                    <button type="submit" class="btn btn-dark rounded-custom w-100 mb-3">S'inscrire</button>
+                    <button type="submit" class="btn btn-primary rounded-custom w-100 mb-3">S'inscrire</button>
                 {{ form_end(registrationForm) }}
             </div>
         </div>

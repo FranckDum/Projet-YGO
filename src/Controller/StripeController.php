@@ -45,21 +45,18 @@ class StripeController extends AbstractController
     
     public function getMontantTotal(): float
     {
-        // $montant = 0;
-        // $panier = $this->session->get('panier', []);
-        // foreach($panier as $idProduit => $quantite){
-        //     $produit = $this->tProduitsRepository->find($idProduit);
-        //     $montant += ($produit->getPrix() * 100) * $quantite;
-        // }
-
-        // return $montant;
-
         return $this->session->get('montantTotalCommande', 0) * 100;
     }
 
 
-    #[Route('/stripe', name: 'app_stripe')]
-    public function index(SessionInterface $session, EntityManagerInterface $em): Response
+    #[Route('/stripe', name: 'app_stripe')]    
+    /**
+     * Method index
+     *
+     * @return Response
+     */
+    
+    public function index(): Response
     {
         /*
             CB SUCCESS : 4242 4242 4242 4242
@@ -76,46 +73,8 @@ class StripeController extends AbstractController
         ]);
     }
 
-    // #[Route('/process_payment', name: 'process_payment')]
-    // public function processPayment(Request $request)
-    // {
-    //     $stripeSecretKey = $_ENV['STRIPE_SECRET_KEY'];
-    //     Stripe::setApiKey($stripeSecretKey);
-    //     $token = $request->request->get('stripeToken');
-    
-    //     $montant = $this->getMontantTotal();
-    //     if ($montant < 1) {
-    //         $this->addFlash('error', 'Invalid amount: ' . $montant);
-    //         return $this->redirectToRoute('payment_failure');
-    //     }
-    
-    //     try {
-    //         $charge = Charge::create([
-    //             'amount' => $montant,
-    //             'currency' => 'eur',
-    //             'description' => 'Achat effectué sur DuelDestinyShop!',
-    //             'source' => $token
-    //         ]);
-    
-    //         $stripeId = $charge->id; // id du stripe de la commande
-    
-    //         // Stocker l'ID Stripe dans la session
-    //         $this->session->set('stripeId', $stripeId);
-    
-    //         return $this->redirectToRoute('payment_success');
-    //     } catch (\Exception $e) {
-    //         // Log the error message
-    //         $this->addFlash('error', 'Payment failed: ' . $e->getMessage());
-    //         // Log the error to a file or other logging system
-    //         error_log('Payment failed: ' . $e->getMessage());
-    
-    //         // paiement failure
-    //         return $this->redirectToRoute('payment_failure');
-    //     }
-    // }
-
     #[Route('/process_payment', name: 'process_payment')]
-public function processPayment(Request $request, SessionInterface $session, EntityManagerInterface $em)
+public function processPayment(Request $request, SessionInterface $session)
 {
 
 
@@ -155,7 +114,17 @@ public function processPayment(Request $request, SessionInterface $session, Enti
     }
 }
 
-    #[Route('/payment_success', name: 'payment_success')]
+    #[Route('/payment_success', name: 'payment_success')]    
+    /**
+     * Method paymentSuccess
+     *
+     * @param EntityManagerInterface $em [explicite description]
+     * @param NumerosCommandesGeneratorService $num [explicite description]
+     * @param MailerInterface $mailer [explicite description]
+     *
+     * @return Response
+     */
+    
     public function paymentSuccess(EntityManagerInterface $em, NumerosCommandesGeneratorService $num, MailerInterface $mailer): Response
     {
     // Récupérer les informations de la session ou d'autres sources appropriées
@@ -262,7 +231,7 @@ public function processPayment(Request $request, SessionInterface $session, Enti
         $detailCommande = new DetailCommande();
         $detailCommande->setCommandes($commande);
         $detailCommande->setTProduits($produit);
-        $detailCommande->setPrix($prix);
+        $detailCommande->setPrix($produit->getPrix());
         $detailCommande->setQuantity($quantite);
 
         // Ajoutez le détail de la commande à la collection de la commande
@@ -283,7 +252,6 @@ public function processPayment(Request $request, SessionInterface $session, Enti
 
         // Récupérer les détails de la commande
         $detailsCommande = $commande->getDetailCommande();
-    dump($detailsCommande);
 
     // Configurer les options de Dompdf
     $pdfOptions = new Options();
@@ -302,7 +270,7 @@ public function processPayment(Request $request, SessionInterface $session, Enti
 
     // Charger le HTML dans Dompdf
     $dompdf->loadHtml($html);
-    // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+    // (Facultatif) Configurer le format et l'orientation du papier 'portrait' ou 'portrait'
     $dompdf->setPaper('A4', 'portrait');
     // Rendre le HTML au format PDF
     $dompdf->render();
@@ -331,13 +299,17 @@ public function processPayment(Request $request, SessionInterface $session, Enti
         'livraison' => $livraison,
         'adresseFacturation' => $adresseFacturation,
         'adresseLivraison' => $adresseLivraison,
-        'produits' => $produit,
         'detailsCommande' => $detailsCommande,
         'montantTotal' => $prix,
     ]);
     }
 
-    #[Route('/payment_failure', name: 'payment_failure')]
+    #[Route('/payment_failure', name: 'payment_failure')]    
+    /**
+     * Method paymentFailure
+     *
+     * @return Response
+     */
     public function paymentFailure(): Response
     {
         $this->session->set('mode_livraison', null);

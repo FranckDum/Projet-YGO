@@ -24,10 +24,7 @@ class NotificationManagerService
 
         $panier = $session->get('panier', []);
 
-        // dd($panier);
-        // $panier = $this->getPanier();
-
-        if(($panier)) {
+        if($panier) {
             foreach ($panier as $value) {
                 $quantite += $value;
             }
